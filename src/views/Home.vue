@@ -25,5 +25,16 @@ export default {
     margin: auto;
     display: flex;
     justify-content: space-evenly;
+    min-width: 45em;
+    max-width: 60vw;
+}
+
+@media screen and (max-width: 768px)  {
+  .cards {
+    flex-direction: column;
+    justify-content: center;
+    min-width: 15em;
+    max-width: initial;
+  }
 }
 </style>

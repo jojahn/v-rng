@@ -26,7 +26,7 @@ export default {
     width: 15em;
     max-height: 15em;
     background-color: #FFF;
-    border-radius: 0.5rem;
+    border-radius: 0.3rem;
     border: 1px solid #DDD;
     box-shadow: 2px 2px 20px rgba(0,0,0,0.1);
     cursor: pointer;
@@ -42,6 +42,15 @@ export default {
 }
 
 .card > p {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    font-family: 'Dancing Script', cursive;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 768px)  {
+  .router-link-card {
+    margin: auto;
+    margin-bottom: 20px;
+  }
 }
 </style>

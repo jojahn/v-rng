@@ -5,18 +5,23 @@
   "description": "",
   "author": "",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "index.js",
   "dependencies": {
+    "bootstrap-icons": "^1.5.0",
     "core-js": "^3.6.5",
+    "three.js": "^0.77.1",
     "vue": "^3.0.0",
+    "vue-i18n": "^9.1.0",
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
+    "@intlify/vue-i18n-loader": "^2.1.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "^4.5.13",
@@ -26,29 +31,15 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
     "node-sass": "^6.0.1",
-    "sass-loader": "^12.1.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {
-      "no-unused-labels": "warn"
-    }
+    "sass-loader": "^12.1.0",
+    "vue-cli-plugin-i18n": "~2.1.1"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
   ],
+  "useEslint": false,
   "_id": "rng@1.0.0",
   "license": "ISC",
   "readme": "ERROR: No README data found!"

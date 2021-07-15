@@ -1,12 +1,10 @@
 <template>
-  <Header />
+  <!-- <Header /> -->
   <Navigation />
-  <h1>{{ $router.currentRoute._rawValue.fullPath == "/" }}</h1>
   <div id="nav">
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-    <router-link to="/wheel">Wheel</router-link>
-    <router-link to="/spinner">Spinner</router-link>
+    <router-link to="/wheel">Wheel</router-link> |
+    <router-link to="/spinner">Spinner</router-link> |
     <router-link to="/dices">Dices</router-link>
   </div>
   <router-view/>
@@ -14,13 +12,13 @@
 
 <script>
 import Navigation from '@/components/Navigation.vue'
-import Header from '@/components/Header.vue'
+// import Header from '@/components/Header.vue'
 
 export default {
   name: 'Home',
   components: {
     Navigation,
-    Header
+    // Header
   },
   methods: {
     do() {
