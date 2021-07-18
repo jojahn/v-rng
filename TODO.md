@@ -33,3 +33,4 @@
 * Configure/Selfcode Randomfunction
 * Autosave names and colors
 * Accessiblity/Titles
+* Font-hide flicker on home screen

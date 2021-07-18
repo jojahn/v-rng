@@ -1,12 +1,14 @@
 <template>
-    <Wheel ref="wheel" :values="values" />
+    <Navigation />
+    <Wheel ref="wheel" :values="values" :maxTime="maxTime" />
     <ActionButton iconClass="bi bi-arrow-clockwise" v-bind:callback="spin" />
     <ConfigurationPane name="wheel">
       <form v-on:change="onFormChange">
         <textarea name="values" v-model="valuesString"></textarea>
       </form>
-      <KeyIcon className="bi-shift"/>
-      <KeyIcon className="bi-arrow-return-left"/>
+      
+      <!-- <KeyIcon className="bi-shift"/>
+      <KeyIcon className="bi-arrow-return-left"/> -->
     </ConfigurationPane>
 </template>
 
@@ -28,6 +30,7 @@ export default {
   },
   data() {
     return {
+      maxTime: 2000,
       valuesString: "Birds\nCats\nDogs\n",
       values: [{ name: "Birds", color: DEFAULT_COLORS[0] },
         { name: "Cats", color: DEFAULT_COLORS[1] },

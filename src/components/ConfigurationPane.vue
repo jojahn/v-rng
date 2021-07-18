@@ -5,8 +5,24 @@
                 <i class="bi bi-arrow-right-circle" />
             </button>
         </div>
-        <div class="content" v-bind:id="'ConfigurationContentPane:' + name">
-            <slot></slot>
+        <div class="pane" v-bind:id="'ConfigurationContentPane:' + name">
+            <div class="content-wrapper">
+                <slot></slot>
+            </div>
+            <div class="config-actions">
+                <!-- <button class="config-actions-button">
+                    <i class="bi bi-sliders"/>
+                </button> -->
+                <button class="config-actions-button">
+                    <i class="bi bi-upload"/>
+                </button>
+                <button class="config-actions-button">
+                    <i class="bi bi-download"/>
+                </button>
+                <button class="config-actions-button">
+                    <i class="bi bi-trash"/>
+                </button>
+            </div>
         </div>
   </div>
 </template>
@@ -92,7 +108,10 @@ export default {
     justify-content: center;
     height: 100%;
 }
-.content {
+.pane {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-evenly; */
     width: 30vw;
     display: block;
     /* margin-top: 10%; */
@@ -104,14 +123,14 @@ export default {
     border: 1px solid #DDD;
     box-shadow: 2px 2px 20px rgba(0,0,0,0.1);
 }
-.content.pane-closed {
+.pane.pane-closed {
     /* right: 0px; */
     margin-right: 0;
     -webkit-animation: close 0.5s ease-in-out 0s 1 normal forwards;
     -moz-animation: close 0.5s ease-in-out 0s 1 normal forwards;
     animation: close 0.5s ease-in-out 0s 1 normal forwards;
 }
-.content.pane-open {
+.pane.pane-open {
     /* right: 0px; */
     margin-right: -30vw;
     -webkit-animation: open 0.5s ease-in-out 0s 1 normal forwards;
@@ -140,12 +159,12 @@ export default {
 @-webkit-keyframes rotateConfigButtonBack { 100% { transform: rotate(0deg); } }
 @keyframes rotateConfigButtonBack { 100% { transform: rotate(0deg); } }
 
-.content > form {
+.pane > form {
     display: flex;
     flex-direction: column;
 }
 
-.content > form textarea {
+.pane > form textarea {
     margin: auto;
     margin-top: 18px;
     height: 200px;
@@ -163,12 +182,47 @@ export default {
     justify-content: space-evenly;
 }
 
-.dark .content > form textarea {
+.content-wrapper {
+    display: block;
+    height: calc(100% - 4rem);
+}
+
+.config-actions {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.config-actions-button {
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border: none;
+  width: 3.5rem;
+  height: 3.5rem;
+  /* border: 1px solid #aaa; */
+  border-radius: 0.3rem;
+  background: #FFF;
+  color: #333;
+}
+
+.dark .config-actions-button {
+  border-color: #111;
+  background: #222;
+  color: #ddd;
+  transition: 0.25s
+}
+
+.dark .config-actions-button:hover {
+  background: #111;
+}
+
+.dark .pane > form textarea {
     color: #ddd;
     background-color: #222;
 }
 
-.dark .content {
+.dark .pane {
     color: #ddd;
     background-color: #222;
     border: 1px solid #111;

@@ -1,12 +1,20 @@
-export function track(element, callback) {
+export function track(element, callback, onLeave, step) {
+    var currentStep = 0;
     var listener = function(p) {
-        console.log(p.pageX, p.pageY);
-        callback(p.pageX, p.pageY);
+        if (currentStep % step == 0) {
+            callback(p.pageX, p.pageY);
+        }
+        currentStep++;
     }
     element.addEventListener("mousedown", () => {
         window.addEventListener("mousemove", listener);
     });
     element.addEventListener("mouseup", () => {
         window.removeEventListener("mousemove", listener);
+        onLeave();
+    });
+    element.addEventListener("mouseleave", () => {
+        window.removeEventListener("mousemove", listener);
+        onLeave();
     });
 }

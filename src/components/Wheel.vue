@@ -5,17 +5,20 @@
 </template>
 
 <script>
-import { rotate2d, deg2Rad } from "@/services/angles";
+import { rotate2d, deg2Rad, rad2deg } from "@/services/angles";
 import { track } from "@/services/mouseTracking";
 import { DEFAULT_COLORS } from "@/services/defaultValues";
 export default {
   props: {
+    maxTime: Number,
     config: Object,
     values: Array
   },
   data() {
     return {
       displayedPicks: [],
+      interval: null,
+      timeout: null
     };
   },
   watch: {
@@ -65,20 +68,27 @@ export default {
     },
     setupWheelTracking() {
       var element = document.getElementById("WheelCanvas");
-      var currentX, currentY;
+      var currentX, currentY, starterAngle;
+      var exitVelocity = 0;
       const onTrack = (center) => (x, y) => {
-        // left
-        if (currentY > y) {
-          console.log("rotate left");
+        this.stop();
+        var adjustedX = x - center.x
+        var adjustedY = y - center.y;
+        console.log(adjustedX, adjustedY);
+        var angle = Math.atan2(adjustedY, adjustedX);
+        if (!starterAngle && starterAngle != 0) {
+          starterAngle = angle;
         }
-        // right
-        else if (currentY < y) {
-          console.log("rotate right");
-        }
-        currentX = x;
-        currentY = y;
+        this.drawWheel(angle);
+        // console.log("---> angle:", rad2deg(angle));
+        starterAngle = angle;
       }
-      track(element, onTrack);
+      const onLeave = () => {
+        if (exitVelocity > 0.1) {
+          this.spin();
+        }
+      };
+      track(element, onTrack({ x: element.offsetLeft + element.width/2, y: element.offsetTop + element.height/2 }), onLeave, 10);
     },
     drawText(
       ctx,
@@ -149,17 +159,19 @@ export default {
         end += angle;
       });
     },
-    spinWheel(time, { stepTime, stepAngle }) {
+    spin(time = this.$props.maxTime || 5000, { stepTime, stepAngle } = { stepTime: 50, stepAngle: 8 }) {
+      this.stop();
       let angle = 0;
-      let interval = setInterval(() => {
+      this.interval = setInterval(() => {
         this.drawWheel(angle += deg2Rad(stepAngle));
       }, stepTime);
-      setTimeout(() => {
-        clearInterval(interval);
+      this.timeout = setTimeout(() => {
+        clearInterval(this.interval);
       }, time);
     },
-    spin() {
-      this.spinWheel(5000, { stepTime: 50, stepAngle: 8 });
+    stop() {
+      clearInterval(this.interval);
+      clearTimeout(this.timeout);
     }
   },
   mounted() {

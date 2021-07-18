@@ -1,6 +1,6 @@
 <template>
 <router-link class="router-link-card" :to="path">
-    <div class="card">
+    <div class="card" ref="card">
         <img v-bind:alt="title" v-bind:src="require(`@/assets/${imgSrc}`)">
         <hr>
         <p>{{ title }}</p>
@@ -13,7 +13,13 @@ export default {
     props: {
         imgSrc: String,
         title: String,
-        path: String
+        path: String,
+        disabled: Boolean
+    },
+    mounted() {
+        if (this.$props.disabled === true) {
+            this.$refs.card.classList.add("disabled");
+        }
     }
 }
 </script>
@@ -33,6 +39,10 @@ export default {
     text-decoration: none !important;
     color: #333;
     margin-bottom: 20px;
+}
+.card.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .card hr {

@@ -2,9 +2,9 @@
   <div class="home">
     <div class="cards">
         <Card title="Wheel" imgSrc="Wheel.png" path="/wheel" />
-        <Card title="Spinner" imgSrc="Spinner.png" path="/spinner" />
-        <Card title="Dices" imgSrc="Cubes.png" path="/dices" />
-        <Card title="Coin" imgSrc="Coin.png" path="/coin" />
+        <Card title="Spinner" imgSrc="Spinner.png" path="/spinner" :disabled="true" />
+        <Card title="Dices" imgSrc="Cubes.png" path="/dices" :disabled="true" />
+        <Card title="Coin" imgSrc="Coin.png" path="/coin" :disabled="true" />
         <!-- <div class="card-placeholder" />
         <div class="card-placeholder" /> -->
     </div>
