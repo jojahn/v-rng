@@ -20,6 +20,7 @@
 * ...
 * Rolling off when too fast grabbed
 * Stopping wheel timeout
+* 1i = 4*, 3i = 2*, 
 
 ## Coin Flipper
 
@@ -30,3 +31,5 @@
 * Create logo + favicon
 * AR Support
 * Configure/Selfcode Randomfunction
+* Autosave names and colors
+* Accessiblity/Titles

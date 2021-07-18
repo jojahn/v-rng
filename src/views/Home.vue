@@ -4,6 +4,9 @@
         <Card title="Wheel" imgSrc="Wheel.png" path="/wheel" />
         <Card title="Spinner" imgSrc="Spinner.png" path="/spinner" />
         <Card title="Dices" imgSrc="Cubes.png" path="/dices" />
+        <Card title="Coin" imgSrc="Coin.png" path="/coin" />
+        <!-- <div class="card-placeholder" />
+        <div class="card-placeholder" /> -->
     </div>
   </div>
 </template>
@@ -25,8 +28,14 @@ export default {
     margin: auto;
     display: flex;
     justify-content: space-evenly;
-    min-width: 45em;
-    max-width: 60vw;
+    min-width: 60em;
+    max-width: 80vw;
+    flex-wrap: wrap;
+}
+
+.card-placeholder {
+  width: 1px;
+  display: block;
 }
 
 @media screen and (max-width: 768px)  {
@@ -35,6 +44,9 @@ export default {
     justify-content: center;
     min-width: 15em;
     max-width: initial;
+  }
+  .card-placeholder {
+    display: none;
   }
 }
 </style>

@@ -6,22 +6,80 @@
 
 <script>
 import { rotate2d, deg2Rad } from "@/services/angles";
+import { track } from "@/services/mouseTracking";
 import { DEFAULT_COLORS } from "@/services/defaultValues";
 export default {
+  props: {
+    config: Object,
+    values: Array
+  },
   data() {
     return {
-      displayedPicks: [
-        { name: "Birds1", color: DEFAULT_COLORS[0] },
-        { name: "Cats1", color: DEFAULT_COLORS[1] },
-        { name: "Dogs1", color: DEFAULT_COLORS[2] },
-        { name: "Birds2", color: DEFAULT_COLORS[0] },
-        { name: "Cats2", color: DEFAULT_COLORS[1] },
-        { name: "Dogs2", color: DEFAULT_COLORS[2] },
-
-      ],
+      displayedPicks: [],
     };
   },
+  watch: {
+    values: function(newValue, oldValue) {
+      this.generateDisplayValues();
+      this.drawWheel();
+    }
+  },
   methods: {
+    generateDisplayValues() {
+      this.displayedPicks = [];
+      if (!this.$props.values) {
+        return;
+      }
+      let values = this.$props.values.filter(v => !!v.name && !!v.color);
+      if (!values) {
+        return;
+      }
+      let duplications = -1;
+      switch(values.length) {
+        case 1:
+          throw "Unsupported!"
+          break;
+        case 2:
+          duplications = 3;
+          break;
+        case 3:
+          duplications = 3;
+          break;
+        case 4:
+          duplications = 2;
+          break;
+        case 5:
+          duplications = 2;
+          break;
+        default:
+          duplications = 1;
+          break;
+      }
+      console.log(duplications);
+      for (let i = 0; i < duplications; i++) {
+        this.displayedPicks.push(...values);
+      }
+    },
+    calculateFont() {
+      return { color: "black", fontSize: "30px", fontFamily: "Arial" }
+    },
+    setupWheelTracking() {
+      var element = document.getElementById("WheelCanvas");
+      var currentX, currentY;
+      const onTrack = (center) => (x, y) => {
+        // left
+        if (currentY > y) {
+          console.log("rotate left");
+        }
+        // right
+        else if (currentY < y) {
+          console.log("rotate right");
+        }
+        currentX = x;
+        currentY = y;
+      }
+      track(element, onTrack);
+    },
     drawText(
       ctx,
       { x, y },
@@ -29,7 +87,6 @@ export default {
       rotation,
       { color, fontSize, fontFamily = "Arial" }
     ) {
-      console.log(x, y);
       ctx.save();
       ctx.font = `${fontSize} ${fontFamily}`;
       ctx.fillStyle = color;
@@ -85,7 +142,7 @@ export default {
           rotate2d(-alpha, { x: canvas.width/2 + (radius/2) * Math.cos(alpha), y: canvas.height/2 + (radius/2) * Math.sin(alpha) }),
           p.name,
           alpha,
-          { color: "black", fontSize: "30px" }
+          this.calculateFont()
         );
 
         start += angle;
@@ -106,7 +163,9 @@ export default {
     }
   },
   mounted() {
+    this.generateDisplayValues();
     this.drawWheel();
+    this.setupWheelTracking();
   },
 };
 </script>

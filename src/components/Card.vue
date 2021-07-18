@@ -32,6 +32,7 @@ export default {
     cursor: pointer;
     text-decoration: none !important;
     color: #333;
+    margin-bottom: 20px;
 }
 
 .card hr {
@@ -52,5 +53,11 @@ export default {
     margin: auto;
     margin-bottom: 20px;
   }
+}
+.dark .card {
+    background-color: #222;
+    border: 1px solid #111;
+    box-shadow: 2px 2px 20px 10px rgba(0,0,0,0.2);
+    color: #FFF;
 }
 </style>

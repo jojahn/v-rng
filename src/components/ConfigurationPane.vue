@@ -1,38 +1,41 @@
 <template>
   <div class="config-pane">
         <div class="button-wrapper">
-            <button class="open-config-button" v-on:click="openPane">
-                <i class="bi bi-arrow-left" />
-                <i class="bi bi-arrow-left-circle" />
+            <button id="ConfigButton" class="open-config-button" v-on:click="openPane">
+                <i class="bi bi-arrow-right-circle" />
             </button>
         </div>
         <div class="content" v-bind:id="'ConfigurationContentPane:' + name">
-
+            <slot></slot>
         </div>
   </div>
 </template>
 
 <script>
 export default {
+    props: {
+        name: String,
+        onConfigChanged: Function
+    },
+    data() {
+        return {
+            open: true,
+            textArea: "Birds\nCats\nDogs"
+        };
+    },
     methods: {
-        props: {
-            name: String
-        },
-        data() {
-            return {
-                open: false
-            };
-        },
         openPane() {
             var content = document.getElementById('ConfigurationContentPane:' + this.$props.name);
-            if (!this.data.open) {
+            if (!this.open) {
                 content.classList.add("pane-open");
                 content.classList.remove("pane-closed");
+                document.getElementsByClassName("open-config-button")[0].classList.toggle("rotated");
             } else {
                 content.classList.remove("pane-open");
                 content.classList.add("pane-closed");
+                document.getElementsByClassName("open-config-button")[0].classList.toggle("rotated");
             }
-            this.data.open = !this.data.open;
+            this.open = !this.open;
         },
         store() {
             localStorage.setItem(this.$props.name, JSON.stringify(testObject));
@@ -42,6 +45,10 @@ export default {
             if (!retrieved) {
                 retrieved = defaultConfiguration[this.$props.name];
             }
+        },
+        onFormChange(ev) {
+            console.log(ev);
+            this.$props.onConfigChanged();
         }
     }
 }
@@ -62,20 +69,22 @@ export default {
     border: none;
     margin: auto;
     cursor: pointer;
+    background: transparent;
+
+    transform: rotate(0deg);
+    -webkit-animation: rotateConfigButtonBack 0.5s ease-in-out 0s 1 normal forwards;
+    -moz-animation: rotateConfigButtonBack 0.5s ease-in-out 0s 1 normal forwards;
+    animation: rotateConfigButtonBack 0.5s ease-in-out 0s 1 normal forwards;
 }
 .open-config-button > *:nth-child(1) {
-    display: none;
-}
-.open-config-button > *:nth-child(2) {
     border-radius: 3rem;
     color: #333;
     padding: 10px;
-}
-.open-config-button:hover > *:nth-child(2) {
-    background: #ddd;
+    display: block;
+    height: 42px;
 }
 .open-config-button:hover > *:nth-child(1) {
-    display: inline-block;
+    background: #ddd;
 }
 .button-wrapper {
     display: flex;
@@ -86,10 +95,14 @@ export default {
 .content {
     width: 30vw;
     display: block;
+    /* margin-top: 10%; */
     height: 100%;
     background: white;
-    margin-right: -30vw;
+    /* margin-right: 5%; */
     top: 0;
+    border-radius: 0.3rem;
+    border: 1px solid #DDD;
+    box-shadow: 2px 2px 20px rgba(0,0,0,0.1);
 }
 .content.pane-closed {
     /* right: 0px; */
@@ -100,6 +113,7 @@ export default {
 }
 .content.pane-open {
     /* right: 0px; */
+    margin-right: -30vw;
     -webkit-animation: open 0.5s ease-in-out 0s 1 normal forwards;
     -moz-animation: open 0.5s ease-in-out 0s 1 normal forwards;
     animation: open 0.5s ease-in-out 0s 1 normal forwards;
@@ -111,4 +125,60 @@ export default {
 @-moz-keyframes close { 100% { margin-right: -30vw; } }
 @-webkit-keyframes close { 100% { margin-right: -30vw; } }
 @keyframes close { 100% { margin-right: -30vw; } }
+
+.open-config-button.rotated {
+    -webkit-animation: rotateConfigButton 0.5s ease-in-out 0s 1 normal forwards;
+    -moz-animation: rotateConfigButton 0.5s ease-in-out 0s 1 normal forwards;
+    animation: rotateConfigButton 0.5s ease-in-out 0s 1 normal forwards;
+}
+
+@-moz-keyframes rotateConfigButton { 100% { transform: rotate(180deg); } }
+@-webkit-keyframes rotateConfigButton { 100% { transform: rotate(180deg); } }
+@keyframes rotateConfigButton { 100% { transform: rotate(180deg); } }
+
+@-moz-keyframes rotateConfigButtonBack { 100% { transform: rotate(0deg); } }
+@-webkit-keyframes rotateConfigButtonBack { 100% { transform: rotate(0deg); } }
+@keyframes rotateConfigButtonBack { 100% { transform: rotate(0deg); } }
+
+.content > form {
+    display: flex;
+    flex-direction: column;
+}
+
+.content > form textarea {
+    margin: auto;
+    margin-top: 18px;
+    height: 200px;
+    width: 90%;
+    resize: none;
+    border: none;
+    outline-style: none;
+    font-size: 1.5rem;
+    line-height: 3rem;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.dark .content > form textarea {
+    color: #ddd;
+    background-color: #222;
+}
+
+.dark .content {
+    color: #ddd;
+    background-color: #222;
+    border: 1px solid #111;
+    box-shadow: -2px -2px 20px rgba(0,0,0,0.2);
+}
+
+.dark .open-config-button > *:nth-child(1) {
+    color: #ddd;
+}
+.dark .open-config-button:hover > *:nth-child(1) {
+    background: #222;
+}
 </style>

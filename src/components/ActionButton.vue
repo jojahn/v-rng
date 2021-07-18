@@ -44,14 +44,8 @@ export default {
 .action-button i {
     font-size: 3rem;
     font-weight: bold;
-    background-color: rgba(0,0,0,0.5);
-    /* background: linear-gradient(to bottom right, #16A085,#F4D03F); */
     line-height: 5rem;
-    color: transparent;
-    /* text-shadow: 2px 2px 3px rgba(240,240,240,0.5); */
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
+    color: black;
 }
 
 .action-button hr {
@@ -65,5 +59,13 @@ export default {
     font-size: 1.75rem;
     font-family: 'Arial';
     font-weight: 500;
+}
+
+.dark .action-button {
+    border-color: #555;
+}
+
+.dark .action-button > i {
+    color: white;
 }
 </style>
