@@ -1,30 +1,37 @@
 <template>
   <div class="wheel">
+    <div v-if="!valid" class="plaque">
+      <p>Please write 2 or more options!</p>
+    </div>
     <canvas id="WheelCanvas" height="640" width="480"></canvas>
   </div>
 </template>
 
 <script>
 import { rotate2d, deg2Rad, rad2deg } from "@/services/angles";
+import { fadeOut, animate, stopAnimation } from "@/services/animations";
 import { track } from "@/services/mouseTracking";
 import { DEFAULT_COLORS } from "@/services/defaultValues";
 export default {
   props: {
-    maxTime: Number,
+    spinTime: Number,
+    fadeOutTime: Number,
     config: Object,
     values: Array
   },
   data() {
     return {
       displayedPicks: [],
-      interval: null,
-      timeout: null
+      animations: [],
+      valid: true
     };
   },
   watch: {
     values: function(newValue, oldValue) {
       this.generateDisplayValues();
-      this.drawWheel();
+      if (this.valid === true) {
+        this.drawWheel();
+      }
     }
   },
   methods: {
@@ -39,8 +46,13 @@ export default {
       }
       let duplications = -1;
       switch(values.length) {
+        case 0: 
+          this.valid = false;
+          return;
+          break;
         case 1:
-          throw "Unsupported!"
+          this.valid = false;
+          return;
           break;
         case 2:
           duplications = 3;
@@ -58,7 +70,7 @@ export default {
           duplications = 1;
           break;
       }
-      console.log(duplications);
+      this.valid = true;
       for (let i = 0; i < duplications; i++) {
         this.displayedPicks.push(...values);
       }
@@ -67,15 +79,20 @@ export default {
       return { color: "black", fontSize: "30px", fontFamily: "Arial" }
     },
     setupWheelTracking() {
+      var step = 10;
       var element = document.getElementById("WheelCanvas");
-      var currentX, currentY, starterAngle;
-      var exitVelocity = 0;
+      var currentX, currentY, starterAngle, angle;
+      var velocity = [];
+
       const onTrack = (center) => (x, y) => {
         this.stop();
         var adjustedX = x - center.x
         var adjustedY = y - center.y;
-        console.log(adjustedX, adjustedY);
-        var angle = Math.atan2(adjustedY, adjustedX);
+        angle = Math.atan2(adjustedY, adjustedX);
+        if (velocity.length > 10) {
+          velocity.shift();
+        }
+        velocity.push((angle - starterAngle) / step);
         if (!starterAngle && starterAngle != 0) {
           starterAngle = angle;
         }
@@ -83,12 +100,18 @@ export default {
         // console.log("---> angle:", rad2deg(angle));
         starterAngle = angle;
       }
+
       const onLeave = () => {
-        if (exitVelocity > 0.1) {
-          this.spin();
+        if (velocity.length === 0) {
+          return;
         }
+        var exitVelocity = (velocity.reduce((accumulator, value) => accumulator + value) / velocity.length);
+        if (exitVelocity > 0) {
+          this.spin(angle, this.$props.spinTime, this.$props.fadeOutTime,  { stepTime: 10, stepAngle: exitVelocity * 250 });
+        }
+        velocity = [];
       };
-      track(element, onTrack({ x: element.offsetLeft + element.width/2, y: element.offsetTop + element.height/2 }), onLeave, 10);
+      track(element, onTrack({ x: element.offsetLeft + element.width/2, y: element.offsetTop + element.height/2 }), onLeave, step);
     },
     drawText(
       ctx,
@@ -159,19 +182,35 @@ export default {
         end += angle;
       });
     },
-    spin(time = this.$props.maxTime || 5000, { stepTime, stepAngle } = { stepTime: 50, stepAngle: 8 }) {
+    spin(starterAngle = 0, spinTime = this.$props.spinTime || 5000, fadeOutTime = this.$props.fadeOutTime || 3000, { stepTime, stepAngle } = { stepTime: 50, stepAngle: 8 }) {
       this.stop();
-      let angle = 0;
-      this.interval = setInterval(() => {
+      let angle = starterAngle;
+      var spin = () => {
+        this.drawWheel(angle += deg2Rad(stepAngle));
+      } 
+      var spinRotateAnimation = animate(spin, spinTime, stepTime);
+      this.animations.push(spinRotateAnimation);
+      
+      var fadeOutSpin = (x) => {
+        console.log(x);
+        this.drawWheel(angle += (deg2Rad(stepAngle) * x));
+      } 
+      var fadeOutAnimation = fadeOut(fadeOutSpin, fadeOutTime, stepTime);
+      this.animations.push(fadeOutAnimation);
+
+      /*var interval = setInterval(() => {
         this.drawWheel(angle += deg2Rad(stepAngle));
       }, stepTime);
       this.timeout = setTimeout(() => {
         clearInterval(this.interval);
       }, time);
+      */
     },
     stop() {
-      clearInterval(this.interval);
-      clearTimeout(this.timeout);
+      for (var anim of this.animations) {
+        stopAnimation(anim);
+      }
+      this.animations = [];
     }
   },
   mounted() {
@@ -185,14 +224,28 @@ export default {
 <style scoped>
 #WheelCanvas {
   cursor: grab;
-  -webkit-animation: spin 4s linear;
-  -moz-animation: spin 4s linear;
-  animation: spin 4s linear;
 }
 #WheelCanvas:active {
   cursor: grabbing;
 }
-/* @-moz-keyframes spin { 100% { -moz-transform: rotate(180deg); } }
-@-webkit-keyframes spin { 100% { -webkit-transform: rotate(180deg); } }
-@keyframes spin { 100% { -webkit-transform: rotate(180deg); transform:rotate(180deg); } } */
+
+.plaque {
+    height: 640px;
+    position: absolute;
+    margin: auto;
+    display: flex;
+    width: 100%;
+    backdrop-filter: blur(10px);
+}
+
+.plaque p {
+  background: #500;
+  color: white;
+  width: auto;
+  display: block;
+  margin: auto;
+  padding: 10px;
+  font-size: 1.5rem;
+}
+
 </style>

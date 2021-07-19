@@ -8,6 +8,10 @@
         <div class="pane" v-bind:id="'ConfigurationContentPane:' + name">
             <div class="content-wrapper">
                 <slot></slot>
+                <button class="more-options-button" v-on:click="showMoreOptions">
+                    <i v-bind:class="'bi ' + (!moreOptionsVisible ? 'bi-caret-right-fill' : 'bi-caret-down-fill')" />
+                    <span>More Options</span>
+                </button>
             </div>
             <div class="config-actions">
                 <!-- <button class="config-actions-button">
@@ -36,10 +40,13 @@ export default {
     data() {
         return {
             open: true,
-            textArea: "Birds\nCats\nDogs"
+            moreOptionsVisible: false
         };
     },
     methods: {
+        showMoreOptions() {
+            this.moreOptionsVisible = !this.moreOptionsVisible;
+        },
         openPane() {
             var content = document.getElementById('ConfigurationContentPane:' + this.$props.name);
             if (!this.open) {
@@ -206,6 +213,19 @@ export default {
   color: #333;
 }
 
+.more-options-button {
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    display: flex;
+    padding-top: 40px;
+}
+
+.more-options-button span {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
 .dark .config-actions-button {
   border-color: #111;
   background: #222;
@@ -234,5 +254,9 @@ export default {
 }
 .dark .open-config-button:hover > *:nth-child(1) {
     background: #222;
+}
+
+.dark .more-options-button {
+    color: #ddd;
 }
 </style>

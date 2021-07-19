@@ -1,10 +1,10 @@
 <template>
-    <Navigation />
-    <Wheel ref="wheel" :values="values" :maxTime="maxTime" />
+    <!-- <Navigation /> -->
+    <Wheel ref="wheel" :values="values" :maxTime="maxTime" :fadeOutTime="fadeOutTime" :spinTime="spinTime" />
     <ActionButton iconClass="bi bi-arrow-clockwise" v-bind:callback="spin" />
     <ConfigurationPane name="wheel">
       <form v-on:change="onFormChange">
-        <textarea name="values" v-model="valuesString"></textarea>
+        <textarea :placeholder="'Mango\nVanilla\nStrawberry'" name="values" v-model="valuesString"></textarea>
       </form>
       
       <!-- <KeyIcon className="bi-shift"/>
@@ -15,7 +15,7 @@
 
 <script>
 // @ is an alias to /src
-import { DEFAULT_COLORS } from "@/services/defaultValues";
+import { DEFAULT_COLORS, defaultConfiguration } from "@/services/defaultValues";
 import Wheel from '@/components/Wheel.vue'
 import ActionButton from '@/components/ActionButton.vue'
 import ConfigurationPane from '@/components/ConfigurationPane.vue';
@@ -30,11 +30,12 @@ export default {
   },
   data() {
     return {
-      maxTime: 2000,
-      valuesString: "Birds\nCats\nDogs\n",
-      values: [{ name: "Birds", color: DEFAULT_COLORS[0] },
-        { name: "Cats", color: DEFAULT_COLORS[1] },
-        { name: "Dogs", color: DEFAULT_COLORS[2] }]
+      maxTime: 7000,
+      spinTime: 2000,
+      fadeOutTime: 10000,
+      valuesString: "",
+      values: [],
+      defaultValuesString: "",
     };
   },
   methods: {
@@ -43,9 +44,16 @@ export default {
     },
     onFormChange(ev) {
       if (ev.target.name === "values") {
-        this.values = ev.target.value.split("\n").map((v, i) => ({ name: v, color: DEFAULT_COLORS[i % DEFAULT_COLORS.length] }));
+        this.values = ev.target.value
+          .split("\n")
+          .map((v, i) => ({ name: v, color: DEFAULT_COLORS[i % DEFAULT_COLORS.length] }));
       }
     }
+  },
+  mounted() {
+    this.values = defaultConfiguration.wheel.values;
+    this.defaultValuesString = this.values.map(v => v.name).join("\n");
+    this.valuesString = this.defaultValuesString;
   }
 }
 </script>
