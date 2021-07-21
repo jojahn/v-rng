@@ -1,16 +1,18 @@
 <template>
+<div class="wheel-view">
     <Navigation />
     <Wheel ref="wheel" :values="values" :maxTime="maxTime" :fadeOutTime="fadeOutTime" :spinTime="spinTime" />
-    <ActionButton :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-arrow-clockwise')" v-bind:callback="spin" />
+    <ActionButton class="spin-button" :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-arrow-clockwise')" v-bind:callback="spin" />
     <ConfigurationPane name="wheel">
       <form v-on:change="onFormChange">
         <textarea :placeholder="'Mango\nVanilla\nStrawberry'" name="values" v-model="valuesString"></textarea>
-        <i class="bi bi-palette-fill" />
+        <!-- <i class="bi bi-palette-fill" /> -->
       </form>
       
       <!-- <KeyIcon className="bi-shift"/>
       <KeyIcon className="bi-arrow-return-left"/> -->
     </ConfigurationPane>
+</div>
 </template>
 
 
@@ -66,6 +68,12 @@ export default {
 </script>
 
 <style scoped>
+.wheel-view {
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 50px);
+}
 form {
     display: flex;
     flex-direction: column;
@@ -82,6 +90,7 @@ form textarea {
     font-size: 1.5rem;
     line-height: 3rem;
     font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Ubuntu Mono', monospace;
 }
 
 .form-group {

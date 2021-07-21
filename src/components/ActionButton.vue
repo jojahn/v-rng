@@ -21,6 +21,7 @@ export default {
 <style scoped>
 .action-button {
     min-width: 75px;
+    width: 75px;
     height: 75px;
     max-height: 75px;
     background-color: transparent;
@@ -32,6 +33,7 @@ export default {
     text-decoration: none !important;
     color: #333;
     padding: 0;
+    margin: 50px auto;
 }
 
 /*

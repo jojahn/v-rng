@@ -70,11 +70,27 @@ export default {
         this.displayedPicks.push(...values);
       }
     },
-    fitText(alpha, { x: centerX, y: centerY }, radius) {
+    fitText(text, alpha, { x: centerX, y: centerY }, radius) {
       let startingPoint = radius/3;
-      let lineAdjust = 0;
-      const { x, y } = rotate2d(-alpha, { x: centerX + (startingPoint) * Math.cos(alpha) + lineAdjust * Math.tan(alpha), y: centerY + (startingPoint) * Math.sin(alpha) + lineAdjust * Math.tan(alpha) });
-      return { color: "black", fontSize: "30px", fontFamily: "Arial", x, y };
+      let fontSize = 30;
+      const charSize = 15;
+      let textWidth = text.length * charSize;
+      if (textWidth > radius) {
+        var preferredTextWidth = (radius - 10) / charSize;
+        fontSize = preferredTextWidth / text.length;
+        startingPoint = (radius - preferredTextWidth) / 2;
+      } else {
+        startingPoint = (radius - textWidth + charSize) / 2;
+      }
+      let modifiedAlpha = alpha + (alpha > Math.PI/2 ? 0.02 : -0.02);
+
+      // font-family: 'Major Mono Display', monospace;
+      // font-family: 'Share Tech Mono', monospace;
+      // font-family: 'Ubuntu Mono', monospace;
+      // font-family: 'VT323', monospace;
+      console.log(text, modifiedAlpha, startingPoint, fontSize);
+      const { x, y } = rotate2d(-modifiedAlpha, { x: centerX + (startingPoint) * Math.cos(modifiedAlpha), y: centerY + (startingPoint) * Math.sin(modifiedAlpha) });
+      return { color: "black", fontSize: fontSize + "px", fontFamily: "Ubuntu Mono", x, y };
     },
     setupWheelTracking(step = 10) {
       var element = document.getElementById("WheelCanvas");
@@ -145,6 +161,10 @@ export default {
     drawWheel(starterAngle = 0) {
       // Setup canvas
       const canvas = document.getElementById("WheelCanvas");
+      canvas.height = Math.min((window.innerWidth * 0.3), window.innerHeight - 200);
+      canvas.width = canvas.height;
+      canvas.style.maxHeight = canvas.height + "px";
+      canvas.style.maxWidth = canvas.height + "px";
       const ctx2 = canvas.getContext("2d");
       ctx2.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -174,7 +194,7 @@ export default {
 
         // Draw text
         var alpha = start + angle/2;
-        const textOptions = this.fitText(alpha, center, radius); 
+        const textOptions = this.fitText(p.name, alpha, center, radius); 
         this.drawText(
           ctx2,
           textOptions,
@@ -224,12 +244,25 @@ export default {
     this.$data.isSpinning = false;
     this.generateDisplayValues();
     this.drawWheel();
+    const canvas = document.getElementById("WheelCanvas");
+    canvas.style.display = "none";
+    setTimeout(() => {
+      this.drawWheel();
+      canvas.style.display = "initial";
+    }, 100);
     this.setupWheelTracking();
   },
 };
 </script>
 
 <style scoped>
+.wheel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+}
 #WheelCanvas {
   cursor: grab;
 }
@@ -255,5 +288,6 @@ export default {
   padding: 10px;
   font-size: 1.5rem;
 }
+
 
 </style>

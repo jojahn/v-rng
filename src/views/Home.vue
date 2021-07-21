@@ -1,10 +1,10 @@
 <template>
   <div class="home">
     <div class="cards">
-        <Card title="Wheel" imgSrc="Wheel.png" path="/wheel" />
-        <Card title="Spinner" imgSrc="Spinner.png" path="/spinner" :disabled="true" />
-        <Card title="Dices" imgSrc="Cubes.png" path="/dices" :disabled="true" />
-        <Card title="Coin" imgSrc="Coin.png" path="/coin" :disabled="true" />
+        <Card :title="t('Wheel')" imgSrc="Wheel.png" path="/wheel" />
+        <Card :title="t('Spinner')" imgSrc="Spinner.png" path="/spinner" :disabled="true" />
+        <Card :title="t('Dices')" imgSrc="Cubes.png" path="/dices" :disabled="true" />
+        <Card :title="t('Coin')" imgSrc="Coin.png" path="/coin" :disabled="true" />
         <!-- <div class="card-placeholder" />
         <div class="card-placeholder" /> -->
     </div>
@@ -14,12 +14,22 @@
 <script>
 // @ is an alias to /src
 import Card from '@/components/Card.vue'
+import { useI18n } from 'vue-i18n'
 
 export default {
   name: 'Home',
   components: {
     Card
+  },
+  setup() {
+    const { t } = useI18n({
+      inheritLocale: true,
+      useScope: 'locale'
+    });
+
+    return { t }
   }
+
 }
 </script>
 
@@ -34,8 +44,7 @@ export default {
     margin: auto;
     display: flex;
     justify-content: space-evenly;
-    min-width: 60em;
-    max-width: 80vw;
+    width: 100vw;
     flex-wrap: wrap;
 }
 
@@ -56,3 +65,20 @@ export default {
   }
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "Wheel": "Wheel",
+    "Dices": "Dices",
+    "Coin": "Coin",
+    "Spinner": "Spinner"
+  },
+  "de": {
+    "Wheel": "Rad",
+    "Dices": "Würfel",
+    "Spinner": "Walze",
+    "Coin": "Münze"
+  }
+}
+</i18n>

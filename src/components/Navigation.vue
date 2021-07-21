@@ -19,9 +19,9 @@ export default {
 
 <style scoped>
 .navigation {
-    position: fixed;
+    position: absolute;
     display: flex;
-    width: 100vw;
+    width: 100%;
     height: auto;
     top: 0;
     justify-content: center;
@@ -33,18 +33,27 @@ export default {
     background: #ddd;
     padding: 10px;
     display: block;
+    transition: 0.5s;
 }
 
 .nav-item:hover {
-    background: cyan;
-    transition: 0.25s;
+    background: #ccc;
 }
 
 .nav-item:first-child {
-    border-radius: 0 0 0 0.5rem;
+    border-radius: 0 0 0 0.3rem;
 }
 
 .nav-item:last-child {
-    border-radius: 0 0 0.5rem 0;
+    border-radius: 0 0 0.3rem 0;
+}
+
+.dark .nav-item {
+    color: #ddd;
+    background: #222;
+}
+
+.dark .nav-item:hover {
+    background: #111;
 }
 </style>

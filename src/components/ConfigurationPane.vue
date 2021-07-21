@@ -8,16 +8,16 @@
         <div class="pane" v-bind:id="'ConfigurationContentPane:' + name">
             <div class="content-wrapper">
                 <slot></slot>
-                <button class="more-options-button" v-on:click="showMoreOptions">
+                <!-- <button class="more-options-button" v-on:click="showMoreOptions">
                     <i v-bind:class="'bi ' + (!moreOptionsVisible ? 'bi-caret-right-fill' : 'bi-caret-down-fill')" />
                     <span>More Options</span>
-                </button>
+                </button> -->
             </div>
-            <div class="config-actions">
-                <!-- <button class="config-actions-button">
+            <!-- <div class="config-actions">
+                <button class="config-actions-button">
                     <i class="bi bi-sliders"/>
                 </button> -->
-                <button class="config-actions-button">
+                <!-- <button class="config-actions-button">
                     <i class="bi bi-upload"/>
                 </button>
                 <button class="config-actions-button">
@@ -26,7 +26,7 @@
                 <button class="config-actions-button">
                     <i class="bi bi-trash"/>
                 </button>
-            </div>
+            </div> -->
         </div>
   </div>
 </template>
@@ -126,8 +126,8 @@ export default {
     background: white;
     /* margin-right: 5%; */
     top: 0;
-    border-radius: 0.3rem;
-    border: 1px solid #DDD;
+    /* border-radius: 0.3rem;
+    border: 1px solid #DDD; */
     box-shadow: 2px 2px 20px rgba(0,0,0,0.1);
 }
 .pane.pane-closed {
@@ -245,7 +245,7 @@ export default {
 .dark .pane {
     color: #ddd;
     background-color: #222;
-    border: 1px solid #111;
+    border-color: #111;
     box-shadow: -2px -2px 20px rgba(0,0,0,0.2);
 }
 
@@ -258,5 +258,20 @@ export default {
 
 .dark .more-options-button {
     color: #ddd;
+}
+
+@media screen and (max-width: 768px)  {
+    .pane {
+        width: 100vw;
+    }
+
+    .config-pane {
+        position: relative;
+        width: 100vw;
+    }
+
+    .button-wrapper {
+        display: none;
+    }
 }
 </style>
