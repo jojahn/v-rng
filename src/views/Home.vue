@@ -24,6 +24,12 @@ export default {
 </script>
 
 <style scoped>
+.home {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    height: 100vh;
+}
 .cards {
     margin: auto;
     display: flex;

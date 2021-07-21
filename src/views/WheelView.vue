@@ -1,10 +1,11 @@
 <template>
-    <!-- <Navigation /> -->
+    <Navigation />
     <Wheel ref="wheel" :values="values" :maxTime="maxTime" :fadeOutTime="fadeOutTime" :spinTime="spinTime" />
-    <ActionButton iconClass="bi bi-arrow-clockwise" v-bind:callback="spin" />
+    <ActionButton :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-arrow-clockwise')" v-bind:callback="spin" />
     <ConfigurationPane name="wheel">
       <form v-on:change="onFormChange">
         <textarea :placeholder="'Mango\nVanilla\nStrawberry'" name="values" v-model="valuesString"></textarea>
+        <i class="bi bi-palette-fill" />
       </form>
       
       <!-- <KeyIcon className="bi-shift"/>
@@ -15,6 +16,7 @@
 
 <script>
 // @ is an alias to /src
+import Navigation from "@/components/Navigation";
 import { DEFAULT_COLORS, defaultConfiguration } from "@/services/defaultValues";
 import Wheel from '@/components/Wheel.vue'
 import ActionButton from '@/components/ActionButton.vue'
@@ -26,7 +28,8 @@ export default {
     Wheel,
     ActionButton,
     ConfigurationPane,
-    KeyIcon
+    KeyIcon,
+    Navigation
   },
   data() {
     return {
@@ -40,7 +43,11 @@ export default {
   },
   methods: {
     spin() {
-      this.$refs.wheel.spin();
+      if (this.$refs.wheel.isSpinning) {
+        this.$refs.wheel.stop();
+      } else {
+        this.$refs.wheel.spin();
+      }
     },
     onFormChange(ev) {
       if (ev.target.name === "values") {

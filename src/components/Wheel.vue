@@ -17,7 +17,8 @@ export default {
     spinTime: Number,
     fadeOutTime: Number,
     config: Object,
-    values: Array
+    values: Array,
+    isSpinning: Boolean
   },
   data() {
     return {
@@ -35,6 +36,9 @@ export default {
     }
   },
   methods: {
+    checkSpinning() {
+      return this.isSpinning;
+    },
     generateDisplayValues() {
       this.displayedPicks = [];
       if (!this.$props.values) {
@@ -47,41 +51,34 @@ export default {
       let duplications = -1;
       switch(values.length) {
         case 0: 
-          this.valid = false;
-          return;
-          break;
+          this.valid = false; return;
         case 1:
-          this.valid = false;
-          return;
-          break;
+          this.valid = false; return;
         case 2:
-          duplications = 3;
-          break;
+          duplications = 3; break;
         case 3:
-          duplications = 3;
-          break;
+          duplications = 3; break;
         case 4:
-          duplications = 2;
-          break;
+          duplications = 2; break;
         case 5:
-          duplications = 2;
-          break;
+          duplications = 2; break;
         default:
-          duplications = 1;
-          break;
+          duplications = 1; break;
       }
       this.valid = true;
       for (let i = 0; i < duplications; i++) {
         this.displayedPicks.push(...values);
       }
     },
-    calculateFont() {
-      return { color: "black", fontSize: "30px", fontFamily: "Arial" }
+    fitText(alpha, { x: centerX, y: centerY }, radius) {
+      let startingPoint = radius/3;
+      let lineAdjust = 0;
+      const { x, y } = rotate2d(-alpha, { x: centerX + (startingPoint) * Math.cos(alpha) + lineAdjust * Math.tan(alpha), y: centerY + (startingPoint) * Math.sin(alpha) + lineAdjust * Math.tan(alpha) });
+      return { color: "black", fontSize: "30px", fontFamily: "Arial", x, y };
     },
-    setupWheelTracking() {
-      var step = 10;
+    setupWheelTracking(step = 10) {
       var element = document.getElementById("WheelCanvas");
-      var currentX, currentY, starterAngle, angle;
+      var starterAngle, angle;
       var velocity = [];
 
       const onTrack = (center) => (x, y) => {
@@ -89,6 +86,8 @@ export default {
         var adjustedX = x - center.x
         var adjustedY = y - center.y;
         angle = Math.atan2(adjustedY, adjustedX);
+
+        // Save current velocity
         if (velocity.length > 10) {
           velocity.shift();
         }
@@ -96,8 +95,8 @@ export default {
         if (!starterAngle && starterAngle != 0) {
           starterAngle = angle;
         }
+
         this.drawWheel(angle);
-        // console.log("---> angle:", rad2deg(angle));
         starterAngle = angle;
       }
 
@@ -144,16 +143,20 @@ export default {
       ctx.fill();
     },
     drawWheel(starterAngle = 0) {
+      // Setup canvas
       const canvas = document.getElementById("WheelCanvas");
       const ctx2 = canvas.getContext("2d");
       ctx2.clearRect(0, 0, canvas.width, canvas.height);
-      var center = {
+
+      // wheel constants
+      const center = {
         x: canvas.width / 2,
         y: canvas.height / 2,
       };
-      // must be configurable
-      var radius = Math.min(center.x - 10, center.y - 10);
-      var angle = (2 * Math.PI) / this.displayedPicks.length;
+      const radius = Math.min(center.x - 10, center.y - 10);
+      const angle = (2 * Math.PI) / this.displayedPicks.length;
+
+      // Draw slices
       var start = starterAngle - angle / 2;
       var end = starterAngle + angle / 2;
       this.displayedPicks.forEach((p, i) => {
@@ -169,13 +172,15 @@ export default {
           }
         );
 
+        // Draw text
         var alpha = start + angle/2;
+        const textOptions = this.fitText(alpha, center, radius); 
         this.drawText(
           ctx2,
-          rotate2d(-alpha, { x: canvas.width/2 + (radius/2) * Math.cos(alpha), y: canvas.height/2 + (radius/2) * Math.sin(alpha) }),
+          textOptions,
           p.name,
           alpha,
-          this.calculateFont()
+          textOptions
         );
 
         start += angle;
@@ -192,11 +197,12 @@ export default {
       this.animations.push(spinRotateAnimation);
       
       var fadeOutSpin = (x) => {
-        console.log(x);
         this.drawWheel(angle += (deg2Rad(stepAngle) * x));
       } 
-      var fadeOutAnimation = fadeOut(fadeOutSpin, fadeOutTime, stepTime);
+      var fadeOutAnimation = fadeOut(fadeOutSpin, fadeOutTime, stepTime, () => this.$data.isSpinning = false);
       this.animations.push(fadeOutAnimation);
+      this.$data.isSpinning = true;
+    
 
       /*var interval = setInterval(() => {
         this.drawWheel(angle += deg2Rad(stepAngle));
@@ -211,9 +217,11 @@ export default {
         stopAnimation(anim);
       }
       this.animations = [];
+      this.$data.isSpinning = false;
     }
   },
   mounted() {
+    this.$data.isSpinning = false;
     this.generateDisplayValues();
     this.drawWheel();
     this.setupWheelTracking();

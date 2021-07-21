@@ -1,4 +1,5 @@
 <template>
+  <Navigation style="position: relative;" />
   <div class="under-construction">
       <i class="bi bi-gear" />
       <p>this page is in construction!</p>
@@ -6,12 +7,18 @@
 </template>
 
 <script>
+import Navigation from "@/components/Navigation";
 export default {
-
+    components: {
+        Navigation
+    }
 }
 </script>
 
 <style scoped>
+.under-construction {
+    margin-top: 10px;
+}
 .under-construction i {
     display: block;
     font-size: 3rem;
