@@ -5,7 +5,7 @@
     <ActionButton class="spin-button" :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-arrow-clockwise')" v-bind:callback="spin" />
     <ConfigurationPane name="wheel">
       <form v-on:change="onFormChange">
-        <textarea :placeholder="'Mango\nVanilla\nStrawberry'" name="values" v-model="valuesString"></textarea>
+        <textarea :placeholder="'Mango\nVanilla\nStrawberry'" v-on:input="onFormChange" name="values" v-model="valuesString"></textarea>
         <!-- <i class="bi bi-palette-fill" /> -->
       </form>
       
@@ -44,6 +44,12 @@ export default {
     };
   },
   methods: {
+    onInput(event) {
+      console.log(event);
+      this.values = ev.target.value
+          .split("\n")
+          .map((v, i) => ({ name: v, color: DEFAULT_COLORS[i % DEFAULT_COLORS.length] }));
+    },
     spin() {
       if (this.$refs.wheel.isSpinning) {
         this.$refs.wheel.stop();

@@ -122,7 +122,7 @@ export default {
         }
         var exitVelocity = (velocity.reduce((accumulator, value) => accumulator + value) / velocity.length);
         if (exitVelocity > 0) {
-          this.spin(angle, this.$props.spinTime, this.$props.fadeOutTime,  { stepTime: 10, stepAngle: exitVelocity * 250 });
+          // this.spin(angle, this.$props.spinTime, this.$props.fadeOutTime,  { stepTime: 10, stepAngle: exitVelocity * 250 });
         }
         velocity = [];
       };

@@ -3,7 +3,8 @@
         <router-link class="nav-item active" to="/">Home</router-link>
         <router-link class="nav-item" to="/wheel">Wheel</router-link>
         <router-link class="nav-item" to="/spinner">Spinner</router-link>
-        <router-link class="nav-item" to="/dices">Dices</router-link>
+        <router-link class="nav-item" to="/dices" disabled>Dices</router-link>
+        <router-link class="nav-item" to="/coin">Coin</router-link>
     </div>
 </template>
 
