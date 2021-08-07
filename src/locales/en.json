@@ -1,3 +1,9 @@
 {
-  "message": "hello i18n !!"
+  "Home": "Home",
+  "Wheel": "Wheel",
+  "Dices": "Dices",
+  "Coin": "Coin",
+  "Spinner": "Spinner",
+  "Cards": "Cards",
+  "Matches": "Matches"
 }

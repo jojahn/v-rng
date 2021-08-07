@@ -1,8 +1,8 @@
-import * as THREE from 'three.js';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-export const loadModels = async (model) => {
-    console.log(THREE.GLTFLoader);
-    const loader = new THREE.GLTFLoader();
+export async function loadModel(model) {
+    const loader = new GLTFLoader();
     return new Promise((resolve, reject) => {
         loader.load(`models/${model}/scene.gltf`, function (gltf) {
             var grp = gltf.scene;

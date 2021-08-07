@@ -29,7 +29,7 @@ export default {
 
 <style scoped>
 .under-construction {
-    margin-top: 10px;
+    margin-top: 60px;
 }
 .under-construction i.rotating  {
     display: block;

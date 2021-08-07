@@ -1,19 +1,29 @@
 <template>
-    <div class="navigation">
-        <router-link class="nav-item active" to="/">Home</router-link>
-        <router-link class="nav-item" to="/wheel">Wheel</router-link>
-        <router-link class="nav-item" to="/spinner">Spinner</router-link>
-        <router-link class="nav-item" to="/dices" disabled>Dices</router-link>
-        <router-link class="nav-item" to="/coin">Coin</router-link>
+    <div :class="'navigation ' + ($route.path === '/' ? 'hidden' : '')" ref="nav">
+        <router-link class="nav-item active" to="/">{{ t("Home") }}</router-link>
+        <router-link class="nav-item" to="/wheel">{{ t("Wheel") }}</router-link>
+        <router-link class="nav-item" to="/spinner">{{ t("Spinner") }}</router-link>
+        <router-link class="nav-item" to="/dices" disabled="true">{{ t("Dices") }}</router-link>
+        <router-link class="nav-item" to="/coin">{{ t("Coin") }}</router-link>
+        <router-link class="nav-item" to="/cards">{{ t("Cards") }}</router-link>
+        <router-link class="nav-item" to="/matches">{{ t("Matches") }}</router-link>
     </div>
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n'
 export default {
     data() {
         return {
             currentPath: ""
         }
+    },
+    mounted() {
+        this.$route.path;
+    },
+    setup() {
+        const { t } = useI18n();
+        return { t };
     }
 }
 </script>
@@ -23,9 +33,14 @@ export default {
     position: absolute;
     display: flex;
     width: 100%;
-    height: auto;
+    height: 40px;
     top: 0;
     justify-content: center;
+    transition: 0.25s;
+}
+
+.navigation.hidden {
+    top: -40px;
 }
 
 .nav-item {

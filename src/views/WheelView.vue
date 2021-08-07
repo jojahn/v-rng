@@ -1,6 +1,5 @@
 <template>
 <div class="wheel-view">
-    <Navigation />
     <Wheel ref="wheel" :values="values" :maxTime="maxTime" :fadeOutTime="fadeOutTime" :spinTime="spinTime" />
     <ActionButton class="spin-button" :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-arrow-clockwise')" v-bind:callback="spin" />
     <ConfigurationPane name="wheel">
@@ -18,7 +17,6 @@
 
 <script>
 // @ is an alias to /src
-import Navigation from "@/components/Navigation";
 import { DEFAULT_COLORS, defaultConfiguration } from "@/services/defaultValues";
 import Wheel from '@/components/Wheel.vue'
 import ActionButton from '@/components/ActionButton.vue'
@@ -30,8 +28,7 @@ export default {
     Wheel,
     ActionButton,
     ConfigurationPane,
-    KeyIcon,
-    Navigation
+    KeyIcon
   },
   data() {
     return {
@@ -44,12 +41,6 @@ export default {
     };
   },
   methods: {
-    onInput(event) {
-      console.log(event);
-      this.values = ev.target.value
-          .split("\n")
-          .map((v, i) => ({ name: v, color: DEFAULT_COLORS[i % DEFAULT_COLORS.length] }));
-    },
     spin() {
       if (this.$refs.wheel.isSpinning) {
         this.$refs.wheel.stop();

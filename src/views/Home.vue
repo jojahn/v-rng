@@ -5,6 +5,8 @@
         <Card :title="t('Spinner')" imgSrc="Spinner.png" path="/spinner" :disabled="true" />
         <Card :title="t('Dices')" imgSrc="Cubes.png" path="/dices" :disabled="true" />
         <Card :title="t('Coin')" imgSrc="Coin.png" path="/coin" :disabled="true" />
+        <Card :title="t('Cards')" imgSrc="Cards.png" path="/cards" :disabled="true" />
+        <Card :title="t('Matches')" imgSrc="Matches.png" path="/matches" :disabled="true" />
         <!-- <div class="card-placeholder" />
         <div class="card-placeholder" /> -->
     </div>
@@ -22,12 +24,9 @@ export default {
     Card
   },
   setup() {
-    const { t } = useI18n({
-      inheritLocale: true,
-      useScope: 'locale'
-    });
+    const { t } = useI18n();
 
-    return { t }
+    return { t };
   }
 
 }
@@ -65,20 +64,3 @@ export default {
   }
 }
 </style>
-
-<i18n>
-{
-  "en": {
-    "Wheel": "Wheel",
-    "Dices": "Dices",
-    "Coin": "Coin",
-    "Spinner": "Spinner"
-  },
-  "de": {
-    "Wheel": "Rad",
-    "Dices": "Würfel",
-    "Spinner": "Walze",
-    "Coin": "Münze"
-  }
-}
-</i18n>

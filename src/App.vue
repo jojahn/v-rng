@@ -1,11 +1,13 @@
 <template>
   <!-- <Header /> -->
+  <Navigation />
   <LocaleChanger />
   <DarkModeButton />
   <router-view/>
 </template>
 
 <script>
+import Navigation from "@/components/Navigation.vue"
 import DarkModeButton from "@/components/DarkModeButton.vue"
 import LocaleChanger from '@/components/LocaleChanger.vue'
 
@@ -13,7 +15,8 @@ export default {
   name: 'Home',
   components: {
     DarkModeButton,
-    LocaleChanger
+    LocaleChanger,
+    Navigation
     // Header
   },
   methods: {
