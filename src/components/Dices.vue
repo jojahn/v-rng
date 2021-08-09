@@ -42,16 +42,16 @@ export default {
         light.position.x += 2;
         scene.add(light);
 
-        var intensity = 0;
+        var intensity = 0.5;
         var ambientLight = new THREE.AmbientLight(color, intensity);
         scene.add(ambientLight);
 
-        var geometry = new THREE.PlaneGeometry( 1000, 1000, 1, 1 );
-        var material = new THREE.MeshLambertMaterial( { color: 0x333333 } );
-        var floor = new THREE.Mesh( geometry, material );
-        floor.material.side = THREE.DoubleSide;
-        floor.rotation.x = 1.570796;
-        scene.add( floor ); 
+        // var geometry = new THREE.PlaneGeometry( 1000, 1000, 1, 1 );
+        // var material = new THREE.MeshLambertMaterial( { color: 0x333333 } );
+        // var floor = new THREE.Mesh( geometry, material );
+        // floor.material.side = THREE.DoubleSide;
+        // floor.rotation.x = 1.570796;
+        // scene.add( floor ); 
 
         // Grid
         /*const helper = new THREE.GridHelper(1000, 40, 0x303030, 0x303030);

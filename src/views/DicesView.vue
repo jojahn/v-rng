@@ -1,5 +1,4 @@
 <template>
-  <div>Dices</div>
   <Dices />
   <ActionButton class="spin-button" :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-box')" v-bind:callback="spin" />
 </template>

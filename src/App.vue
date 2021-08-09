@@ -3,7 +3,7 @@
   <Navigation />
   <LocaleChanger />
   <DarkModeButton />
-  <router-view/>
+  <router-view class="page-content"/>
 </template>
 
 <script>
@@ -50,5 +50,11 @@ body {
 
 .dark  #app {
   color: #ddd;
+}
+
+.page-content {
+  margin-top: 40px;
+  overflow: hidden;
+  height: calc(100vh - 40px);
 }
 </style>

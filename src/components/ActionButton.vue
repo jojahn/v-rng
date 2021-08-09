@@ -34,6 +34,12 @@ export default {
     color: #333;
     padding: 0;
     margin: 50px auto;
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    min-height: 75px;
 }
 
 /*
@@ -46,7 +52,8 @@ export default {
 .action-button i {
     font-size: 3rem;
     font-weight: bold;
-    line-height: 5rem;
+    text-align: center;
+    width: 100%;
     color: black;
 }
 
