@@ -181,4 +181,10 @@ optgroup {
     box-shadow: 0 0 10px rgba(0,0,0,1);
 }
 
+@media screen and (max-width: 768px)  {
+    .locale-changer {
+        display: none;
+    }
+}
+
 </style>

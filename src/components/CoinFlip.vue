@@ -1,15 +1,20 @@
 <template>
   <div class="coin-flip">
+    <LoadingIndicator :isLoading="isLoading" />
     <canvas width="640" height="480" id="CoinCanvas"></canvas>
   </div>
 </template>
 
 <script>
+import LoadingIndicator from "@/components/LoadingIndicator";
 import { usingQuadratic, animate as startAnimate, stopAnimation } from "@/services/animations";
 import { loadModel } from "@/services/loadModel";
 import * as THREE from "three";
 
 export default {
+  components: {
+    LoadingIndicator,
+  },
   props: {
     flipTime: Number
   },
@@ -23,7 +28,8 @@ export default {
       animations: [],
       model: null,
       render: null,
-      cancel: null
+      cancel: null,
+      isLoading: false
     };
   },
   methods: {
@@ -131,8 +137,10 @@ export default {
         scene.add(helper);*/
 
       this.model = null;
+      this.isLoading = true;
       loadModel("quarter").then((res) => {
         this.model = res;
+        this.isLoading = false;
 
         var scale = 2;
         this.model.scale.x = scale;

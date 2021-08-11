@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { rotate2d, deg2Rad, rad2deg } from "@/services/angles";
+import { rotate2d, deg2Rad, radian2deg } from "@/services/angles";
 import { fadeOut, animate, stopAnimation } from "@/services/animations";
 import { track } from "@/services/mouseTracking";
 import { DEFAULT_COLORS } from "@/services/defaultValues";
@@ -24,7 +24,9 @@ export default {
     return {
       displayedPicks: [],
       animations: [],
-      valid: true
+      valid: true,
+      angle: 0,
+      trackingStarted: false
     };
   },
   watch: {
@@ -88,20 +90,24 @@ export default {
       // font-family: 'Share Tech Mono', monospace;
       // font-family: 'Ubuntu Mono', monospace;
       // font-family: 'VT323', monospace;
-      console.log(text, modifiedAlpha, startingPoint, fontSize);
       const { x, y } = rotate2d(-modifiedAlpha, { x: centerX + (startingPoint) * Math.cos(modifiedAlpha), y: centerY + (startingPoint) * Math.sin(modifiedAlpha) });
       return { color: "black", fontSize: fontSize + "px", fontFamily: "Ubuntu Mono", x, y };
     },
     setupWheelTracking(step = 10) {
+      console.log("tracking...");
+      if (!!this.trackingStarted) {
+        return;
+      }
       var element = document.getElementById("WheelCanvas");
       var starterAngle, angle;
       var velocity = [];
 
-      const onTrack = (center) => (x, y) => {
+      const onTrack = (center, radius) => (x, y) => {
         this.stop();
-        var adjustedX = x - center.x
-        var adjustedY = y - center.y;
+        var adjustedX = (x - center.x) / radius
+        var adjustedY = (y - center.y) / radius;
         angle = Math.atan2(adjustedY, adjustedX);
+        console.log(adjustedX, adjustedY, radian2deg(angle));
 
         // Save current velocity
         if (velocity.length > 10) {
@@ -122,11 +128,12 @@ export default {
         }
         var exitVelocity = (velocity.reduce((accumulator, value) => accumulator + value) / velocity.length);
         if (exitVelocity > 0) {
-          // this.spin(angle, this.$props.spinTime, this.$props.fadeOutTime,  { stepTime: 10, stepAngle: exitVelocity * 250 });
+          this.spin(angle, this.$props.spinTime, this.$props.fadeOutTime,  { stepTime: 10, stepAngle: exitVelocity * 250 });
         }
         velocity = [];
       };
-      track(element, onTrack({ x: element.offsetLeft + element.width/2, y: element.offsetTop + element.height/2 }), onLeave, step);
+      track(element, onTrack({ x: element.offsetLeft + element.width/2, y: element.offsetTop + element.height/2 }, element.width/2), onLeave, step);
+      this.trackingStarted = true;
     },
     drawText(
       ctx,
@@ -161,8 +168,11 @@ export default {
     drawWheel(starterAngle = 0) {
       // Setup canvas
       const canvas = document.getElementById("WheelCanvas");
-      canvas.height = Math.min((window.innerWidth * 0.3), window.innerHeight - 200);
-      canvas.width = canvas.height;
+      const dim = window.innerWidth > 768
+        ? Math.min((window.innerWidth * 0.3), window.innerHeight - 200)
+        : Math.min(window.innerWidth, window.innerHeight);
+      canvas.height = dim || 640;
+      canvas.width = dim || 480;
       canvas.style.maxHeight = canvas.height + "px";
       canvas.style.maxWidth = canvas.height + "px";
       const ctx2 = canvas.getContext("2d");
@@ -250,8 +260,17 @@ export default {
       this.drawWheel();
       canvas.style.display = "initial";
     }, 100);
-    this.setupWheelTracking();
+    if (document.readyState === "complete") {
+      this.setupWheelTracking();
+    } else {
+      window.addEventListener("load", () => {
+        this.setupWheelTracking();
+      }); 
+    }
   },
+  beforeUnmount() {
+    this.stop();
+  }
 };
 </script>
 

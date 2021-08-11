@@ -90,4 +90,10 @@ export default {
 @-moz-keyframes dark { 100% { margin-left: 40px; } }
 @-webkit-keyframes dark { 100% { margin-left: 40px; } }
 @keyframes dark { 100% { margin-left: 40px; } }
+
+@media screen and (max-width: 768px)  {
+    .dark-mode-button {
+        display: none;
+    }
+}
 </style>

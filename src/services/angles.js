@@ -3,7 +3,7 @@ export function deg2Rad(deg) {
   return deg * (pi/180);
 }
 
-export function rad2Deg(rad) {
+export function radian2deg(rad) {
   var pi = Math.PI;
   return rad * (180/pi);
 }

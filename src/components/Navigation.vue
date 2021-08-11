@@ -72,4 +72,10 @@ export default {
 .dark .nav-item:hover {
     background: #111;
 }
+
+@media screen and (max-width: 768px)  {
+    .navigation {
+        display: none;
+    }
+}
 </style>
