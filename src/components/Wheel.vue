@@ -103,6 +103,7 @@ export default {
       var velocity = [];
 
       const onTrack = (center, radius) => (x, y) => {
+        console.log("onTrack");
         this.stop();
         var adjustedX = (x - center.x) / radius
         var adjustedY = (y - center.y) / radius;

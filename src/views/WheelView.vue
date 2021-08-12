@@ -1,6 +1,6 @@
 <template>
 <div class="wheel-view">
-    <Wheel ref="wheel" :values="values" :maxTime="maxTime" :fadeOutTime="fadeOutTime" :spinTime="spinTime" />
+    <Wheel ref="wheel" class="wheel" :values="values" :maxTime="maxTime" :fadeOutTime="fadeOutTime" :spinTime="spinTime" />
     <ActionButton class="spin-button" :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-arrow-clockwise')" v-bind:callback="spin" />
     <ConfigurationPane name="wheel">
       <form v-on:change="onFormChange">
@@ -66,7 +66,6 @@ export default {
 
 <style scoped>
 .wheel-view {
-  padding-top: 50px;
   display: flex;
   flex-direction: column;
   height: calc(100vh - 50px);
@@ -74,6 +73,17 @@ export default {
 form {
     display: flex;
     flex-direction: column;
+}
+
+.wheel {
+  height: calc(100% - 50px);
+}
+
+.spin-button {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  margin-left: -35px; /* Negative half of width. */
 }
 
 form textarea {

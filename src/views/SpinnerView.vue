@@ -42,10 +42,10 @@ export default {
   },
   methods: {
     spin() {
-      if (this.$refs.wheel.isSpinning) {
-        this.$refs.wheel.stop();
+      if (this.$refs.spinner.isSpinning) {
+        this.$refs.spinner.stop();
       } else {
-        this.$refs.wheel.spin();
+        this.$refs.spinner.spin();
       }
     },
     onFormChange(ev) {

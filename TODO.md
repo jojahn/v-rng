@@ -2,12 +2,9 @@
 
 ## Cubes/Dices
 
-* create models + textures
-* integrate Three.js
 * grabbing movement
 * auto-movement
 * Becher?
-
 
 ## Spinner
 
@@ -20,11 +17,11 @@
 * ...
 * Rolling off when too fast grabbed
 * Stopping wheel timeout
-* 1i = 4*, 3i = 2*, 
+* 1i = 4*, 3i = 2*
 
 ## Coin Flipper
 
-* ...
+* use multiples of 
 
 ## General
 
@@ -34,3 +31,4 @@
 * Autosave names and colors
 * Accessiblity/Titles
 * Font-hide flicker on home screen
+* Mobile Support

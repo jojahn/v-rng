@@ -1,3 +1,1 @@
-export function calculateFont(text, width, height) {
-
-}
+export function calculateFont(text, width, height) {}
