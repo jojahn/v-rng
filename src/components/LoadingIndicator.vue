@@ -1,5 +1,5 @@
 <template>
-  <div v-if="this.isLoading">ABC</div>
+  <div v-if="this.isLoading">Loading ...</div>
 </template>
 
 <script>

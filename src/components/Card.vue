@@ -1,25 +1,48 @@
 <template>
 <router-link class="router-link-card" :to="path">
     <div class="card" ref="card">
-        <img v-bind:alt="title" v-bind:src="require(`@/assets/${imgSrc}`)">
+        <Shimmer :show="imageLoaded">
+            <img @load="imageLoaded = true" v-bind:alt="title" v-bind:src="require(`@/assets/${imgSrc}`)" v-show="imageLoaded">
+        </Shimmer>
         <hr>
-        <p>{{ title }}</p>
+        <Shimmer :show="imageLoaded">
+            <p v-show="fontsLoaded" v-cloak>{{ title }}</p>
+        </Shimmer>
     </div>
 </router-link>
 </template>
 
 <script>
+import Shimmer from "@/components/Shimmer";
 export default {
+    components: {
+        Shimmer
+    },
     props: {
         imgSrc: String,
         title: String,
         path: String,
         disabled: Boolean
     },
+    data() {
+        return {
+            imageLoaded: false,
+            fontsLoaded: false
+        };
+    },
+    methods: {
+        onFontsLoaded() {
+            return (_) => {
+                console.log("loaded, ", this);
+                this.fontsLoaded = true
+            };
+        }
+    },
     mounted() {
         if (this.$props.disabled === true) {
             this.$refs.card.classList.add("disabled");
         }
+        document.fonts.ready.then(this.onFontsLoaded()) // = this.onFontsLoaded();
     }
 }
 </script>
@@ -52,7 +75,7 @@ export default {
     border-top: 1px solid #DDD;
 }
 
-.card > p {
+.card p {
     font-size: 1.75rem;
     font-family: 'Dancing Script', cursive;
     font-weight: 500;

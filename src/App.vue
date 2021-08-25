@@ -19,6 +19,9 @@ export default {
     Navigation
     // Header
   },
+  data() {
+    onIE: false
+  },
   methods: {
     do() {
       // console.log($router.currentRoute._rawValue.fullPath);

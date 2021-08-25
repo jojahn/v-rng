@@ -66,7 +66,7 @@ export default {
         var res = () => {
             if (isRunning) {
               rotation.x += 0.25 * Math.random();
-              rotation.y += 0.0001 * Math.random();
+              rotation.y += 0.0001 * (Math.random() - 0.5);
               position.z = percentage * -5;
             } else {
               cancel();

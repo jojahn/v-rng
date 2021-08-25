@@ -1,4 +1,8 @@
 module.exports = {
+  transpileDependencies: [
+    'socket.io-client',
+    'engine.io-client'
+  ],
   pluginOptions: {
     i18n: {
       locale: 'en',

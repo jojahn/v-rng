@@ -5,7 +5,7 @@
         <Card :title="t('Spinner')" imgSrc="Spinner.png" path="/spinner" />
         <Card :title="t('Dices')" imgSrc="Cubes.png" path="/dices" />
         <Card :title="t('Coin')" imgSrc="Coin.png" path="/coin" />
-        <Card :title="t('Cards')" imgSrc="Cards.png" path="/cards" :disabled="true" />
+        <Card :title="t('Cards')" imgSrc="Cards.png" path="/cards" />
         <Card :title="t('Matches')" imgSrc="Matches.png" path="/matches" />
         <!-- <div class="card-placeholder" />
         <div class="card-placeholder" /> -->
