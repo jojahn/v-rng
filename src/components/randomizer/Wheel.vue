@@ -18,7 +18,7 @@ export default {
     fadeOutTime: Number,
     config: Object,
     values: Array,
-    isSpinning: Boolean
+    isSpinning: Boolean,
   },
   data() {
     return {
@@ -26,16 +26,16 @@ export default {
       animations: [],
       valid: true,
       angle: 0,
-      trackingStarted: false
+      trackingStarted: false,
     };
   },
   watch: {
-    values: function(newValue, oldValue) {
+    values: function (newValue, oldValue) {
       this.generateDisplayValues();
       if (this.valid === true) {
         this.drawWheel();
       }
-    }
+    },
   },
   methods: {
     checkSpinning() {
@@ -46,26 +46,33 @@ export default {
       if (!this.$props.values) {
         return;
       }
-      let values = this.$props.values.filter(v => !!v.name && !!v.color);
+      let values = this.$props.values.filter((v) => !!v.name && !!v.color);
       if (!values) {
         return;
       }
       let duplications = -1;
-      switch(values.length) {
-        case 0: 
-          this.valid = false; return;
+      switch (values.length) {
+        case 0:
+          this.valid = false;
+          return;
         case 1:
-          this.valid = false; return;
+          this.valid = false;
+          return;
         case 2:
-          duplications = 3; break;
+          duplications = 3;
+          break;
         case 3:
-          duplications = 3; break;
+          duplications = 3;
+          break;
         case 4:
-          duplications = 2; break;
+          duplications = 2;
+          break;
         case 5:
-          duplications = 2; break;
+          duplications = 2;
+          break;
         default:
-          duplications = 1; break;
+          duplications = 1;
+          break;
       }
       this.valid = true;
       for (let i = 0; i < duplications; i++) {
@@ -73,7 +80,7 @@ export default {
       }
     },
     fitText(text, alpha, { x: centerX, y: centerY }, radius) {
-      let startingPoint = radius/3;
+      let startingPoint = radius / 3;
       let fontSize = 30;
       const charSize = 15;
       let textWidth = text.length * charSize;
@@ -84,18 +91,27 @@ export default {
       } else {
         startingPoint = (radius - textWidth + charSize) / 2;
       }
-      let modifiedAlpha = alpha + (alpha > Math.PI/2 ? 0.02 : -0.02);
+      let modifiedAlpha = alpha + (alpha > Math.PI / 2 ? 0.02 : -0.02);
 
       // font-family: 'Major Mono Display', monospace;
       // font-family: 'Share Tech Mono', monospace;
       // font-family: 'Ubuntu Mono', monospace;
       // font-family: 'VT323', monospace;
-      const { x, y } = rotate2d(-modifiedAlpha, { x: centerX + (startingPoint) * Math.cos(modifiedAlpha), y: centerY + (startingPoint) * Math.sin(modifiedAlpha) });
-      return { color: "black", fontSize: fontSize + "px", fontFamily: "Ubuntu Mono", x, y };
+      const { x, y } = rotate2d(-modifiedAlpha, {
+        x: centerX + startingPoint * Math.cos(modifiedAlpha),
+        y: centerY + startingPoint * Math.sin(modifiedAlpha),
+      });
+      return {
+        color: "black",
+        fontSize: fontSize + "px",
+        fontFamily: "Ubuntu Mono",
+        x,
+        y,
+      };
     },
     setupWheelTracking(step = 10) {
       console.log("tracking...");
-      if (!!this.trackingStarted) {
+      if (this.trackingStarted) {
         return;
       }
       var element = document.getElementById("WheelCanvas");
@@ -105,7 +121,7 @@ export default {
       const onTrack = (center, radius) => (x, y) => {
         console.log("onTrack");
         this.stop();
-        var adjustedX = (x - center.x) / radius
+        var adjustedX = (x - center.x) / radius;
         var adjustedY = (y - center.y) / radius;
         angle = Math.atan2(adjustedY, adjustedX);
         console.log(adjustedX, adjustedY, radian2deg(angle));
@@ -121,19 +137,35 @@ export default {
 
         this.drawWheel(angle);
         starterAngle = angle;
-      }
+      };
 
       const onLeave = () => {
         if (velocity.length === 0) {
           return;
         }
-        var exitVelocity = (velocity.reduce((accumulator, value) => accumulator + value) / velocity.length);
+        var exitVelocity =
+          velocity.reduce((accumulator, value) => accumulator + value) /
+          velocity.length;
         if (exitVelocity > 0) {
-          this.spin(angle, this.$props.spinTime, this.$props.fadeOutTime,  { stepTime: 10, stepAngle: exitVelocity * 250 });
+          this.spin(angle, this.$props.spinTime, this.$props.fadeOutTime, {
+            stepTime: 10,
+            stepAngle: exitVelocity * 250,
+          });
         }
         velocity = [];
       };
-      track(element, onTrack({ x: element.offsetLeft + element.width/2, y: element.offsetTop + element.height/2 }, element.width/2), onLeave, step);
+      track(
+        element,
+        onTrack(
+          {
+            x: element.offsetLeft + element.width / 2,
+            y: element.offsetTop + element.height / 2,
+          },
+          element.width / 2
+        ),
+        onLeave,
+        step
+      );
       this.trackingStarted = true;
     },
     drawText(
@@ -169,9 +201,10 @@ export default {
     drawWheel(starterAngle = 0) {
       // Setup canvas
       const canvas = document.getElementById("WheelCanvas");
-      const dim = window.innerWidth > 768
-        ? Math.min((window.innerWidth * 0.3), window.innerHeight - 200)
-        : Math.min(window.innerWidth, window.innerHeight);
+      const dim =
+        window.innerWidth > 768
+          ? Math.min(window.innerWidth * 0.3, window.innerHeight - 200)
+          : Math.min(window.innerWidth, window.innerHeight);
       canvas.height = dim || 640;
       canvas.width = dim || 480;
       canvas.style.maxHeight = canvas.height + "px";
@@ -204,36 +237,39 @@ export default {
         );
 
         // Draw text
-        var alpha = start + angle/2;
-        const textOptions = this.fitText(p.name, alpha, center, radius); 
-        this.drawText(
-          ctx2,
-          textOptions,
-          p.name,
-          alpha,
-          textOptions
-        );
+        var alpha = start + angle / 2;
+        const textOptions = this.fitText(p.name, alpha, center, radius);
+        this.drawText(ctx2, textOptions, p.name, alpha, textOptions);
 
         start += angle;
         end += angle;
       });
     },
-    spin(starterAngle = 0, spinTime = this.$props.spinTime || 5000, fadeOutTime = this.$props.fadeOutTime || 3000, { stepTime, stepAngle } = { stepTime: 50, stepAngle: 8 }) {
+    spin(
+      starterAngle = 0,
+      spinTime = this.$props.spinTime || 5000,
+      fadeOutTime = this.$props.fadeOutTime || 3000,
+      { stepTime, stepAngle } = { stepTime: 50, stepAngle: 8 }
+    ) {
       this.stop();
       let angle = starterAngle;
       var spin = () => {
-        this.drawWheel(angle += deg2Rad(stepAngle));
-      } 
+        this.drawWheel((angle += deg2Rad(stepAngle)));
+      };
       var spinRotateAnimation = animate(spin, spinTime, stepTime);
       this.animations.push(spinRotateAnimation);
-      
+
       var fadeOutSpin = (x) => {
-        this.drawWheel(angle += (deg2Rad(stepAngle) * x));
-      } 
-      var fadeOutAnimation = fadeOut(fadeOutSpin, fadeOutTime, stepTime, () => this.$data.isSpinning = false);
+        this.drawWheel((angle += deg2Rad(stepAngle) * x));
+      };
+      var fadeOutAnimation = fadeOut(
+        fadeOutSpin,
+        fadeOutTime,
+        stepTime,
+        () => (this.$data.isSpinning = false)
+      );
       this.animations.push(fadeOutAnimation);
       this.$data.isSpinning = true;
-    
 
       /*var interval = setInterval(() => {
         this.drawWheel(angle += deg2Rad(stepAngle));
@@ -249,7 +285,7 @@ export default {
       }
       this.animations = [];
       this.$data.isSpinning = false;
-    }
+    },
   },
   mounted() {
     this.$data.isSpinning = false;
@@ -266,12 +302,12 @@ export default {
     } else {
       window.addEventListener("load", () => {
         this.setupWheelTracking();
-      }); 
+      });
     }
   },
   beforeUnmount() {
     this.stop();
-  }
+  },
 };
 </script>
 
@@ -291,12 +327,12 @@ export default {
 }
 
 .plaque {
-    height: 640px;
-    position: absolute;
-    margin: auto;
-    display: flex;
-    width: 100%;
-    backdrop-filter: blur(10px);
+  height: 640px;
+  position: absolute;
+  margin: auto;
+  display: flex;
+  width: 100%;
+  backdrop-filter: blur(10px);
 }
 
 .plaque p {
@@ -308,6 +344,4 @@ export default {
   padding: 10px;
   font-size: 1.5rem;
 }
-
-
 </style>

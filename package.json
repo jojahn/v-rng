@@ -5,15 +5,16 @@
   "description": "",
   "author": "",
   "scripts": {
-    "serve": "vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint",
-    "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
     "tauri": "tauri",
     "tauri:build": "vue-cli-service tauri:build",
     "tauri:serve": "vue-cli-service tauri:serve",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write \"src/**/*.js\""
+    "prettier": "prettier -w \"src/**/*.js\"",
+    "eslint": "eslint --fix src/"
   },
   "main": "index.js",
   "dependencies": {
@@ -34,8 +35,11 @@
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-prettier-vue": "^3.1.0",
+    "eslint-plugin-vue": "^7.17.0",
     "node-sass": "^6.0.1",
     "prettier": "^2.3.2",
     "sass-loader": "^12.1.0",
@@ -47,6 +51,21 @@
     "last 2 versions",
     "not dead"
   ],
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "plugin:prettier/recommended",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
   "_id": "rng@1.0.0",
   "license": "ISC",
   "readme": "ERROR: No README data found!",

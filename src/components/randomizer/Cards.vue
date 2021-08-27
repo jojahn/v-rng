@@ -6,13 +6,22 @@
 </template>
 
 <script>
-import LoadingIndicator from "@/components/LoadingIndicator";
-import { usingQuadratic, animate as startAnimate, stopAnimation } from "@/services/animations";
+import LoadingIndicator from "@/components/generic/LoadingIndicator";
+import {
+  usingQuadratic,
+  animate as startAnimate,
+  stopAnimation,
+} from "@/services/animations";
 import { loadModel } from "@/services/loadModel";
 import { createRaycaster } from "@/services/raycaster";
 import * as THREE from "three";
-import { AnimationClip, VectorKeyframeTrack, AnimationMixer, QuaternionKeyframeTrack } from 'three';
-import { onBeforeUnmount } from '@vue/runtime-core';
+import {
+  AnimationClip,
+  VectorKeyframeTrack,
+  AnimationMixer,
+  QuaternionKeyframeTrack,
+} from "three";
+import { onBeforeUnmount } from "@vue/runtime-core";
 
 const HOVER_CARD_ANIMATION = "HOVER_CARD_ANIMATION";
 const REVERSE_HOVER_CARD_ANIMATION = "REVERSE_HOVER_CARD_ANIMATION";
@@ -24,7 +33,8 @@ export default {
     LoadingIndicator,
   },
   props: {
-    flipTime: Number
+    flipTime: Number,
+    numberOfCards: Number,
   },
   data() {
     return {
@@ -32,16 +42,25 @@ export default {
       renderer: null,
       scene: null,
       camera: null,
+
       isRunning: false,
+
       animations: [],
       model: null,
+
       render: null,
+
       cancel: null,
+
       isLoading: false,
+
       raycaster: null,
-      mixers: [],
+      models: [],
+      mixers: {},
       actions: [],
+
       hovered: null,
+
       mixer: null,
     };
   },
@@ -57,54 +76,69 @@ export default {
     },
     onCardClick() {
       return () => {
-        if (!!this.hovered) {
-          const clip = AnimationClip.findByName(this.hovered, TURN_CARD_ANIMATION);
+        if (this.hovered) {
+          const clip = AnimationClip.findByName(
+            this.hovered,
+            TURN_CARD_ANIMATION
+          );
           const action = this.mixer.clipAction(clip);
           action.setLoop(THREE.LoopOnce);
           action.clampWhenFinished = true;
           action.play();
         }
-      }
+      };
     },
-    addHoverCardAnimation() {
-      const positionKeyframe = new VectorKeyframeTrack('.position', [0, 0.5], [
-        0, 0, 0,
-        0, 0, -0.1,
+    addHoverCardAnimation(obj) {
+      const positionKeyframe = new VectorKeyframeTrack(
+        ".position",
+        [0, 0.5],
+        [0, 0, 0, 0, 0, -0.1]
+      );
+      const clip = new AnimationClip(HOVER_CARD_ANIMATION, -1, [
+        positionKeyframe,
       ]);
-      const clip = new AnimationClip(HOVER_CARD_ANIMATION, -1, [positionKeyframe]);
-      this.model.animations.push(clip);
+      obj.animations.push(clip);
 
-      const returnPositionKeyframe = new VectorKeyframeTrack('.position', [0, 0.5], [
-        0, 0, -0.1,
-        0, 0, 0,
+      const returnPositionKeyframe = new VectorKeyframeTrack(
+        ".position",
+        [0, 0.5],
+        [0, 0, -0.1, 0, 0, 0]
+      );
+      const returnclip = new AnimationClip(REVERSE_HOVER_CARD_ANIMATION, -1, [
+        returnPositionKeyframe,
       ]);
-      const returnclip = new AnimationClip(REVERSE_HOVER_CARD_ANIMATION, -1, [returnPositionKeyframe]);
-      this.model.animations.push(returnclip);
+      obj.animations.push(returnclip);
     },
-    addTurnCardAnimation() {
-      const positionKeyframe = new VectorKeyframeTrack('.position', [0, 0.5], [
-        0, 0, 0,
-        0, 0.1, -0.1,
-      ]);
+    addTurnCardAnimation(obj) {
+      const positionKeyframe = new VectorKeyframeTrack(
+        ".position",
+        [0, 0.5],
+        [0, 0, 0, 0, 0.1, -0.1]
+      );
 
-      var yAxis = new THREE.Vector3( 0, 1, 0 );
+      var yAxis = new THREE.Vector3(0, 1, 0);
       var qInitial = new THREE.Quaternion().setFromAxisAngle(yAxis, 0);
       var qFinal = new THREE.Quaternion().setFromAxisAngle(yAxis, Math.PI);
       var rotationKeyframe = new THREE.QuaternionKeyframeTrack(
-        '.quaternion',
-        [ 0, 0.5 ], [
-          qInitial.x, qInitial.y, qInitial.z, qInitial.w,
-          qFinal.x, qFinal.y, qFinal.z, qFinal.w,
-        ]);
+        ".quaternion",
+        [0, 0.5],
+        [
+          qInitial.x,
+          qInitial.y,
+          qInitial.z,
+          qInitial.w,
+          qFinal.x,
+          qFinal.y,
+          qFinal.z,
+          qFinal.w,
+        ]
+      );
 
-      const tracks = [positionKeyframe, rotationKeyframe];
-
-      // use -1 to automatically calculate
-      // the length from the array of tracks
-      const length = -1;
-
-      const clip = new AnimationClip(TURN_CARD_ANIMATION, length, tracks);
-      this.model.animations.push(clip);
+      const clip = new AnimationClip(TURN_CARD_ANIMATION, -1, [
+        positionKeyframe,
+        rotationKeyframe,
+      ]);
+      obj.animations.push(clip);
     },
     setupScene() {
       var canvas = document.getElementById("CardsCanvas");
@@ -132,27 +166,50 @@ export default {
       light.castShadow = true;
       light.position.x += 2;
       scene.add(light);
-
-      var intensity = 1;
+      intensity = 1;
       var ambientLight = new THREE.AmbientLight(color, intensity);
       scene.add(ambientLight);
 
-      this.model = null;
+      this.models = [];
+      this.mixers = [];
       this.isLoading = true;
       this.render = this.buildRenderFunction(renderer, camera, scene);
-      loadModel("cards/4_of_clubs").then((res) => {
-        this.model = res;
+      loadModel("blender/card").then((res) => {
         this.isLoading = false;
 
-        var scale = 0.01;
-        this.model.scale.x = scale;
-        this.model.scale.y = scale;
-        this.model.scale.z = scale;
-        console.log(this.model.rotation);
+        var loadedMesh = res;
+        do {
+          loadedMesh = loadedMesh.children[0];
+        } while (
+          !!loadedMesh.children &&
+          loadedMesh.children.length > 0 &&
+          !loadedMesh.material
+        );
 
-        // this.model.rotation.y = Math.PI;
+        console.log(loadedMesh);
+        for (let i = 0; i < (this.$props.numberOfCards || 3); i++) {
+          this.models.push(res);
+          const object = new THREE.Object3D();
+          const mesh = new THREE.Mesh(loadedMesh.geometry, loadedMesh.material);
+          // TODO: Add animations to object
+          // mesh.position.copy(pos);
+          var scale = 0.25;
+          mesh.scale.x = scale;
+          mesh.scale.y = scale;
+          mesh.scale.z = scale;
+          mesh.rotation.y = -Math.PI / 2;
+          mesh.rotation.x = Math.PI;
+          mesh.rotation.z = Math.PI / 2;
+          this.mixers[mesh.uuid] = new AnimationMixer(mesh);
+          res.add(mesh);
+        }
+        res.remove(loadedMesh);
+
+        loadedMesh.position.x = -20;
+        loadedMesh.scale.x = 0;
 
         scene.add(res);
+
         this.raycaster = createRaycaster(scene, camera, canvas, false);
         renderer.render(scene, camera);
         this.render = this.buildRenderFunction(renderer, camera, scene);
@@ -160,21 +217,17 @@ export default {
       });
     },
     buildRenderFunction(renderer, camera, scene) {
-      this.mixer = new AnimationMixer(this.model);
-      const mixer = this.mixer;
       let clip, action;
       let alpha = 0;
       const clock = new THREE.Clock();
-      if (!!this.model) {
-        this.addHoverCardAnimation();
-        this.addTurnCardAnimation();
-      }
       return () => {
         const delta = clock.getDelta();
-        mixer.update(delta);
+        if (this.mixers) {
+          this.mixers.forEach((m) => m.update(delta));
+        }
 
         // Animations
-        if (!!this.raycaster) {
+        if (this.raycaster) {
           const intersects = this.raycaster.getIntersections();
           const canvas = document.getElementById("CardsCanvas");
           // Clear other animations
@@ -194,8 +247,11 @@ export default {
           }
           if (!!this.hovered && intersects.length === 0) {
             action?.stop();
-            clip = AnimationClip.findByName(this.hovered, REVERSE_HOVER_CARD_ANIMATION);
-            action = mixer.clipAction(clip);
+            clip = AnimationClip.findByName(
+              this.hovered,
+              REVERSE_HOVER_CARD_ANIMATION
+            );
+            action = this.mixers[this.hovered.uuid].clipAction(clip);
             action.setLoop(THREE.LoopOnce);
             action.clampWhenFinished = true;
             action.play();
@@ -204,24 +260,30 @@ export default {
           if (!!intersects[0] && !!intersects[0].object) {
             let obj = intersects[0].object;
             do {
-              if (!!obj.animations && obj.animations.length > 0 && (!this.hovered || (obj.uuid !== this.hovered.uuid))) {
+              if (
+                !!obj.animations &&
+                obj.animations.length > 0 &&
+                (!this.hovered || obj.uuid !== this.hovered.uuid)
+              ) {
                 action?.stop();
                 clip = AnimationClip.findByName(obj, HOVER_CARD_ANIMATION);
-                action = mixer.clipAction(clip);
+                action = this.mixers[this.hovered.uuid].clipAction(clip);
                 action.setLoop(THREE.LoopOnce);
                 action.clampWhenFinished = true;
                 action.play();
                 this.hovered = obj;
               }
               obj = obj.parent;
-            } while(!!obj);
+            } while (obj);
           }
-      }
+        }
 
+        alpha += 0.01;
+        // camera.rotation.y += 0.01 * Math.random();
+        // camera.position.z += 0.01 * Math.random();
         renderer.render(scene, camera);
-        alpha += 0.0001;
         window.requestAnimationFrame(this.render);
-      }
+      };
     },
   },
   mounted() {
@@ -229,9 +291,8 @@ export default {
     this.setupScene();
     const onClick = this.onCardClick();
     document.getElementById("CardsCanvas").addEventListener("click", onClick);
-  }
+  },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,19 +1,25 @@
 <template>
+<div>
   <Dices />
-  <ActionButton class="spin-button" :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-box')" v-bind:callback="spin" />
+  <ActionButton
+    class="spin-button"
+    :iconClass="
+      'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-box')
+    "
+    v-bind:callback="spin"
+  />
+</div>
 </template>
 
 <script>
-import Dices from "@/components/Dices.vue"
-import ActionButton from "@/components/ActionButton.vue"
+import Dices from "@/components/randomizer/Dices.vue";
+import ActionButton from "@/components/generic/ActionButton.vue";
 export default {
-    components: {
-        Dices,
-        ActionButton
-    }
-}
+  components: {
+    Dices,
+    ActionButton,
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

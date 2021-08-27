@@ -1,47 +1,44 @@
 <template>
-  <!-- <Header /> -->
   <Navigation />
   <LocaleChanger />
   <DarkModeButton />
-  <router-view class="page-content"/>
+  <router-view class="page-content" />
 </template>
 
 <script>
-import Navigation from "@/components/Navigation.vue"
-import DarkModeButton from "@/components/DarkModeButton.vue"
-import LocaleChanger from '@/components/LocaleChanger.vue'
+import Navigation from "@/components/globals/Navigation.vue";
+import DarkModeButton from "@/components/globals/DarkModeButton.vue";
+import LocaleChanger from "@/components/globals/LocaleChanger.vue";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
     DarkModeButton,
     LocaleChanger,
-    Navigation
+    Navigation,
     // Header
   },
   data() {
-    onIE: false
+    false;
   },
   methods: {
     do() {
       // console.log($router.currentRoute._rawValue.fullPath);
-    }
+    },
   },
-  mounted() {
-
-  }
-}
+  mounted() {},
+};
 </script>
 
 <style>
 body {
   margin: 0;
   padding: 0;
-  background-color: #EEE;
+  background-color: #eee;
 }
 .dark {
   background-color: #333;
-  color: #EEE
+  color: #eee;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -51,7 +48,7 @@ body {
   color: #2c3e50;
 }
 
-.dark  #app {
+.dark #app {
   color: #ddd;
 }
 

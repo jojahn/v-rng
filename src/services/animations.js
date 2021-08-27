@@ -1,4 +1,4 @@
-import { AnimationClip, VectorKeyframeTrack } from 'three';
+import { AnimationClip, VectorKeyframeTrack } from "three";
 
 export const usingQuadraticFadeOut = (percentage) =>
   Math.pow(percentage - 1, 2);

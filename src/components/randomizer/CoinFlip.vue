@@ -6,8 +6,12 @@
 </template>
 
 <script>
-import LoadingIndicator from "@/components/LoadingIndicator";
-import { usingQuadratic, animate as startAnimate, stopAnimation } from "@/services/animations";
+import LoadingIndicator from "@/components/generic/LoadingIndicator";
+import {
+  usingQuadratic,
+  animate as startAnimate,
+  stopAnimation,
+} from "@/services/animations";
 import { loadModel } from "@/services/loadModel";
 import * as THREE from "three";
 
@@ -16,7 +20,7 @@ export default {
     LoadingIndicator,
   },
   props: {
-    flipTime: Number
+    flipTime: Number,
   },
   data() {
     return {
@@ -29,7 +33,7 @@ export default {
       model: null,
       render: null,
       cancel: null,
-      isLoading: false
+      isLoading: false,
     };
   },
   methods: {
@@ -52,26 +56,35 @@ export default {
 
       function flip(render, model, onStop) {
         var percentage = 0.0001;
-        var updatePercentage = () => (x) => { percentage = x; }
+        var updatePercentage = () => (x) => {
+          percentage = x;
+        };
         var cancel = () => {
           stopAnimation(anim);
           isRunning = false;
           onStop();
         };
-        var onEnd = () => { isRunning = false }
-        var anim = startAnimate(updatePercentage(), flipTime, stepTime, usingQuadratic, onEnd);
+        var onEnd = () => {
+          isRunning = false;
+        };
+        var anim = startAnimate(
+          updatePercentage(),
+          flipTime,
+          stepTime,
+          usingQuadratic,
+          onEnd
+        );
         var isRunning = true;
 
-
         var res = () => {
-            if (isRunning) {
-              rotation.x += 0.25 * Math.random();
-              rotation.y += 0.0001 * (Math.random() - 0.5);
-              position.z = percentage * -5;
-            } else {
-              cancel();
-            }
-          if (!!model) {
+          if (isRunning) {
+            rotation.x += 0.25 * Math.random();
+            rotation.y += 0.0001 * (Math.random() - 0.5);
+            position.z = percentage * -5;
+          } else {
+            cancel();
+          }
+          if (model) {
             model.rotation.x = rotation.x;
             model.rotation.y = rotation.y;
             model.rotation.z = rotation.z;
@@ -84,10 +97,10 @@ export default {
           if (render) {
             render();
           }
-        }
-      return { animate: res, cancel };
-        }
-        var onStop = () =>       this.isRunning = false;
+        };
+        return { animate: res, cancel };
+      }
+      var onStop = () => (this.isRunning = false);
       var { animate, cancel } = flip(this.render, this.model, onStop);
       this.cancel = cancel;
       animate();
@@ -119,7 +132,7 @@ export default {
       light.position.x += 2;
       scene.add(light);
 
-      var intensity = 10;
+      intensity = 10;
       var ambientLight = new THREE.AmbientLight(color, intensity);
       scene.add(ambientLight);
 

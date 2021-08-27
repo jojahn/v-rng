@@ -3,14 +3,12 @@
 </template>
 
 <script>
-import Cards from "@/components/Cards";
+import Cards from "@/components/randomizer/Cards";
 export default {
   components: {
-    Cards
-  }
-}
+    Cards,
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

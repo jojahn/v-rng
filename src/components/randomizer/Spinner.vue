@@ -77,13 +77,7 @@ export default {
         this.displayedPicks.push(...values);
       }
     },
-    drawRect(
-      ctx,
-      color,
-      angle,
-      { x, y, z },
-      { width, height }
-    ) {
+    drawRect(ctx, color, angle, { x, y, z }, { width, height }) {
       ctx.save();
       console.log(x, y);
       // ctx.rotate(angle);
@@ -125,7 +119,7 @@ export default {
           {
             x: center.x - width / 2 /* center.x + Math.cos(angle) * radius */,
             y: center.y + Math.sin(angle) * radius,
-						z: center.x + Math.cos(angle) * radius
+            z: center.x + Math.cos(angle) * radius,
           },
           { width, height }
         );

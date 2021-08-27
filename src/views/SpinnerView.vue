@@ -1,34 +1,46 @@
 <template>
-<div class="spinner-view">
-    <Spinner ref="spinner" :values="values" :maxTime="maxTime" :fadeOutTime="fadeOutTime" :spinTime="spinTime" />
-    <ActionButton class="spin-button" :iconClass="'bi ' + (!!$refs.wheel && $refs.wheel.isSpinning ? 'bi-x' : 'bi-arrow-clockwise')" v-bind:callback="spin" />
+  <div class="spinner-view">
+    <Spinner
+      ref="spinner"
+      :values="values"
+      :maxTime="maxTime"
+      :fadeOutTime="fadeOutTime"
+      :spinTime="spinTime"
+    />
+    <ActionButton
+      class="spin-button"
+      :iconClass="
+        'bi ' +
+        (!!$refs.wheel && $refs.wheel.isSpinning
+          ? 'bi-x'
+          : 'bi-arrow-clockwise')
+      "
+      v-bind:callback="spin"
+    />
     <ConfigurationPane name="wheel">
       <form v-on:change="onFormChange">
-        <textarea :placeholder="'Mango\nVanilla\nStrawberry'" v-on:input="onFormChange" name="values" v-model="valuesString"></textarea>
-        <!-- <i class="bi bi-palette-fill" /> -->
+        <textarea
+          :placeholder="'Mango\nVanilla\nStrawberry'"
+          v-on:input="onFormChange"
+          name="values"
+          v-model="valuesString"
+        ></textarea>
       </form>
-      
-      <!-- <KeyIcon className="bi-shift"/>
-      <KeyIcon className="bi-arrow-return-left"/> -->
     </ConfigurationPane>
-</div>
+  </div>
 </template>
 
-
 <script>
-// @ is an alias to /src
 import { DEFAULT_COLORS, defaultConfiguration } from "@/services/defaultValues";
-import Spinner from '@/components/Spinner.vue'
-import ActionButton from '@/components/ActionButton.vue'
-import ConfigurationPane from '@/components/ConfigurationPane.vue';
-import KeyIcon from '@/components/KeyIcon.vue';
+import Spinner from "@/components/randomizer/Spinner.vue";
+import ActionButton from "@/components/generic/ActionButton.vue";
+import ConfigurationPane from "@/components/globals/ConfigurationPane.vue";
 
 export default {
   components: {
     Spinner,
     ActionButton,
     ConfigurationPane,
-    KeyIcon
   },
   data() {
     return {
@@ -50,18 +62,19 @@ export default {
     },
     onFormChange(ev) {
       if (ev.target.name === "values") {
-        this.values = ev.target.value
-          .split("\n")
-          .map((v, i) => ({ name: v, color: DEFAULT_COLORS[i % DEFAULT_COLORS.length] }));
+        this.values = ev.target.value.split("\n").map((v, i) => ({
+          name: v,
+          color: DEFAULT_COLORS[i % DEFAULT_COLORS.length],
+        }));
       }
-    }
+    },
   },
   mounted() {
     this.values = defaultConfiguration.wheel.values;
-    this.defaultValuesString = this.values.map(v => v.name).join("\n");
+    this.defaultValuesString = this.values.map((v) => v.name).join("\n");
     this.valuesString = this.defaultValuesString;
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -72,31 +85,31 @@ export default {
   height: calc(100vh - 50px);
 }
 form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 form textarea {
-    margin: auto;
-    margin-top: 18px;
-    height: 200px;
-    width: 90%;
-    resize: none;
-    border: none;
-    outline-style: none;
-    font-size: 1.5rem;
-    line-height: 3rem;
-    font-family: Arial, Helvetica, sans-serif;
-    font-family: 'Ubuntu Mono', monospace;
+  margin: auto;
+  margin-top: 18px;
+  height: 200px;
+  width: 90%;
+  resize: none;
+  border: none;
+  outline-style: none;
+  font-size: 1.5rem;
+  line-height: 3rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Ubuntu Mono", monospace;
 }
 
 .form-group {
-    display: flex;
-    justify-content: space-evenly;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .dark form textarea {
-    color: #ddd;
-    background-color: #222;
+  color: #ddd;
+  background-color: #222;
 }
 </style>
