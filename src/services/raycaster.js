@@ -28,7 +28,7 @@ export function createRaycaster(scene, camera, canvas, debug = false) {
             hit.object.parent.type !== "ArrowHelper"
         );
     },
-    destory: () => window.removeEventListener("mousemove", action),
+    destory: () => window.removeEventListener("mousemove", action)
   };
 }
 

@@ -11,6 +11,6 @@ export function radian2deg(rad) {
 export function rotate2d(alpha, { x, y }) {
   return {
     x: Math.cos(alpha) * x - Math.sin(alpha) * y,
-    y: Math.sin(alpha) * x + Math.cos(alpha) * y,
+    y: Math.sin(alpha) * x + Math.cos(alpha) * y
   };
 }

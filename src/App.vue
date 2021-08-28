@@ -1,8 +1,14 @@
 <template>
-  <Navigation />
-  <LocaleChanger />
-  <DarkModeButton />
-  <router-view class="page-content" />
+  <article>
+    <section class="header">
+      <Navigation />
+      <LocaleChanger />
+      <DarkModeButton />
+    </section>
+    <section class="body">
+      <router-view class="page-content" />
+    </section>
+  </article>
 </template>
 
 <script>
@@ -48,13 +54,29 @@ body {
   color: #2c3e50;
 }
 
+#app > article {
+  width: 100vw;
+  min-height: fit-content;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .dark #app {
   color: #ddd;
 }
 
+.header {
+  height: 60px;
+  width: 100vw;
+}
+
+.body {
+  height: 100%;
+  width: 100vw;
+}
+
 .page-content {
-  margin-top: 40px;
-  overflow: hidden;
-  height: calc(100vh - 40px);
+  height: 100%;
 }
 </style>

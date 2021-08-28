@@ -5,7 +5,7 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    component: Home
   },
   {
     path: "/about",
@@ -14,7 +14,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+      import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
   {
     path: "/wheel",
@@ -23,7 +23,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/WheelView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/WheelView.vue")
   },
   {
     path: "/spinner",
@@ -32,7 +32,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/SpinnerView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/SpinnerView.vue")
   },
   {
     path: "/dices",
@@ -41,7 +41,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/DicesView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/DicesView.vue")
   },
   {
     path: "/coin",
@@ -50,7 +50,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/CoinView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/CoinView.vue")
   },
   {
     path: "/cards",
@@ -59,7 +59,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/CardsView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/CardsView.vue")
   },
   {
     path: "/matches",
@@ -70,13 +70,13 @@ const routes = [
     component: () =>
       import(
         /* webpackChunkName: "about" */ "../views/UnderConstructionView.vue"
-      ),
-  },
+      )
+  }
 ];
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes,
+  routes
 });
 
 export default router;

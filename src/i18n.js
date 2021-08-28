@@ -32,7 +32,7 @@ export default createI18n({
     "de-CH": "de",
     "en-US": "en",
     "en-GB": "en",
-    default: process.env.VUE_APP_I18N_FALLBACK_LOCALE || "en",
+    default: process.env.VUE_APP_I18N_FALLBACK_LOCALE || "en"
   },
-  messages: loadLocaleMessages(),
+  messages: loadLocaleMessages()
 });

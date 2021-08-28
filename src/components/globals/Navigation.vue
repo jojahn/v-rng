@@ -41,7 +41,7 @@ export default {
   position: absolute;
   display: flex;
   width: 100%;
-  height: 45px;
+  height: 40px;
   top: 10px;
   justify-content: center;
   transition: 0.25s;
@@ -58,7 +58,6 @@ export default {
   display: flex;
   width: fit-content;
   overflow: hidden;
-  padding: 4px;
   background: #ddd;
 }
 
@@ -69,25 +68,14 @@ export default {
   padding: 10px 20px;
   display: block;
   transition: 0.5s;
-  border-radius: 0.2rem;
-  margin: 0 2px;
 }
 
 .nav-item:hover {
   background: #eee;
 }
 
-.nav-item:first-child {
-  margin: 0;
-  margin-right: 2px;
-}
-
-.nav-item:last-child {
-  margin: 0;
-  margin-left: 2px;
-}
-
 .dark .nav-bar {
+  border-color: #000;
   background: #222;
 }
 
@@ -97,7 +85,7 @@ export default {
 }
 
 .dark .nav-item:hover {
-  background: #333;
+  background: #111;
 }
 
 @media screen and (max-width: 768px) {

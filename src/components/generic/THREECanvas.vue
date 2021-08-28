@@ -27,19 +27,15 @@ import { onBeforeUnmount } from "@vue/runtime-core";
 const MODEL_PATH = "card";
 const MESH_NAME = "PlayingCard";
 
-// Animation names
-const HOVER_CARD_ANIMATION = "HOVER_CARD_ANIMATION";
-const REVERSE_HOVER_CARD_ANIMATION = "REVERSE_HOVER_CARD_ANIMATION";
-const TURN_CARD_ANIMATION = "TURN_CARD_ANIMATION";
-const REVERSE_TURN_CARD_ANIMATION = "REVERSE_TURN_CARD_ANIMATION";
-
 export default {
   components: {
     LoadingIndicator
   },
   props: {
-    flipTime: Number,
-    numberOfCards: Number
+    model: String,
+    modelOptions: Object,
+    onHover: Function,
+    onClick: Function
   },
   data() {
     return {
@@ -53,8 +49,6 @@ export default {
       camera: null,
 
       isRunning: false,
-
-      model: null,
 
       render: null,
 
