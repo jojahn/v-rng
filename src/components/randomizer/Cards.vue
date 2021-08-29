@@ -91,6 +91,7 @@ export default {
             hovered,
             !this.turned ? TURN_CARD_ANIMATION : REVERSE_TURN_CARD_ANIMATION
           );
+          console.log(clip);
           const action = mixers[hovered.uuid].clipAction(clip);
           if (action) {
             action.reset();
@@ -107,7 +108,7 @@ export default {
         const positionKeyframe = new THREE.NumberKeyframeTrack(
           ".position[z]",
           [0, 0.5],
-          [0, 0, -0.1]
+          [0, -0.1]
         );
         return new AnimationClip(HOVER_CARD_ANIMATION, -1, [positionKeyframe]);
       }
@@ -115,7 +116,7 @@ export default {
         const returnPositionKeyframe = new THREE.NumberKeyframeTrack(
           ".position[z]",
           [0, 0.5],
-          [-0.1, 0, 0]
+          [-0.1, 0]
         );
         return new AnimationClip(REVERSE_HOVER_CARD_ANIMATION, -1, [
           returnPositionKeyframe
@@ -235,7 +236,7 @@ export default {
         }
         const animations = this.getAnimations();
         const numberOfCards = this.$props.numberOfCards || 3;
-        for (let i = 0; i < numberOfCards; i++) {
+        for (let i = 0; i < 1; i++) {
           const mesh = new THREE.Mesh(loadedMesh.geometry, loadedMesh.material);
           window.mesh = mesh;
           var scale = 0.05;
@@ -248,8 +249,10 @@ export default {
           const percentage = i / numberOfCards;
           const angle = 90;
           const width = 3;
-          mesh.position.x = width * percentage - width / 2;
-          mesh.rotation.z = percentage * angle - angle / 2;
+          // mesh.position.x = width * percentage - width / 2;
+          // mesh.rotation.z = percentage * angle - angle / 2;
+
+          window.mesh = mesh;
 
           // Animations
           mesh.animations.push(...animations);
@@ -269,13 +272,17 @@ export default {
     },
     buildRenderFunction(renderer, camera, scene) {
       let clip, action;
+      const { mixers } = this;
       const clock = new THREE.Clock();
       return () => {
         const delta = clock.getDelta();
-        if (this.mixers) {
-          Object.keys(this.mixers).forEach((key) =>
-            this.mixers[key].update(delta)
-          );
+        if (this.mixer) {
+          this.mixer.update(delta);
+        }
+        if (mixers) {
+          Object.keys(mixers).forEach((key) => {
+            mixers[key].update(delta);
+          });
         }
 
         // Animations
@@ -285,48 +292,41 @@ export default {
           // Clear other animations
           if (intersects.length === 0) {
             canvas.style.cursor = "default";
-            /* for ( let i = 0; i < prevIntersections.length; i ++ ) {
-              const mixer = new AnimationMixer(prevIntersections[i]);
-              const clip = AnimationClip.findByName(prevIntersections[i].animations, "turn-card-back");
-              const action = mixer.clipAction(clip);
-              action.setLoop(THREE.LoopOnce);
-              action.play();
-              this.actions.push(action);
-              this.mixers.push(mixer);
-            } */
           } else {
             canvas.style.cursor = "pointer";
           }
           if (!!this.hovered && intersects.length === 0) {
-            action?.stop();
+            console.log("leave");
+            if (action) {
+              action.stop();
+            }
             clip = AnimationClip.findByName(
               this.hovered,
               REVERSE_HOVER_CARD_ANIMATION
             );
             action = this.mixers[this.hovered.uuid].clipAction(clip);
+            action.reset();
             action.setLoop(THREE.LoopOnce);
             action.clampWhenFinished = true;
             action.play();
             this.hovered = null;
           }
-          if (!!intersects[0] && !!intersects[0].object) {
-            let obj = intersects[0].object;
-            do {
-              if (
-                !!obj.animations &&
-                obj.animations.length > 0 &&
-                (!this.hovered || obj.uuid !== this.hovered.uuid)
-              ) {
-                action?.stop();
-                clip = AnimationClip.findByName(obj, HOVER_CARD_ANIMATION);
-                action = this.mixers[obj.uuid].clipAction(clip);
-                action.setLoop(THREE.LoopOnce);
-                action.clampWhenFinished = true;
-                action.play();
-                this.hovered = obj;
-              }
-              obj = obj.parent;
-            } while (obj);
+          if (
+            intersects.length > 0 &&
+            (!this.hovered || this.hovered.uuid === intersects[0].object.uuid)
+          ) {
+            console.log("hover");
+            if (action) {
+              action.stop();
+            }
+            const mesh = intersects[0].object;
+            clip = AnimationClip.findByName(mesh, HOVER_CARD_ANIMATION);
+            action = this.mixers[mesh.uuid].clipAction(clip);
+            action.reset();
+            action.setLoop(THREE.LoopOnce);
+            action.clampWhenFinished = true;
+            action.play();
+            this.hovered = mesh;
           }
         }
 
