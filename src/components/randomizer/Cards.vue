@@ -104,18 +104,18 @@ export default {
     },
     getAnimations() {
       function hoverCard() {
-        const positionKeyframe = new VectorKeyframeTrack(
-          ".position",
+        const positionKeyframe = new THREE.NumberKeyframeTrack(
+          ".position[z]",
           [0, 0.5],
-          [0, 0, 0, 0, 0, -0.1]
+          [0, 0, -0.1]
         );
         return new AnimationClip(HOVER_CARD_ANIMATION, -1, [positionKeyframe]);
       }
       function reverseHoverCard() {
-        const returnPositionKeyframe = new VectorKeyframeTrack(
-          ".position",
+        const returnPositionKeyframe = new THREE.NumberKeyframeTrack(
+          ".position[z]",
           [0, 0.5],
-          [0, 0, -0.1, 0, 0, 0]
+          [-0.1, 0, 0]
         );
         return new AnimationClip(REVERSE_HOVER_CARD_ANIMATION, -1, [
           returnPositionKeyframe
@@ -146,10 +146,7 @@ export default {
           ]
         );
 
-        return new AnimationClip(TURN_CARD_ANIMATION, -1, [
-          positionKeyframe,
-          rotationKeyframe
-        ]);
+        return new AnimationClip(TURN_CARD_ANIMATION, -1, [rotationKeyframe]);
       }
       function reverseTurnCard() {
         const positionKeyframe = new VectorKeyframeTrack(
@@ -173,7 +170,6 @@ export default {
         );
 
         return new AnimationClip(REVERSE_TURN_CARD_ANIMATION, -1, [
-          positionKeyframe,
           rotationKeyframe
         ]);
       }
@@ -238,7 +234,8 @@ export default {
           loadedMesh = loadedMesh.children[0];
         }
         const animations = this.getAnimations();
-        for (let i = 0; i < (this.$props.numberOfCards || 1); i++) {
+        const numberOfCards = this.$props.numberOfCards || 3;
+        for (let i = 0; i < numberOfCards; i++) {
           const mesh = new THREE.Mesh(loadedMesh.geometry, loadedMesh.material);
           window.mesh = mesh;
           var scale = 0.05;
@@ -247,6 +244,12 @@ export default {
           mesh.scale.z = scale;
 
           mesh.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
+
+          const percentage = i / numberOfCards;
+          const angle = 90;
+          const width = 3;
+          mesh.position.x = width * percentage - width / 2;
+          mesh.rotation.z = percentage * angle - angle / 2;
 
           // Animations
           mesh.animations.push(...animations);
