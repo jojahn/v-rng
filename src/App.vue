@@ -21,7 +21,7 @@ export default {
   components: {
     DarkModeButton,
     LocaleChanger,
-    Navigation,
+    Navigation
     // Header
   },
   data() {
@@ -30,9 +30,9 @@ export default {
   methods: {
     do() {
       // console.log($router.currentRoute._rawValue.fullPath);
-    },
+    }
   },
-  mounted() {},
+  mounted() {}
 };
 </script>
 

@@ -8,13 +8,13 @@
 export default {
   props: {
     iconClass: String,
-    callback: Function,
+    callback: Function
   },
   methods: {
     onClick() {
       this.$props.callback();
-    },
-  },
+    }
+  }
 };
 </script>
 

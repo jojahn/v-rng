@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       darkMode: false,
-      notOnMobile: null,
+      notOnMobile: null
     };
   },
   methods: {
@@ -22,7 +22,7 @@ export default {
       this.darkMode = !this.darkMode;
       setDarkMode();
       localStorage.setItem("darkMode", this.darkMode);
-    },
+    }
   },
   mounted() {
     var saved = localStorage.getItem("darkMode");
@@ -33,7 +33,7 @@ export default {
     if (!/Mobi|Android/i.test(navigator.userAgent)) {
       this.notOnMobile = true;
     }
-  },
+  }
 };
 </script>
 

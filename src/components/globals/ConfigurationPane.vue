@@ -39,12 +39,12 @@
 export default {
   props: {
     name: String,
-    onConfigChanged: Function,
+    onConfigChanged: Function
   },
   data() {
     return {
       open: true,
-      moreOptionsVisible: false,
+      moreOptionsVisible: false
     };
   },
   methods: {
@@ -81,8 +81,8 @@ export default {
     },
     onFormChange(ev) {
       this.$props.onConfigChanged();
-    },
-  },
+    }
+  }
 };
 </script>
 

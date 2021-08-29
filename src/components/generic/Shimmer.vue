@@ -10,7 +10,7 @@ export default {
   props: {
     visible: Boolean,
     width: Number,
-    height: Number,
+    height: Number
   },
   methods: {
     onChange() {
@@ -22,11 +22,11 @@ export default {
       }
       this.$refs.shimmer.width = this.$props.width;
       this.$refs.shimmer.height = this.$props.height;
-    },
+    }
   },
   mounted() {
     this.onChange();
-  },
+  }
 };
 </script>
 

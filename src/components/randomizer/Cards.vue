@@ -22,6 +22,7 @@ import {
   QuaternionKeyframeTrack
 } from "three";
 import { onBeforeUnmount } from "@vue/runtime-core";
+import { deg2Rad } from "@/services/angles";
 
 // Object names
 const MODEL_PATH = "card";
@@ -103,26 +104,26 @@ export default {
         }
       };
     },
-    getAnimations() {
-      function hoverCard() {
+    getAnimations(mesh) {
+      function hoverCard(mesh) {
         const positionKeyframe = new THREE.NumberKeyframeTrack(
           ".position[z]",
           [0, 0.5],
-          [0, -0.1]
+          [mesh.position.z, 0]
         );
         return new AnimationClip(HOVER_CARD_ANIMATION, -1, [positionKeyframe]);
       }
-      function reverseHoverCard() {
+      function reverseHoverCard(mesh) {
         const returnPositionKeyframe = new THREE.NumberKeyframeTrack(
           ".position[z]",
           [0, 0.5],
-          [-0.1, 0]
+          [0, mesh.position.z]
         );
         return new AnimationClip(REVERSE_HOVER_CARD_ANIMATION, -1, [
           returnPositionKeyframe
         ]);
       }
-      function turnCard() {
+      function turnCard(mesh) {
         const positionKeyframe = new VectorKeyframeTrack(
           ".position",
           [0, 0.5],
@@ -132,7 +133,7 @@ export default {
         var yAxis = new THREE.Vector3(0, 1, 0);
         var qInitial = new THREE.Quaternion().setFromAxisAngle(yAxis, 0);
         var qFinal = new THREE.Quaternion().setFromAxisAngle(yAxis, Math.PI);
-        var rotationKeyframe = new THREE.QuaternionKeyframeTrack(
+        var _rotationKeyframe = new THREE.QuaternionKeyframeTrack(
           ".quaternion",
           [0, 0.5],
           [
@@ -147,15 +148,35 @@ export default {
           ]
         );
 
-        return new AnimationClip(TURN_CARD_ANIMATION, -1, [rotationKeyframe]);
+        var rotationKeyframe = new THREE.NumberKeyframeTrack(
+          ".rotation[y]",
+          [0, 0.5],
+          [0, Math.PI]
+        );
+        var rotationKeyframeZ = new THREE.NumberKeyframeTrack(
+          ".rotation[z]",
+          [0, 0.5],
+          [mesh.rotation.z, 0]
+        );
+        var rotationKeyframeX = new THREE.NumberKeyframeTrack(
+          ".rotation[x]",
+          [0, 0.5],
+          [mesh.rotation.x, 0]
+        );
+
+        return new AnimationClip(TURN_CARD_ANIMATION, -1, [
+          rotationKeyframe,
+          rotationKeyframeZ,
+          rotationKeyframeX
+        ]);
       }
-      function reverseTurnCard() {
+      function reverseTurnCard(mesh) {
         const positionKeyframe = new VectorKeyframeTrack(
           ".position",
           [0, 0.5],
           // eslint-disable-next-line prettier/prettier
           [
-            0, 0.1, -0.1,
+            0, 0, -0.1,
             0, 0, 0
           ]
         );
@@ -169,9 +190,21 @@ export default {
           [0, 0.5],
           [0, -Math.PI]
         );
+        var rotationKeyframeZ = new THREE.NumberKeyframeTrack(
+          ".rotation[z]",
+          [0, 0.5],
+          [0, mesh.rotation.z]
+        );
+        var rotationKeyframeX = new THREE.NumberKeyframeTrack(
+          ".rotation[x]",
+          [0, 0.5],
+          [0, mesh.rotation.x]
+        );
 
         return new AnimationClip(REVERSE_TURN_CARD_ANIMATION, -1, [
-          rotationKeyframe
+          rotationKeyframe,
+          rotationKeyframeZ,
+          rotationKeyframeX
         ]);
       }
       function reverse(clip, name) {
@@ -185,15 +218,17 @@ export default {
         );
       }
       return [
-        hoverCard(),
-        reverseHoverCard(),
-        turnCard(),
-        reverseTurnCard()
+        hoverCard(mesh),
+        reverseHoverCard(mesh),
+        turnCard(mesh),
+        reverseTurnCard(mesh)
         // reverse(turnCard(), REVERSE_TURN_CARD_ANIMATION)
       ];
     },
     setupScene() {
       var canvas = document.getElementById("CardsCanvas");
+      canvas.height = canvas.parentElement.clientHeight;
+      canvas.width = canvas.parentElement.clientWidth;
       const renderer = new THREE.WebGLRenderer({
         canvas,
         alpha: true,
@@ -234,9 +269,8 @@ export default {
         ) {
           loadedMesh = loadedMesh.children[0];
         }
-        const animations = this.getAnimations();
         const numberOfCards = this.$props.numberOfCards || 3;
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < numberOfCards; i++) {
           const mesh = new THREE.Mesh(loadedMesh.geometry, loadedMesh.material);
           window.mesh = mesh;
           var scale = 0.05;
@@ -244,18 +278,27 @@ export default {
           mesh.scale.y = scale;
           mesh.scale.z = scale;
 
-          mesh.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
+          /*mesh.quaternion.setFromAxisAngle(
+            new THREE.Vector3(0, 0, 1),
+            deg2Rad(10)
+          );*/
 
           const percentage = i / numberOfCards;
-          const angle = 90;
-          const width = 3;
-          // mesh.position.x = width * percentage - width / 2;
-          // mesh.rotation.z = percentage * angle - angle / 2;
-
-          window.mesh = mesh;
+          const angleRange = 120;
+          const radius = 0.5;
+          const alpha = deg2Rad(percentage * angleRange - angleRange / 2);
+          const b = Math.sin(alpha) * radius;
+          const gamma = deg2Rad((180 - alpha) / 2);
+          const a = b / Math.tan(gamma);
+          const depth = 0.01;
+          mesh.position.x = -b * 2;
+          mesh.position.y = -a * 100;
+          mesh.position.z = 0.5 + depth * percentage;
+          mesh.rotation.z = alpha;
+          console.log(mesh.position.y, percentage, a);
 
           // Animations
-          mesh.animations.push(...animations);
+          mesh.animations.push(...this.getAnimations(mesh));
           this.mixers[mesh.uuid] = new AnimationMixer(mesh);
 
           this.meshes.push(mesh);
@@ -313,7 +356,7 @@ export default {
           }
           if (
             intersects.length > 0 &&
-            (!this.hovered || this.hovered.uuid === intersects[0].object.uuid)
+            (!this.hovered || this.hovered.uuid !== intersects[0].object.uuid)
           ) {
             console.log("hover");
             if (action) {

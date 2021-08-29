@@ -1,5 +1,5 @@
 <template>
-  <Cards :numberOfCards="5" />
+  <Cards :numberOfCards="8" />
 </template>
 
 <script>

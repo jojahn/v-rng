@@ -21,18 +21,18 @@
 import Shimmer from "@/components/generic/Shimmer";
 export default {
   components: {
-    Shimmer,
+    Shimmer
   },
   props: {
     imgSrc: String,
     title: String,
     path: String,
-    disabled: Boolean,
+    disabled: Boolean
   },
   data() {
     return {
       imageLoaded: false,
-      fontsLoaded: false,
+      fontsLoaded: false
     };
   },
   methods: {
@@ -40,14 +40,14 @@ export default {
       return (_) => {
         this.fontsLoaded = true;
       };
-    },
+    }
   },
   mounted() {
     if (this.$props.disabled === true) {
       this.$refs.card.classList.add("disabled");
     }
     document.fonts.ready.then(this.onFontsLoaded()); // = this.onFontsLoaded();
-  },
+  }
 };
 </script>
 

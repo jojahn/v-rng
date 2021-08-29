@@ -1,5 +1,10 @@
 # TODO
 
+## r
+
+* random/chaos/chance quote on home view
+* generic THREECanvas
+
 ## Cubes/Dices
 
 * grabbing movement
