@@ -59,7 +59,7 @@ export default {
     },
     onChange() {
       localStorage.setItem("locale", i18n.global.locale.value);
-    },
+    }
   },
   mounted() {
     var cached = localStorage.getItem("locale");
@@ -73,7 +73,7 @@ export default {
       }
       localStorage.setItem("locale", i18n.global.locale.value);
     }
-  },
+  }
 };
 </script>
 

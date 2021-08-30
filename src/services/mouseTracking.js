@@ -17,4 +17,7 @@ export function track(element, callback, onLeave, step) {
     window.removeEventListener("mousemove", listener);
     onLeave();
   });
+  if ("ontouchmove" in window) {
+    element.addEventListener("ontouchmove", listener);
+  }
 }

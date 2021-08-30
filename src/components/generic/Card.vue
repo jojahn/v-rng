@@ -1,28 +1,22 @@
 <template>
-  <router-link class="router-link-card" :to="path">
+  <router-link class="router-link-card" :disabled="disabled == true" :to="path">
     <div class="card" ref="card">
-      <Shimmer :show="imageLoaded">
-        <img
-          @load="imageLoaded = true"
-          v-bind:alt="title"
-          v-bind:src="require(`@/assets/${imgSrc}`)"
-          v-show="imageLoaded"
-        />
-      </Shimmer>
+      <img
+        @load="imageLoaded = true"
+        v-bind:alt="title"
+        v-bind:src="require(`@/assets/${imgSrc}`)"
+        v-show="imageLoaded"
+      />
       <hr />
-      <Shimmer :show="imageLoaded">
-        <p v-show="fontsLoaded" v-cloak>{{ title }}</p>
-      </Shimmer>
+      <p>
+        {{ title }}
+      </p>
     </div>
   </router-link>
 </template>
 
 <script>
-import Shimmer from "@/components/generic/Shimmer";
 export default {
-  components: {
-    Shimmer
-  },
   props: {
     imgSrc: String,
     title: String,
@@ -38,7 +32,9 @@ export default {
   methods: {
     onFontsLoaded() {
       return (_) => {
-        this.fontsLoaded = true;
+        setTimeout(() => {
+          this.fontsLoaded = true;
+        }, 10);
       };
     }
   },
@@ -52,6 +48,7 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Courgette&display=swap");
 .router-link-card {
   text-decoration: none;
 }
@@ -81,8 +78,8 @@ export default {
 
 .card p {
   font-size: 1.75rem;
-  font-family: "Dancing Script", cursive;
-  font-weight: 500;
+  font-weight: lighter;
+  font-family: "Courgette";
 }
 
 @media screen and (max-width: 768px) {

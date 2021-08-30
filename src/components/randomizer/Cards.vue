@@ -1,11 +1,13 @@
 <template>
   <div class="cards">
+    <InfoButton />
     <LoadingIndicator :isLoading="isLoading" />
     <canvas width="640" height="480" id="CardsCanvas"></canvas>
   </div>
 </template>
 
 <script>
+import InfoButton from "@/components/globals/InfoButton";
 import LoadingIndicator from "@/components/generic/LoadingIndicator";
 import {
   usingQuadratic,
@@ -36,7 +38,8 @@ const REVERSE_TURN_CARD_ANIMATION = "REVERSE_TURN_CARD_ANIMATION";
 
 export default {
   components: {
-    LoadingIndicator
+    LoadingIndicator,
+    InfoButton
   },
   props: {
     flipTime: Number,
@@ -107,17 +110,17 @@ export default {
     getAnimations(mesh) {
       function hoverCard(mesh) {
         const positionKeyframe = new THREE.NumberKeyframeTrack(
-          ".position[z]",
+          ".position[y]",
           [0, 0.5],
-          [mesh.position.z, 0]
+          [mesh.position.y, mesh.position.y + 0.1]
         );
         return new AnimationClip(HOVER_CARD_ANIMATION, -1, [positionKeyframe]);
       }
       function reverseHoverCard(mesh) {
         const returnPositionKeyframe = new THREE.NumberKeyframeTrack(
-          ".position[z]",
+          ".position[y]",
           [0, 0.5],
-          [0, mesh.position.z]
+          [mesh.position.y + 0.1, mesh.position.y]
         );
         return new AnimationClip(REVERSE_HOVER_CARD_ANIMATION, -1, [
           returnPositionKeyframe
@@ -246,12 +249,14 @@ export default {
 
       // Lighting
       var color = 0xffffff;
-      var intensity = 1;
+      var intensity = 1.5;
       var light = new THREE.DirectionalLight(color, intensity);
+      light.position.z = -1;
+      light.position.x = -1;
       light.castShadow = true;
       light.position.x += 2;
       scene.add(light);
-      intensity = 1;
+      intensity = 0.1;
       var ambientLight = new THREE.AmbientLight(color, intensity);
       scene.add(ambientLight);
 
@@ -361,6 +366,17 @@ export default {
             console.log("hover");
             if (action) {
               action.stop();
+            }
+            if (this.hovered) {
+              clip = AnimationClip.findByName(
+                this.hovered,
+                REVERSE_HOVER_CARD_ANIMATION
+              );
+              action = this.mixers[this.hovered.uuid].clipAction(clip);
+              action.reset();
+              action.setLoop(THREE.LoopOnce);
+              action.clampWhenFinished = true;
+              action.play();
             }
             const mesh = intersects[0].object;
             clip = AnimationClip.findByName(mesh, HOVER_CARD_ANIMATION);

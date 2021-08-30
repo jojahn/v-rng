@@ -23,7 +23,7 @@ import { useI18n } from "vue-i18n";
 export default {
   data() {
     return {
-      currentPath: "",
+      currentPath: ""
     };
   },
   mounted() {
@@ -32,11 +32,12 @@ export default {
   setup() {
     const { t } = useI18n();
     return { t };
-  },
+  }
 };
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Courgette&display=swap");
 .navigation {
   position: absolute;
   display: flex;
@@ -45,6 +46,7 @@ export default {
   top: 10px;
   justify-content: center;
   transition: 0.25s;
+  font-family: "Courgette";
 }
 
 .navigation.hidden {

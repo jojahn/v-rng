@@ -4,6 +4,8 @@
 
 * random/chaos/chance quote on home view
 * generic THREECanvas
+* Wikipedia Explanation Links
+* Animated Gif auto execute action buttons
 
 ## Cubes/Dices
 
@@ -34,6 +36,7 @@
 * AR Support
 * Configure/Selfcode Randomfunction
 * Autosave names and colors
-* Accessiblity/Titles
+* Accessiblity/Titles + Color Mode
 * Font-hide flicker on home screen
 * Mobile Support
+* Localize Quotes
