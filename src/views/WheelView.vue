@@ -41,7 +41,7 @@ export default {
   components: {
     Wheel,
     ActionButton,
-    ConfigurationPane,
+    ConfigurationPane
   },
   data() {
     return {
@@ -50,7 +50,7 @@ export default {
       fadeOutTime: 10000,
       valuesString: "",
       values: [],
-      defaultValuesString: "",
+      defaultValuesString: ""
     };
   },
   methods: {
@@ -65,16 +65,16 @@ export default {
       if (ev.target.name === "values") {
         this.values = ev.target.value.split("\n").map((v, i) => ({
           name: v,
-          color: DEFAULT_COLORS[i % DEFAULT_COLORS.length],
+          color: DEFAULT_COLORS[i % DEFAULT_COLORS.length]
         }));
       }
-    },
+    }
   },
   mounted() {
     this.values = defaultConfiguration.wheel.values;
     this.defaultValuesString = this.values.map((v) => v.name).join("\n");
     this.valuesString = this.defaultValuesString;
-  },
+  }
 };
 </script>
 

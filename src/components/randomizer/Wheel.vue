@@ -18,7 +18,7 @@ export default {
     fadeOutTime: Number,
     config: Object,
     values: Array,
-    isSpinning: Boolean,
+    isSpinning: Boolean
   },
   data() {
     return {
@@ -26,7 +26,7 @@ export default {
       animations: [],
       valid: true,
       angle: 0,
-      trackingStarted: false,
+      trackingStarted: false
     };
   },
   watch: {
@@ -35,7 +35,7 @@ export default {
       if (this.valid === true) {
         this.drawWheel();
       }
-    },
+    }
   },
   methods: {
     checkSpinning() {
@@ -99,14 +99,14 @@ export default {
       // font-family: 'VT323', monospace;
       const { x, y } = rotate2d(-modifiedAlpha, {
         x: centerX + startingPoint * Math.cos(modifiedAlpha),
-        y: centerY + startingPoint * Math.sin(modifiedAlpha),
+        y: centerY + startingPoint * Math.sin(modifiedAlpha)
       });
       return {
         color: "black",
         fontSize: fontSize + "px",
         fontFamily: "Ubuntu Mono",
         x,
-        y,
+        y
       };
     },
     setupWheelTracking(step = 10) {
@@ -149,7 +149,7 @@ export default {
         if (exitVelocity > 0) {
           this.spin(angle, this.$props.spinTime, this.$props.fadeOutTime, {
             stepTime: 10,
-            stepAngle: exitVelocity * 250,
+            stepAngle: exitVelocity * 250
           });
         }
         velocity = [];
@@ -159,7 +159,7 @@ export default {
         onTrack(
           {
             x: element.offsetLeft + element.width / 2,
-            y: element.offsetTop + element.height / 2,
+            y: element.offsetTop + element.height / 2
           },
           element.width / 2
         ),
@@ -215,7 +215,7 @@ export default {
       // wheel constants
       const center = {
         x: canvas.width / 2,
-        y: canvas.height / 2,
+        y: canvas.height / 2
       };
       const radius = Math.min(center.x - 10, center.y - 10);
       const angle = (2 * Math.PI) / this.displayedPicks.length;
@@ -232,7 +232,7 @@ export default {
           {
             color: `#${p.color}`,
             borderColor: "blue",
-            borderWidth: 5,
+            borderWidth: 5
           }
         );
 
@@ -285,7 +285,7 @@ export default {
       }
       this.animations = [];
       this.$data.isSpinning = false;
-    },
+    }
   },
   mounted() {
     this.$data.isSpinning = false;
@@ -307,7 +307,7 @@ export default {
   },
   beforeUnmount() {
     this.stop();
-  },
+  }
 };
 </script>
 

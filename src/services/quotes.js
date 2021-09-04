@@ -29,7 +29,7 @@ export const quotes = [
     author: "Louis Pasteur"
   },
   {
-    text: "If you flip a coin three times and it lands on heads each time, it’s probably chance. If you flip it a hundred times and it lands on heads each time, you can be pretty sure the coin has heads on both sides. That’s the concept behind statistical significance—it’s the odds that the correlation (or other finding) is real, that it isn’t just random chance.",
+    text: "If you flip a coin three times and it lands on heads each time, it’s probably chance.",
     author: "T. Colin Campbell"
   },
   {

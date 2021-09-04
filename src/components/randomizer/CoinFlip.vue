@@ -10,17 +10,17 @@ import LoadingIndicator from "@/components/generic/LoadingIndicator";
 import {
   usingQuadratic,
   animate as startAnimate,
-  stopAnimation,
+  stopAnimation
 } from "@/services/animations";
 import { loadModel } from "@/services/loadModel";
 import * as THREE from "three";
 
 export default {
   components: {
-    LoadingIndicator,
+    LoadingIndicator
   },
   props: {
-    flipTime: Number,
+    flipTime: Number
   },
   data() {
     return {
@@ -33,7 +33,7 @@ export default {
       model: null,
       render: null,
       cancel: null,
-      isLoading: false,
+      isLoading: false
     };
   },
   methods: {
@@ -110,7 +110,7 @@ export default {
       const renderer = new THREE.WebGLRenderer({
         canvas,
         alpha: true,
-        antialias: true,
+        antialias: true
       });
       // Scene and Camera
       const scene = new THREE.Scene();
@@ -184,11 +184,11 @@ export default {
     },
     buildRenderFunction(renderer, camera, scene) {
       return () => renderer.render(scene, camera);
-    },
+    }
   },
   mounted() {
     this.setupScene();
-  },
+  }
 };
 </script>
 

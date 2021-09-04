@@ -1,0 +1,206 @@
+<template>
+  <div class="cards">
+    <InfoButton />
+    <LoadingIndicator :isLoading="isLoading" />
+    <canvas width="640" height="480" :id="canvasId"></canvas>
+  </div>
+</template>
+
+<script>
+import InfoButton from "@/components/globals/InfoButton";
+import LoadingIndicator from "@/components/generic/LoadingIndicator";
+import { loadModel } from "@/services/loadModel";
+import { createRaycaster } from "@/services/raycaster";
+import * as THREE from "three";
+import { AnimationClip, VectorKeyframeTrack, AnimationMixer } from "three";
+import { deg2Rad } from "@/services/angles";
+
+export default {
+  components: {
+    LoadingIndicator,
+    InfoButton
+  },
+  props: {
+    canvasId: String,
+    modelName: String,
+    meshName: String,
+    onClickCallback: Function,
+    onHoverCallback: Function,
+    onModelLoadedCallback: Function,
+    setupScene: Function,
+
+    instances: Number,
+    onMeshSpawnCallback: Function
+  },
+  data() {
+    return {
+      turned: false,
+      isLoading: false,
+      hovered: null,
+
+      canvas: null,
+      renderer: null,
+      scene: null,
+      camera: null,
+
+      isRunning: false,
+
+      model: null,
+
+      render: null,
+
+      cancel: null,
+
+      raycaster: null,
+      models: [],
+      meshes: [],
+      mixers: {},
+      actions: [],
+
+      mixer: null
+    };
+  },
+  methods: {
+    stop() {
+      this.isRunning = false;
+      if (this.cancel) {
+        this.cancel();
+      }
+    },
+    start() {
+      throw "NotImplementedError";
+    },
+    onClick() {
+      return () => {
+        const { hovered, mixers } = this;
+        // eslint-disable-next-line no-extra-boolean-cast
+        if (!!hovered) {
+          this.$props.onClick(hovered, mixers[hovered.uuid]);
+        }
+      };
+    },
+    setupScene() {
+      var canvas = document.getElementById(this.$props.canvasId);
+      canvas.height = canvas.parentElement.clientHeight;
+      canvas.width = canvas.parentElement.clientWidth;
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true
+      });
+      // Scene and Camera
+      const scene = new THREE.Scene();
+      var width = canvas.width;
+      var height = canvas.height;
+      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      camera.position.z = -1;
+      camera.position.x = 0;
+      camera.position.y = 0;
+      camera.rotation.y = Math.PI;
+
+      // Lighting
+      var color = 0xffffff;
+      var intensity = 1.5;
+      var light = new THREE.DirectionalLight(color, intensity);
+      light.position.z = -1;
+      light.position.x = -1;
+      light.castShadow = true;
+      light.position.x += 2;
+      scene.add(light);
+      intensity = 0.1;
+      var ambientLight = new THREE.AmbientLight(color, intensity);
+      scene.add(ambientLight);
+
+      this.models = [];
+      this.mixers = [];
+      this.isLoading = true;
+      this.render = this.buildRenderFunction(renderer, camera, scene);
+      loadModel(this.$props.modelName).then((res) => {
+        this.isLoading = false;
+
+        var loadedMesh = res;
+        while (
+          (!!loadedMesh.children && loadedMesh.children.length > 0) ||
+          loadedMesh.name !== this.$props.meshName
+        ) {
+          loadedMesh = loadedMesh.children[0];
+        }
+        const instances = this.$props.instances || 3;
+        for (let i = 0; i < instances; i++) {
+          const mesh = new THREE.Mesh(loadedMesh.geometry, loadedMesh.material);
+          this.$props.onModelLoadedCallback(mesh, i);
+          this.mixers[mesh.uuid] = new AnimationMixer(mesh);
+          this.meshes.push(mesh);
+          res.add(mesh);
+        }
+        res.remove(loadedMesh);
+        scene.add(res);
+
+        this.raycaster = createRaycaster(scene, camera, canvas, false);
+        renderer.render(scene, camera);
+        this.render = this.buildRenderFunction(renderer, camera, scene);
+        window.requestAnimationFrame(this.render);
+      });
+    },
+    buildRenderFunction(renderer, camera, scene) {
+      const { mixers } = this;
+      const clock = new THREE.Clock();
+      return () => {
+        const delta = clock.getDelta();
+        if (mixers) {
+          Object.keys(mixers).forEach((key) => {
+            mixers[key].update(delta);
+          });
+        }
+
+        // Animations
+        if (this.raycaster) {
+          const intersects = this.raycaster.getIntersections();
+          const canvas = document.getElementById(this.$props.canvasId);
+          // Clear other animations
+          if (intersects.length === 0) {
+            canvas.style.cursor = "default";
+          } else {
+            canvas.style.cursor = "pointer";
+          }
+          if (!!this.hovered && intersects.length === 0) {
+            this.$props.onLeave(this.hovered, this.mixers[this.hovered.uuid]);
+            this.hovered = null;
+          }
+          if (
+            intersects.length > 0 &&
+            (!this.hovered || this.hovered.uuid !== intersects[0].object.uuid)
+          ) {
+            console.log("hover");
+            if (this.hovered) {
+              this.$props.onLeave(this.hovered, this.mixers[mesh.uuid]);
+            }
+            const mesh = intersects[0].object;
+            this.hovered = mesh;
+          }
+        }
+
+        renderer.render(scene, camera);
+        window.requestAnimationFrame(this.render);
+      };
+    }
+  },
+  mounted() {
+    console.log("mounted");
+    if (this.$props.setupScene) {
+      const canvas = document.getElementById(this.$props.canvasId);
+      const {scene, camera, renderer, models} = this.$props.setupScene(canvas);
+      this.scene = scene;
+      this.camera = camera;
+      this.renderer = renderer;
+      this.models = models;
+    } else {
+      this.setupScene();
+    }
+    const onClick = this.onClick();
+    document.getElementById(this.$props.canvasId).addEventListener("click", onClick);
+  }
+};
+</script>
+
+<style scoped></style>

@@ -16,10 +16,10 @@ export default {
   setup() {
     const { t } = useI18n({
       inheritLocale: true,
-      useScope: "local",
+      useScope: "local"
     });
     return { t };
-  },
+  }
 };
 </script>
 

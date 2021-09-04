@@ -1,5 +1,5 @@
 <template>
-  <div class="locale-changer">
+  <div class="locale-changer" v-click-outside="hideSelect">
     <button
       v-on:click="showSelect"
       id="OpenLocaleDropdownButton"
@@ -40,6 +40,13 @@ export default {
     return { i18n, langs: ["en", "de"], open: false, currentFlag: "us" };
   },
   methods: {
+    hideSelect() {
+      if (this.open) {
+        var openButton = document.getElementById("OpenLocaleDropdownButton");
+        openButton.classList.toggle("open");
+        this.open = false;
+      }
+    },
     showSelect() {
       var openButton = document.getElementById("OpenLocaleDropdownButton");
       openButton.classList.toggle("open");
@@ -127,6 +134,7 @@ optgroup {
   border: 1px solid #aaa;
   border-top: none;
   transition: 0.25s;
+  font-family: "Roboto";
 }
 
 .locale-option.active {

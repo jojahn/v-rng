@@ -89,7 +89,7 @@ export default {
         console.log("click");
         const { hovered } = this;
         // eslint-disable-next-line no-extra-boolean-cast
-        if (!!hovered) {
+        if (!!hovered && !this.turned) {
           console.log("should play anim");
           const clip = AnimationClip.findByName(
             hovered,
@@ -109,28 +109,57 @@ export default {
     },
     getAnimations(mesh) {
       function hoverCard(mesh) {
-        const positionKeyframe = new THREE.NumberKeyframeTrack(
-          ".position[y]",
-          [0, 0.5],
-          [mesh.position.y, mesh.position.y + 0.1]
+        const alpha = mesh.rotation.z;
+        const radius = 0.1;
+        const x = -Math.sin(alpha) * radius;
+        const y = Math.cos(alpha) * radius;
+        const positionXKeyframe = new THREE.NumberKeyframeTrack(
+          ".position[x]",
+          [0, 0.25, 0.5],
+          [mesh.position.x, mesh.position.x, mesh.position.x + x]
         );
-        return new AnimationClip(HOVER_CARD_ANIMATION, -1, [positionKeyframe]);
+        const positionYKeyframe = new THREE.NumberKeyframeTrack(
+          ".position[y]",
+          [0, 0.25, 0.5],
+          [mesh.position.y, mesh.position.y, mesh.position.y + y]
+        );
+        return new AnimationClip(HOVER_CARD_ANIMATION, -1, [
+          positionXKeyframe,
+          positionYKeyframe
+        ]);
       }
       function reverseHoverCard(mesh) {
-        const returnPositionKeyframe = new THREE.NumberKeyframeTrack(
+        const alpha = mesh.rotation.z;
+        const radius = 0.1;
+        const x = -Math.sin(alpha) * radius;
+        const y = Math.cos(alpha) * radius;
+        const returnPositionXKeyframe = new THREE.NumberKeyframeTrack(
+          ".position[x]",
+          [0, 0.25, 0.5],
+          [mesh.position.x + x, mesh.position.x + x, mesh.position.x]
+        );
+        const returnPositionYKeyframe = new THREE.NumberKeyframeTrack(
           ".position[y]",
-          [0, 0.5],
-          [mesh.position.y + 0.1, mesh.position.y]
+          [0, 0.25, 0.5],
+          [mesh.position.y + y, mesh.position.y + y, mesh.position.y]
         );
         return new AnimationClip(REVERSE_HOVER_CARD_ANIMATION, -1, [
-          returnPositionKeyframe
+          returnPositionYKeyframe,
+          returnPositionXKeyframe
         ]);
       }
       function turnCard(mesh) {
         const positionKeyframe = new VectorKeyframeTrack(
           ".position",
           [0, 0.5],
-          [0, 0, 0, 0, 0.1, -0.1]
+          [
+            mesh.position.x,
+            mesh.position.y,
+            mesh.position.z,
+            0,
+            0,
+            mesh.position.z - 0.5
+          ]
         );
 
         var yAxis = new THREE.Vector3(0, 1, 0);
@@ -168,6 +197,7 @@ export default {
         );
 
         return new AnimationClip(TURN_CARD_ANIMATION, -1, [
+          positionKeyframe,
           rotationKeyframe,
           rotationKeyframeZ,
           rotationKeyframeX
@@ -177,10 +207,13 @@ export default {
         const positionKeyframe = new VectorKeyframeTrack(
           ".position",
           [0, 0.5],
-          // eslint-disable-next-line prettier/prettier
           [
-            0, 0, -0.1,
-            0, 0, 0
+            0,
+            0,
+            mesh.position.z - 0.5,
+            mesh.position.x,
+            mesh.position.y,
+            mesh.position.z
           ]
         );
 
@@ -205,6 +238,7 @@ export default {
         );
 
         return new AnimationClip(REVERSE_TURN_CARD_ANIMATION, -1, [
+          positionKeyframe,
           rotationKeyframe,
           rotationKeyframeZ,
           rotationKeyframeX
@@ -334,7 +368,7 @@ export default {
         }
 
         // Animations
-        if (this.raycaster) {
+        if (this.raycaster && !this.turned) {
           const intersects = this.raycaster.getIntersections();
           const canvas = document.getElementById("CardsCanvas");
           // Clear other animations

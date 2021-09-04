@@ -14,18 +14,18 @@ export default {
       canvas: null,
       renderer: null,
       scene: null,
-      camera: null,
+      camera: null
     };
   },
   methods: {
-    start() {},
+    start() {}
   },
   mounted() {
     var canvas = document.getElementById("DicesCanvas");
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: true,
+      antialias: true
     });
     renderer;
     // Scene and Camera
@@ -47,7 +47,7 @@ export default {
     light.position.x += 2;
     scene.add(light);
 
-    var intensity = 0.5;
+    intensity = 0.5;
     var ambientLight = new THREE.AmbientLight(color, intensity);
     scene.add(ambientLight);
 
@@ -87,7 +87,7 @@ export default {
       renderer.render(scene, camera);
     }
     animate();
-  },
+  }
 };
 </script>
 

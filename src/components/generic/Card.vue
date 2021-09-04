@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Courgette&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
 .router-link-card {
   text-decoration: none;
 }
@@ -79,7 +79,7 @@ export default {
 .card p {
   font-size: 1.75rem;
   font-weight: lighter;
-  font-family: "Courgette";
+  font-family: "Roboto", sans-serif;
 }
 
 @media screen and (max-width: 768px) {

@@ -18,7 +18,7 @@ export default {
     fadeOutTime: Number,
     config: Object,
     values: Array,
-    isSpinning: Boolean,
+    isSpinning: Boolean
   },
   data() {
     return {
@@ -27,7 +27,7 @@ export default {
       valid: true,
       angle: 0,
       trackingStarted: false,
-      currentIndex: 0,
+      currentIndex: 0
     };
   },
   watch: {
@@ -36,7 +36,7 @@ export default {
       if (this.valid === true) {
         this.drawSpinner();
       }
-    },
+    }
   },
   methods: {
     generateDisplayValues() {
@@ -101,7 +101,7 @@ export default {
 
       const center = {
         x: canvas.width / 2,
-        y: canvas.height / 2,
+        y: canvas.height / 2
       };
 
       var sizeOfAngle = (2 * Math.PI) / this.displayedPicks.length;
@@ -119,7 +119,7 @@ export default {
           {
             x: center.x - width / 2 /* center.x + Math.cos(angle) * radius */,
             y: center.y + Math.sin(angle) * radius,
-            z: center.x + Math.cos(angle) * radius,
+            z: center.x + Math.cos(angle) * radius
           },
           { width, height }
         );
@@ -187,12 +187,12 @@ export default {
       }
       this.animations = [];
       this.$data.isSpinning = false;
-    },
+    }
   },
   mounted() {
     this.drawSpinner();
     this.currentIndex = this.displayedPicks.length / 2;
-  },
+  }
 };
 </script>
 

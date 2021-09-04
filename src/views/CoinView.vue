@@ -1,14 +1,14 @@
 <template>
-<div>
-  <CoinFlip ref="coin" />
-  <ActionButton
-    class="spin-button"
-    :iconClass="
-      'bi ' + (!!$refs.coin && $refs.coin.isRunning ? 'bi-x' : 'bi-circle')
-    "
-    v-bind:callback="flip"
-  />
-</div>
+  <div>
+    <CoinFlip ref="coin" />
+    <ActionButton
+      class="spin-button"
+      :iconClass="
+        'bi ' + (!!$refs.coin && $refs.coin.isRunning ? 'bi-x' : 'bi-circle')
+      "
+      v-bind:callback="flip"
+    />
+  </div>
 </template>
 
 <script>
@@ -17,7 +17,7 @@ import ActionButton from "@/components/generic/ActionButton.vue";
 export default {
   components: {
     CoinFlip,
-    ActionButton,
+    ActionButton
   },
   methods: {
     flip() {
@@ -26,8 +26,8 @@ export default {
       } else {
         this.$refs.coin.start();
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

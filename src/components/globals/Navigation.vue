@@ -37,7 +37,7 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Courgette&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
 .navigation {
   position: absolute;
   display: flex;
@@ -46,7 +46,7 @@ export default {
   top: 10px;
   justify-content: center;
   transition: 0.25s;
-  font-family: "Courgette";
+  font-family: "Roboto", sans-serif;
 }
 
 .navigation.hidden {

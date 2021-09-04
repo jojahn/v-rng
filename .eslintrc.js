@@ -7,13 +7,13 @@ module.exports = {
     "prettier/prettier": [
       "error",
       {
-        "endOfLine": "auto"
-      },
-    ],
+        endOfLine: "auto"
+      }
+    ]
   },
   extends: [
     "plugin:vue/essential",
     "plugin:prettier/recommended",
     "eslint:recommended"
-  ],
+  ]
 };
