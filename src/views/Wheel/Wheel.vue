@@ -29,7 +29,8 @@ export default {
             angle: 0,
             trackingStarted: false,
             candidate: "",
-            resizeObserver: null
+            resizeObserver: null,
+            themeObserver: null
         };
     },
     watch: {
@@ -149,12 +150,11 @@ export default {
             this.trackingStarted = true;
         },
         drawPin(ctx, center, radius) {
-            const darkMode = localStorage.getItem("darkMode");
+            const darkMode = document.body.classList.contains("dark");
             ctx.save();
             ctx.beginPath();
-            ctx.fillStyle = darkMode == "true" ? "white" : "black";
-            ctx.fillStyle = "black";
-            ctx.strokeStyle = "white";
+            ctx.fillStyle = darkMode ? "#eee" : "#333";
+            ctx.strokeStyle = darkMode ? "#333" : "#eee";
             const x = center.x;
             const y = center.y - radius + 10;
             ctx.moveTo(x, y);
@@ -317,6 +317,14 @@ export default {
         });
         this.resizeObserver.observe(document.getElementsByTagName("body")[0]);
 
+        this.themeObserver = new MutationObserver(() => {
+            this.drawWheel();
+        });
+        this.themeObserver.observe(document.body, {
+            attributes: true,
+            attributeFilter: ["class"]
+        });
+
         setTimeout(() => {
             this.drawWheel();
             canvas.style.display = "initial";
@@ -332,6 +340,7 @@ export default {
     beforeUnmount() {
         this.stop();
         this.resizeObserver.disconnect();
+        this.themeObserver.disconnect();
     }
 };
 </script>
