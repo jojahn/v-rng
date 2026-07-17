@@ -1,12 +1,12 @@
-import { createApp } from "vue";
-import App from "./App.vue";
-import router from "./router";
-import i18n from "./i18n";
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import i18n from './locales/i18n'
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { clickOutside } from "./components/generic/ClickOutside";
 
-createApp(App)
-  .use(i18n)
-  .use(router)
-  .directive("click-outside", clickOutside)
-  .mount("#app");
+const app = createApp(App)
+
+app.use(i18n)
+app.use(router)
+
+app.mount('#app')

@@ -2,7 +2,7 @@
   <article>
     <section class="header">
       <Navigation />
-      <LocaleChanger />
+      <!-- TODO: implement <LocaleChanger /> -->
       <DarkModeButton />
     </section>
     <section class="body">
@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import Navigation from "@/components/globals/Navigation.vue";
-import DarkModeButton from "@/components/globals/DarkModeButton.vue";
-import LocaleChanger from "@/components/globals/LocaleChanger.vue";
+import Navigation from "@/components/Navigation.vue";
+import DarkModeButton from "@/components/DarkModeButton.vue";
+import LocaleChanger from "@/components/LocaleChanger.vue";
 
 export default {
   name: "Home",
@@ -55,7 +55,6 @@ body {
 }
 
 #app > article {
-  width: 100vw;
   min-height: fit-content;
   height: 100vh;
   display: flex;
@@ -68,15 +67,16 @@ body {
 
 .header {
   height: 60px;
-  width: 100vw;
-}
-
-.body {
-  height: 100%;
-  width: 100vw;
+  width: 100%;
 }
 
 .page-content {
-  min-height: 100%;
+  /* min-height: 100%; TODO: breaks */
+  height: 100%;
+}
+
+.body {
+  /* height: 100%; */
+  flex-grow: 1;
 }
 </style>
