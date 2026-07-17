@@ -114,9 +114,14 @@ export default {
 .open-config-button > *:nth-child(1) {
   border-radius: 3rem;
   color: #333;
-  padding: 10px;
-  display: block;
+  width: 42px;
   height: 42px;
+  padding: 8px;
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 .open-config-button:hover > *:nth-child(1) {
   background: #ddd;
