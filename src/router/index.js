@@ -26,22 +26,22 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: HomeView,
     },
     {
       path: '/wheel',
-      name: 'wheel',
+      name: 'Wheel',
       component: WheelView,
     },
     {
       path: '/matches',
-      name: 'matches',
+      name: 'Matches',
       component: MatchesView,
     },
     {
       path: '/coin',
-      name: 'coin',
+      name: 'Coin',
       component: MatchesView,
     }
   ],

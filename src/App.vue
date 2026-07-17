@@ -2,7 +2,7 @@
   <article>
     <section class="header">
       <Navigation />
-      <!-- TODO: implement <LocaleChanger /> -->
+      <LocaleChanger />
       <DarkModeButton />
     </section>
     <section class="body">

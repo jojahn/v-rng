@@ -15,7 +15,7 @@
         v-on:click="select('en')"
         id="en"
         :class="
-          'locale-option ' + (i18n.global.locale === 'en' ? 'active' : '')
+          'locale-option ' + (locale === 'en' ? 'active' : '')
         "
       >
         <p>English</p>
@@ -24,7 +24,7 @@
         v-on:click="select('de')"
         id="de"
         :class="
-          'locale-option ' + (i18n.global.locale === 'de' ? 'active' : '')
+          'locale-option ' + (locale === 'de' ? 'active' : '')
         "
       >
         <p>Deutsch</p>
@@ -34,10 +34,14 @@
 </template>
 
 <script>
-import i18n from "../locales/i18n";
+import { useI18n } from "vue-i18n";
 export default {
   data() {
-    return { i18n, langs: ["en", "de"], open: false, currentFlag: "us" };
+    return { langs: ["en", "de"], open: false, currentFlag: "us" };
+  },
+  setup() {
+    const { locale } = useI18n({ useScope: "global" });
+    return { locale };
   },
   methods: {
     hideSelect() {
@@ -53,32 +57,28 @@ export default {
       this.open = !this.open;
     },
     select(lang) {
-      i18n.global.locale = lang;
+      this.locale = lang;
       this.showSelect();
-      var options = document.getElementsByClassName("locale-option");
-      for (let i = 0; i < options.length; i++) {
-        options[i].classList.remove("active");
-        if (options[i].id === lang) {
-          options[i].classList.add("active");
-        }
-      }
       localStorage.setItem("locale", lang);
     },
     onChange() {
-      localStorage.setItem("locale", i18n.global.locale);
+      localStorage.setItem("locale", this.locale);
     }
   },
   mounted() {
     var cached = localStorage.getItem("locale");
     if (cached) {
-      i18n.global.locale = cached;
+      this.locale = cached;
     } else {
       try {
-        i18n.global.locale = navigator.language.split("-")[0];
+        const browserLocale = navigator.language.split("-")[0];
+        this.locale = this.langs.includes(browserLocale)
+          ? browserLocale
+          : "en";
       } catch (e) {
         console.log("Failed to get locale from browser: ", e);
       }
-      localStorage.setItem("locale", i18n.global.locale);
+      localStorage.setItem("locale", this.locale);
     }
   }
 };
@@ -193,7 +193,7 @@ optgroup {
 
 @media screen and (max-width: 768px) {
   .locale-changer {
-    display: none;
+    right: 100px;
   }
 }
 </style>

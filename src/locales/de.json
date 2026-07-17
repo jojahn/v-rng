@@ -2,9 +2,43 @@
   "Home": "Startseite",
   "Wheel": "Glücksrad",
   "Dices": "Würfel",
-  "Spinner": "Walze",
   "Coin": "Münzwurf",
+  "Spinner": "Walze",
   "Cards": "Karten",
   "Matches": "Streichhölzer",
-  "Slots": "Slots"
+  "Slots": "Slots",
+  "quotes": [
+    {
+      "text": "Chaos, wenn man es allein lässt, neigt dazu, sich zu vermehren.",
+      "author": "Stephen Hawking"
+    },
+    {
+      "text": "Mitten im Chaos gibt es auch Chancen.",
+      "author": "Sun Tzu"
+    },
+    {
+      "text": "Alle großen Veränderungen werden durch Chaos eingeleitet.",
+      "author": "Deepak Chopra"
+    },
+    {
+      "text": "In allem Chaos gibt es einen Kosmos, in aller Unordnung eine geheime Ordnung.",
+      "author": "Carl Jung"
+    },
+    {
+      "text": "Zufälligkeit kommt aus Rauschen der Atmosphäre",
+      "author": "random.org"
+    },
+    {
+      "text": "Der Zufall begünstigt den vorbereiteten Geist.",
+      "author": "Louis Pasteur"
+    },
+    {
+      "text": "Wenn du eine Münze dreimal wirfst und sie landet dreimal auf Kopf, ist es wahrscheinlich Zufall.",
+      "author": "T. Colin Campbell"
+    },
+    {
+      "text": "Zufälliger Zufall spielt eine große Rolle im Leben jedes Einzelnen.",
+      "author": "Gary Gygax"
+    }
+  ]
 }
