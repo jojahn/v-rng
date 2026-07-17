@@ -1,14 +1,12 @@
 # v-rng
 
-This template should help get you started developing with Vue 3 in Vite.
+A Vue 3 + Vite web application featuring multiple random number generation tools. Choose from coin flips, spin a wheel, or play matches games to help make decisions or settle disputes.
 
-## Recommended IDE Setup
+## Features
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+- **Coin Flip** - Classic coin toss for quick decisions
+- **Wheel Spinner** - Customizable spinning wheel for selection
+- **Matches Game** - Interactive matches game for decision-making
 
 ## Project Setup
 
@@ -16,14 +14,32 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Development & Build Commands
+
+### Development Server
+
+Start the development server with hot module reloading:
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+The app will be available at `http://localhost:5173` (or the next available port).
+
+### Production Build
+
+Build the application for production with minification:
 
 ```sh
 npm run build
+```
+
+Output files will be generated in the `dist/` directory.
+
+### Preview Production Build
+
+Preview the production build locally:
+
+```sh
+npm run preview
 ```
