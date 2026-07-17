@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Home/HomeView.vue'
 import WheelView from '@/views/Wheel/WheelView.vue'
 import MatchesView from '@/views/Matches/MatchesView.vue'
+import CoinView from '@/views/Coin/CoinView.vue'
 
 /*
 TODO: add more routes
@@ -42,7 +43,7 @@ const router = createRouter({
     {
       path: '/coin',
       name: 'Coin',
-      component: MatchesView,
+      component: CoinView,
     }
   ],
 })
