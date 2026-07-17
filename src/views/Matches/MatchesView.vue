@@ -96,5 +96,12 @@ form input {
     line-height: 3rem;
     font-family: Arial, Helvetica, sans-serif;
     font-family: "Ubuntu Mono", monospace;
+    background-color: #fff;
+    color: #333;
+}
+
+.dark form input {
+    background-color: #333;
+    color: #ddd;
 }
 </style>
