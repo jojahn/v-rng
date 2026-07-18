@@ -1,25 +1,34 @@
-import { pickRandom } from "@/services/random";
+import { randomNumber } from "@/services/random";
 import i18n from "@/locales/i18n";
 
-export function getQuotes() {
+export function getQuoteCount() {
   const quotes = i18n.global.tm("quotes");
-  return Array.isArray(quotes) ? quotes : [];
+  return Array.isArray(quotes) ? quotes.length : 0;
 }
 
-export function getRandomQuote() {
-  const quotes = getQuotes();
-  if (quotes.length === 0) {
+export function getQuoteByIndex(index) {
+  const quotes = i18n.global.tm("quotes");
+  if (!Array.isArray(quotes) || quotes.length === 0) {
     return { text: "Random chance plays a role in life.", author: "Unknown" };
   }
+  return quotes[index % quotes.length];
+}
 
-  const lastQuote = localStorage.getItem("lastQuote");
-  let quote = null;
-  if (lastQuote) {
-    const filtered = quotes.filter((q) => q.text !== lastQuote);
-    quote = filtered.length > 0 ? pickRandom(filtered) : pickRandom(quotes);
-  } else {
-    quote = pickRandom(quotes);
+export function getRandomQuoteIndex() {
+  const count = getQuoteCount();
+  if (count === 0) {
+    return 0;
   }
-  localStorage.setItem("lastQuote", quote.text);
-  return quote;
+
+  const lastIndex = localStorage.getItem("lastQuoteIndex");
+  let index;
+  if (lastIndex !== null) {
+    const last = parseInt(lastIndex, 10);
+    const available = Array.from({ length: count }, (_, i) => i).filter(i => i !== last);
+    index = available.length > 0 ? available[randomNumber(0, available.length - 1)] : randomNumber(0, count - 1);
+  } else {
+    index = randomNumber(0, count - 1);
+  }
+  localStorage.setItem("lastQuoteIndex", String(index));
+  return index;
 }

@@ -19,7 +19,7 @@
 
 <script>
 import Card from "@/components/Card.vue"
-import { getRandomQuote } from "./quotes.js"
+import { getRandomQuoteIndex, getQuoteByIndex } from "./quotes.js"
 import { useI18n } from "vue-i18n"
 
 export default {
@@ -28,7 +28,12 @@ export default {
     Card
   },
   data() {
-    return { quote: getRandomQuote() }
+    return { quoteIndex: 0 }
+  },
+  computed: {
+    quote() {
+      return getQuoteByIndex(this.quoteIndex)
+    }
   },
   setup() {
     const { t } = useI18n()
@@ -36,7 +41,7 @@ export default {
     return { t }
   },
   mounted() {
-    this.quote = getRandomQuote()
+    this.quoteIndex = getRandomQuoteIndex()
   }
 };
 </script>
