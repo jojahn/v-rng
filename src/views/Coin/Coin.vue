@@ -45,11 +45,11 @@ export default {
             this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
             this.renderer.setPixelRatio(window.devicePixelRatio || 1);
 
-            this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-            const key = new THREE.DirectionalLight(0xffffff, 0.9);
+            this.scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+            const key = new THREE.DirectionalLight(0xffffff, 1.3);
             key.position.set(2, 4, 5);
             this.scene.add(key);
-            const fill = new THREE.DirectionalLight(0xffffff, 0.4);
+            const fill = new THREE.DirectionalLight(0xffffff, 0.6);
             fill.position.set(-3, -2, -4);
             this.scene.add(fill);
 
