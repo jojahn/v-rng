@@ -3,22 +3,14 @@ import HomeView from '../views/Home/HomeView.vue'
 import WheelView from '@/views/Wheel/WheelView.vue'
 import MatchesView from '@/views/Matches/MatchesView.vue'
 import CoinView from '@/views/Coin/CoinView.vue'
+import DiceView from '@/views/Dice/DiceView.vue'
 
 /*
 TODO: add more routes
-      <router-link class="nav-item active" to="/">{{ t("Home") }}</router-link>
-      <router-link class="nav-item" to="/wheel">{{ t("Wheel") }}</router-link>
       <router-link class="nav-item" to="/spinner">{{
         t("Spinner")
       }}</router-link>
-      <router-link class="nav-item" to="/dices" disabled="true">{{
-        t("Dices")
-      }}</router-link>
-      <router-link class="nav-item" to="/coin">{{ t("Coin") }}</router-link>
       <router-link class="nav-item" to="/cards">{{ t("Cards") }}</router-link>
-      <router-link class="nav-item" to="/matches">{{
-        t("Matches")
-      }}</router-link>
       <router-link class="nav-item" to="/slots">{{ t("Slots") }}</router-link>
 */
 
@@ -44,6 +36,11 @@ const router = createRouter({
       path: '/coin',
       name: 'Coin',
       component: CoinView,
+    },
+    {
+      path: '/dice',
+      name: 'Dice',
+      component: DiceView,
     }
   ],
 })
