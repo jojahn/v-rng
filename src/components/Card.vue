@@ -76,6 +76,11 @@ export default {
   border-top: 1px solid #ddd;
 }
 
+.card img {
+  max-width: 100%;
+  height: auto;
+}
+
 .card p {
   font-size: 1.75rem;
   font-weight: lighter;

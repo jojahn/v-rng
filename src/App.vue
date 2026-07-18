@@ -22,17 +22,7 @@ export default {
     DarkModeButton,
     LocaleChanger,
     Navigation
-    // Header
-  },
-  data() {
-    false;
-  },
-  methods: {
-    do() {
-      // console.log($router.currentRoute._rawValue.fullPath);
-    }
-  },
-  mounted() {}
+  }
 };
 </script>
 

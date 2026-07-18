@@ -8,6 +8,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { pickRandom, randomNumber } from "@/services/random";
+import { preloadModel } from "@/services/preload";
 
 export default {
     props: {
@@ -59,8 +60,7 @@ export default {
             this.renderLoop();
         },
         loadCoin() {
-            const loader = new GLTFLoader();
-            loader.load("/models/coin/Coin.glb", (gltf) => {
+            preloadModel("/models/coin/Coin.glb").then((gltf) => {
                 this.coinModel = gltf.scene;
 
                 const box = new THREE.Box3().setFromObject(this.coinModel);
@@ -77,7 +77,7 @@ export default {
 
                 this.coinGroup.add(this.coinModel);
                 this.modelLoaded = true;
-            });
+            }).catch(err => console.error("Failed to load coin model:", err));
         },
         handleResize() {
             const canvas = this.$refs.canvas;

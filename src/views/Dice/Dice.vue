@@ -8,6 +8,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { randomNumber } from "@/services/random";
+import { preloadModel } from "@/services/preload";
 
 // Local-space face normal that should point toward the camera (+Z) to show each pip value,
 // derived from the model's baked-in texture UVs (see public/models/dice/Dice_Texture.png).
@@ -70,8 +71,7 @@ export default {
             this.renderLoop();
         },
         loadDice() {
-            const loader = new GLTFLoader();
-            loader.load("/models/dice/Dice.gltf", (gltf) => {
+            preloadModel("/models/dice/Dice.gltf").then((gltf) => {
                 this.diceModel = gltf.scene;
 
                 const box = new THREE.Box3().setFromObject(this.diceModel);
@@ -87,7 +87,7 @@ export default {
 
                 this.diceGroup.add(this.diceModel);
                 this.modelLoaded = true;
-            });
+            }).catch(err => console.error("Failed to load dice model:", err));
         },
         handleResize() {
             const canvas = this.$refs.canvas;
