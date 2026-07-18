@@ -32,7 +32,7 @@ export default {
 };
 </script>
 
-<style scoped> 
+<style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
 .navigation {
   position: absolute;
@@ -66,6 +66,7 @@ export default {
   padding: 10px 20px;
   display: block;
   transition: 0.1s;
+  user-select: none;
 }
 
 .nav-item:hover {
