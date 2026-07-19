@@ -63,10 +63,12 @@ export default {
   top: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 10vh;
   height: 100vh;
   width: 100vw;
   background-color: rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
 }
 
 .close-button {

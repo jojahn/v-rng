@@ -108,7 +108,7 @@ export default {
             this.renderer.render(this.scene, this.camera);
         },
         handleClick(event) {
-            if (!this.modelLoaded || this.isFlipping) {
+            if (!this.modelLoaded) {
                 return;
             }
             const canvas = this.$refs.canvas;
@@ -121,7 +121,11 @@ export default {
             raycaster.setFromCamera(pointer, this.camera);
             const hits = raycaster.intersectObject(this.coinModel, true);
             if (hits.length > 0) {
-                this.flip();
+                if (this.isFlipping) {
+                    this.cancelFlip();
+                } else {
+                    this.flip();
+                }
             }
         },
         flip() {
