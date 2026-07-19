@@ -1,3 +1,12 @@
+export const TWO_PI = Math.PI * 2;
+
+export function shortestAngleDelta(from, to) {
+    let delta = (to - from) % TWO_PI;
+    if (delta > Math.PI) delta -= TWO_PI;
+    if (delta < -Math.PI) delta += TWO_PI;
+    return delta;
+  }
+
 export function deg2Rad(deg) {
     var pi = Math.PI;
     return deg * (pi / 180);

@@ -32,7 +32,15 @@ export default {
             matches: [],
             isAnimating: false
         }
+  },
+  watch: {
+    numberOfMatches() {
+      this.reset();
     },
+    numberOfShorts() {
+      this.reset();
+    }
+  },
     computed: {
         canvasWidthPercent() {
             return Math.min(90, this.numberOfMatches * 14) + "%";
@@ -46,14 +54,6 @@ export default {
             window.addEventListener("load", () => {
                 this.draw();
             });
-        }
-    },
-    watch: {
-        numberOfMatches() {
-            this.draw();
-        },
-        numberOfShorts() {
-            this.draw();
         }
     },
     methods: {
@@ -82,8 +82,8 @@ export default {
                 this.matches.push({ isShort: missingShorts !== 0, index });
                 if (missingShorts) missingShorts--;
             });
-            this.matches = shuffleArray(this.matches).map((m, slot) => ({ ...m, slot }));
-            this.draw();
+          this.matches = shuffleArray(this.matches).map((m, slot) => ({ ...m, slot }));
+          this.draw();
         },
         draw(lift = null) {
             const canvas = this.$refs.canvas;

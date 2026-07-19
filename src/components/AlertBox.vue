@@ -2,12 +2,13 @@
     <div class="backdrop" v-if="opened" ref="backdrop" v-on:click="close">
         <div class="alert-box" v-on:click="onAlertBoxClick">
             <span>{{ header }}</span>
-            <button class="close-button" v-on:click="close">Close</button>
+            <button class="close-button" v-on:click="close">{{ t("Close") }}</button>
         </div>
     </div>
 </template>
 
 <script>
+import { useI18n } from "vue-i18n";
 export default {
     props: {
         header: String,
@@ -15,6 +16,10 @@ export default {
     data: () => ({
         opened: false
     }),
+    setup() {
+        const { t } = useI18n();
+        return { t };
+    },
     methods: {
         onBackdropClick() {
             this.close();
@@ -58,10 +63,12 @@ export default {
   top: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 10vh;
   height: 100vh;
   width: 100vw;
   background-color: rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
 }
 
 .close-button {

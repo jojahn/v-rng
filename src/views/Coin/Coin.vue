@@ -9,6 +9,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { pickRandom, randomNumber } from "@/services/random";
 import { preloadModel } from "@/services/preload";
+import { shortestAngleDelta } from "@/services/angles";
 
 export default {
     props: {
@@ -17,9 +18,13 @@ export default {
     data() {
         return {
             isFlipping: false,
+            progress: 0,
             modelLoaded: false,
             resizeObserver: null,
             frameId: null,
+            flipFrameId: null,
+            flipTimeoutId: null,
+            flipStartRotation: 0,
         };
     },
     mounted() {
@@ -30,6 +35,8 @@ export default {
     },
     beforeUnmount() {
         cancelAnimationFrame(this.frameId);
+        cancelAnimationFrame(this.flipFrameId);
+        clearTimeout(this.flipTimeoutId);
         this.resizeObserver && this.resizeObserver.disconnect();
         this.renderer && this.renderer.dispose();
     },
@@ -39,17 +46,20 @@ export default {
 
             this.scene = new THREE.Scene();
             this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-            this.camera.position.set(0, 0, 6);
+            // Slight z offset keeps the camera's default up vector from lining up with the
+            // view direction (which would make lookAt's orientation undefined) while still
+            // reading as an overhead view.
+            this.camera.position.set(0, 6, 1.5);
             this.camera.lookAt(0, 0, 0);
 
             this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
             this.renderer.setPixelRatio(window.devicePixelRatio || 1);
 
-            this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-            const key = new THREE.DirectionalLight(0xffffff, 0.9);
+            this.scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+            const key = new THREE.DirectionalLight(0xffffff, 1.3);
             key.position.set(2, 4, 5);
             this.scene.add(key);
-            const fill = new THREE.DirectionalLight(0xffffff, 0.4);
+            const fill = new THREE.DirectionalLight(0xffffff, 0.6);
             fill.position.set(-3, -2, -4);
             this.scene.add(fill);
 
@@ -67,7 +77,7 @@ export default {
                 const size = new THREE.Vector3();
                 box.getSize(size);
                 const maxDim = Math.max(size.x, size.y, size.z) || 1;
-                const scale = 0.6 / maxDim;
+                const scale = 1.2 / maxDim;
                 this.coinModel.scale.setScalar(scale);
 
                 const center = new THREE.Vector3();
@@ -98,7 +108,7 @@ export default {
             this.renderer.render(this.scene, this.camera);
         },
         handleClick(event) {
-            if (!this.modelLoaded || this.isFlipping) {
+            if (!this.modelLoaded) {
                 return;
             }
             const canvas = this.$refs.canvas;
@@ -111,7 +121,11 @@ export default {
             raycaster.setFromCamera(pointer, this.camera);
             const hits = raycaster.intersectObject(this.coinModel, true);
             if (hits.length > 0) {
-                this.flip();
+                if (this.isFlipping) {
+                    this.cancelFlip();
+                } else {
+                    this.flip();
+                }
             }
         },
         flip() {
@@ -119,6 +133,7 @@ export default {
                 return;
             }
             this.isFlipping = true;
+            this.progress = 0;
 
             // Resting pose (no extra half-turn) shows Tails, so only Heads needs the added half-turn.
             const outcome = pickRandom(["Heads", "Tails"]);
@@ -126,6 +141,7 @@ export default {
             const duration = 2500;
             const totalRotation = spins * Math.PI * 2 + (outcome === "Heads" ? Math.PI : 0);
             const startRotation = this.coinGroup.rotation.x;
+            this.flipStartRotation = startRotation;
             const liftHeight = 1.5;
             const start = performance.now();
 
@@ -156,19 +172,54 @@ export default {
                 const t = Math.min((now - start) / duration, 1);
                 this.coinGroup.rotation.x = startRotation + totalRotation * rotationProgressAt(t);
                 this.coinGroup.position.y = heightAt(t);
+                this.progress = t;
 
                 if (t < 1) {
-                    requestAnimationFrame(step);
+                    this.flipFrameId = requestAnimationFrame(step);
                 } else {
                     this.coinGroup.rotation.x = startRotation + totalRotation;
                     this.coinGroup.position.y = 0;
-                    setTimeout(() => {
+                    this.flipTimeoutId = setTimeout(() => {
                         this.isFlipping = false;
+                        this.progress = 0;
                         this.$props.onFlipped && this.$props.onFlipped(outcome);
-                    }, 1000);
+                    }, 500);
                 }
             };
-            requestAnimationFrame(step);
+            this.flipFrameId = requestAnimationFrame(step);
+        },
+        cancelFlip() {
+            if (!this.isFlipping) {
+                return;
+            }
+            cancelAnimationFrame(this.flipFrameId);
+            clearTimeout(this.flipTimeoutId);
+
+            const duration = 100;
+            const start = performance.now();
+            const startY = this.coinGroup.position.y;
+            const startProgress = this.progress;
+            const fallStartRotation = this.coinGroup.rotation.x;
+            // Settle to the nearest equivalent of the original rotation instead of unwinding every
+            // leftover full spin, so the cancel snap doesn't keep flipping while it falls.
+            const targetRotation = fallStartRotation + shortestAngleDelta(fallStartRotation, this.flipStartRotation);
+
+            const step = (now) => {
+                const t = Math.min((now - start) / duration, 1);
+                this.coinGroup.position.y = startY * (1 - t);
+                this.coinGroup.rotation.x = fallStartRotation + (targetRotation - fallStartRotation) * t;
+                this.progress = startProgress * (1 - t);
+
+                if (t < 1) {
+                    this.flipFrameId = requestAnimationFrame(step);
+                } else {
+                    this.coinGroup.position.y = 0;
+                    this.coinGroup.rotation.x = targetRotation;
+                    this.isFlipping = false;
+                    this.progress = 0;
+                }
+            };
+            this.flipFrameId = requestAnimationFrame(step);
         }
     }
 }

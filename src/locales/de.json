@@ -7,6 +7,11 @@
   "Cards": "Karten",
   "Matches": "Streichhölzer",
   "Slots": "Slots",
+  "Heads": "Kopf",
+  "Tails": "Zahl",
+  "LostMessage": "Verloren!",
+  "Close": "Schließen",
+  "ShortMatches": "Kurze Streichhölzer",
   "quotes": [
     {
       "text": "Chaos, wenn man es allein lässt, neigt dazu, sich zu vermehren.",

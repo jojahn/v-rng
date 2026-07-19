@@ -1,6 +1,6 @@
 <template>
     <div>
-        <AlertBox header="You lost!" ref="alertBox" />
+        <AlertBox :header="t('LostMessage')" ref="alertBox" />
         <div class="matches-view-content">
             <Matches ref="matches" :numberOfMatches="numberOfMatches" :numberOfShorts="numberOfShorts" :onLost="onLost" />
             <ActionButton class="spin-button" :iconClass="'bi ' +
@@ -8,17 +8,18 @@
                 " v-bind:callback="pickNext" />
         </div>
         <ConfigurationPane name="matches">
-            <form v-on:change="onFormChange" class="matches-form">
-                <input min="2" max="10" type="number" v-on:input="onFormChange" v-model="numberOfMatches" name="numberOfMatches">
-                <label>Matches</label>
-                <input min="1" :max="numberOfMatches - 1" type="number" v-on:input="onFormChange" v-model="numberOfShorts" name="numberOfShorts">
-                <label>Short Matches</label>
+            <form class="matches-form">
+                <input :min="MIN_NUMBER_OF_MATCHES" :max="MAX_NUMBER_OF_MATCHES" type="number" :value="numberOfMatches" @input="onValueChange" name="numberOfMatches">
+                <label>{{ t("Matches") }}</label>
+                <input min="1" :max="numberOfMatches - 1" type="number" v-model="numberOfShorts" name="numberOfShorts">
+                <label>{{ t("ShortMatches") }}</label>
             </form>
         </ConfigurationPane>
     </div>
 </template>
 
 <script>
+import { useI18n } from "vue-i18n";
 import ConfigurationPane from "@/components/ConfigurationPane.vue";
 import ActionButton from "@/components/ActionButton.vue";
 import AlertBox from "@/components/AlertBox.vue";
@@ -38,21 +39,26 @@ export default {
             numberOfShorts: 1,
         };
     },
+    setup() {
+        const { t } = useI18n();
+        const MAX_NUMBER_OF_MATCHES = 8;
+        const MIN_NUMBER_OF_MATCHES = 2;
+        return { t, MAX_NUMBER_OF_MATCHES, MIN_NUMBER_OF_MATCHES };
+    },
     mounted() {
         this.$refs.matches.reset();
     },
-    methods: {
-        onFormChange() {
-            if (this.numberOfMatches <= this.numberOfShorts) {
-                this.numberOfShorts = this.numberOfMatches - 1;
+  methods: {
+        onValueChange(event) {
+            const newValue = Number(event.target.value)
+            if (!Number.isNaN(newValue) && newValue >= this.MIN_NUMBER_OF_MATCHES && newValue <= this.MAX_NUMBER_OF_MATCHES) {
+                this.numberOfMatches = newValue;
+                this.$refs.matches.reset();
             }
-            this.$refs.matches.reset();
         },
         pickNext() {
             if (this.$refs.matches.hasNext()) {
                 this.$refs.matches.pickNext();
-            } else {
-                this.$refs.matches.reset();
             }
         },
         onLost() {
