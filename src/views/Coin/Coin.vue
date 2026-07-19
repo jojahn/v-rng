@@ -46,7 +46,10 @@ export default {
 
             this.scene = new THREE.Scene();
             this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-            this.camera.position.set(0, 0, 6);
+            // Slight z offset keeps the camera's default up vector from lining up with the
+            // view direction (which would make lookAt's orientation undefined) while still
+            // reading as an overhead view.
+            this.camera.position.set(0, 6, 1.5);
             this.camera.lookAt(0, 0, 0);
 
             this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
