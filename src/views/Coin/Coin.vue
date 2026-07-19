@@ -17,9 +17,13 @@ export default {
     data() {
         return {
             isFlipping: false,
+            progress: 0,
             modelLoaded: false,
             resizeObserver: null,
             frameId: null,
+            flipFrameId: null,
+            flipTimeoutId: null,
+            flipStartRotation: 0,
         };
     },
     mounted() {
@@ -30,6 +34,8 @@ export default {
     },
     beforeUnmount() {
         cancelAnimationFrame(this.frameId);
+        cancelAnimationFrame(this.flipFrameId);
+        clearTimeout(this.flipTimeoutId);
         this.resizeObserver && this.resizeObserver.disconnect();
         this.renderer && this.renderer.dispose();
     },
@@ -67,7 +73,7 @@ export default {
                 const size = new THREE.Vector3();
                 box.getSize(size);
                 const maxDim = Math.max(size.x, size.y, size.z) || 1;
-                const scale = 0.6 / maxDim;
+                const scale = 1.2 / maxDim;
                 this.coinModel.scale.setScalar(scale);
 
                 const center = new THREE.Vector3();
@@ -119,6 +125,7 @@ export default {
                 return;
             }
             this.isFlipping = true;
+            this.progress = 0;
 
             // Resting pose (no extra half-turn) shows Tails, so only Heads needs the added half-turn.
             const outcome = pickRandom(["Heads", "Tails"]);
@@ -126,6 +133,7 @@ export default {
             const duration = 2500;
             const totalRotation = spins * Math.PI * 2 + (outcome === "Heads" ? Math.PI : 0);
             const startRotation = this.coinGroup.rotation.x;
+            this.flipStartRotation = startRotation;
             const liftHeight = 1.5;
             const start = performance.now();
 
@@ -156,19 +164,52 @@ export default {
                 const t = Math.min((now - start) / duration, 1);
                 this.coinGroup.rotation.x = startRotation + totalRotation * rotationProgressAt(t);
                 this.coinGroup.position.y = heightAt(t);
+                this.progress = t;
 
                 if (t < 1) {
-                    requestAnimationFrame(step);
+                    this.flipFrameId = requestAnimationFrame(step);
                 } else {
                     this.coinGroup.rotation.x = startRotation + totalRotation;
                     this.coinGroup.position.y = 0;
-                    setTimeout(() => {
+                    this.flipTimeoutId = setTimeout(() => {
                         this.isFlipping = false;
+                        this.progress = 0;
                         this.$props.onFlipped && this.$props.onFlipped(outcome);
-                    }, 1000);
+                    }, 500);
                 }
             };
-            requestAnimationFrame(step);
+            this.flipFrameId = requestAnimationFrame(step);
+        },
+        cancelFlip() {
+            if (!this.isFlipping) {
+                return;
+            }
+            cancelAnimationFrame(this.flipFrameId);
+            clearTimeout(this.flipTimeoutId);
+
+            const duration = 200;
+            const start = performance.now();
+            const startY = this.coinGroup.position.y;
+            const startProgress = this.progress;
+            const fallStartRotation = this.coinGroup.rotation.x;
+            const targetRotation = this.flipStartRotation;
+
+            const step = (now) => {
+                const t = Math.min((now - start) / duration, 1);
+                this.coinGroup.position.y = startY * (1 - t);
+                this.coinGroup.rotation.x = fallStartRotation + (targetRotation - fallStartRotation) * t;
+                this.progress = startProgress * (1 - t);
+
+                if (t < 1) {
+                    this.flipFrameId = requestAnimationFrame(step);
+                } else {
+                    this.coinGroup.position.y = 0;
+                    this.coinGroup.rotation.x = targetRotation;
+                    this.isFlipping = false;
+                    this.progress = 0;
+                }
+            };
+            this.flipFrameId = requestAnimationFrame(step);
         }
     }
 }

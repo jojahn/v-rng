@@ -28,9 +28,13 @@ export default {
     data() {
         return {
             isRolling: false,
+            progress: 0,
             modelLoaded: false,
             resizeObserver: null,
             frameId: null,
+            rollFrameId: null,
+            rollTimeoutId: null,
+            rollStartRotation: { x: 0, y: 0, z: 0 },
         };
     },
     mounted() {
@@ -41,6 +45,8 @@ export default {
     },
     beforeUnmount() {
         cancelAnimationFrame(this.frameId);
+        cancelAnimationFrame(this.rollFrameId);
+        clearTimeout(this.rollTimeoutId);
         this.resizeObserver && this.resizeObserver.disconnect();
         this.renderer && this.renderer.dispose();
     },
@@ -129,6 +135,7 @@ export default {
                 return;
             }
             this.isRolling = true;
+            this.progress = 0;
 
             const value = randomNumber(1, 6);
             const target = FACE_ROTATIONS[value];
@@ -141,6 +148,7 @@ export default {
                 y: this.diceGroup.rotation.y,
                 z: this.diceGroup.rotation.z
             };
+            this.rollStartRotation = startRotation;
             const spinsFor = (target) => {
                 const spins = randomNumber(3, 5);
                 const sign = Math.random() < 0.5 ? -1 : 1;
@@ -177,26 +185,67 @@ export default {
 
             const step = (now) => {
                 const t = Math.min((now - start) / duration, 1);
-                const progress = rotationProgressAt(t);
-                this.diceGroup.rotation.x = startRotation.x + totalRotation.x * progress;
-                this.diceGroup.rotation.y = startRotation.y + totalRotation.y * progress;
-                this.diceGroup.rotation.z = startRotation.z + totalRotation.z * progress;
+                const rotationProgress = rotationProgressAt(t);
+                this.diceGroup.rotation.x = startRotation.x + totalRotation.x * rotationProgress;
+                this.diceGroup.rotation.y = startRotation.y + totalRotation.y * rotationProgress;
+                this.diceGroup.rotation.z = startRotation.z + totalRotation.z * rotationProgress;
                 this.diceGroup.position.y = heightAt(t);
+                this.progress = t;
 
                 if (t < 1) {
-                    requestAnimationFrame(step);
+                    this.rollFrameId = requestAnimationFrame(step);
                 } else {
                     this.diceGroup.rotation.x = startRotation.x + totalRotation.x;
                     this.diceGroup.rotation.y = startRotation.y + totalRotation.y;
                     this.diceGroup.rotation.z = startRotation.z + totalRotation.z;
                     this.diceGroup.position.y = 0;
-                    setTimeout(() => {
+                    this.rollTimeoutId = setTimeout(() => {
                         this.isRolling = false;
+                        this.progress = 0;
                         this.$props.onRolled && this.$props.onRolled(value);
-                    }, 1000);
+                    }, 500);
                 }
             };
-            requestAnimationFrame(step);
+            this.rollFrameId = requestAnimationFrame(step);
+        },
+        cancelRoll() {
+            if (!this.isRolling) {
+                return;
+            }
+            cancelAnimationFrame(this.rollFrameId);
+            clearTimeout(this.rollTimeoutId);
+
+            const duration = 200;
+            const start = performance.now();
+            const startY = this.diceGroup.position.y;
+            const startProgress = this.progress;
+            const fallStartRotation = {
+                x: this.diceGroup.rotation.x,
+                y: this.diceGroup.rotation.y,
+                z: this.diceGroup.rotation.z
+            };
+            const targetRotation = this.rollStartRotation;
+
+            const step = (now) => {
+                const t = Math.min((now - start) / duration, 1);
+                this.diceGroup.position.y = startY * (1 - t);
+                this.diceGroup.rotation.x = fallStartRotation.x + (targetRotation.x - fallStartRotation.x) * t;
+                this.diceGroup.rotation.y = fallStartRotation.y + (targetRotation.y - fallStartRotation.y) * t;
+                this.diceGroup.rotation.z = fallStartRotation.z + (targetRotation.z - fallStartRotation.z) * t;
+                this.progress = startProgress * (1 - t);
+
+                if (t < 1) {
+                    this.rollFrameId = requestAnimationFrame(step);
+                } else {
+                    this.diceGroup.position.y = 0;
+                    this.diceGroup.rotation.x = targetRotation.x;
+                    this.diceGroup.rotation.y = targetRotation.y;
+                    this.diceGroup.rotation.z = targetRotation.z;
+                    this.isRolling = false;
+                    this.progress = 0;
+                }
+            };
+            this.rollFrameId = requestAnimationFrame(step);
         }
     }
 }
