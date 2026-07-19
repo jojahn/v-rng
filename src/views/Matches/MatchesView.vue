@@ -10,9 +10,9 @@
         <ConfigurationPane name="matches">
             <form v-on:change="onFormChange" class="matches-form">
                 <input min="2" max="10" type="number" v-on:input="onFormChange" v-model="numberOfMatches" name="numberOfMatches">
-                <label>Matches</label>
+                <label>{{ t("Matches") }}</label>
                 <input min="1" :max="numberOfMatches - 1" type="number" v-on:input="onFormChange" v-model="numberOfShorts" name="numberOfShorts">
-                <label>Short Matches</label>
+                <label>{{ t("ShortMatches") }}</label>
             </form>
         </ConfigurationPane>
     </div>
