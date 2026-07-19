@@ -9,6 +9,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { randomNumber } from "@/services/random";
 import { preloadModel } from "@/services/preload";
+import { shortestAngleDelta } from "@/services/angles";
 
 // Local-space face normal that should point toward the camera (+Z) to show each pip value,
 // derived from the model's baked-in texture UVs (see public/models/dice/Dice_Texture.png).
@@ -215,7 +216,7 @@ export default {
             cancelAnimationFrame(this.rollFrameId);
             clearTimeout(this.rollTimeoutId);
 
-            const duration = 200;
+            const duration = 100;
             const start = performance.now();
             const startY = this.diceGroup.position.y;
             const startProgress = this.progress;
@@ -224,7 +225,13 @@ export default {
                 y: this.diceGroup.rotation.y,
                 z: this.diceGroup.rotation.z
             };
-            const targetRotation = this.rollStartRotation;
+            // Settle to the nearest equivalent of the original rotation instead of unwinding every
+            // leftover full spin, so the cancel snap doesn't keep tumbling while it falls.
+            const targetRotation = {
+                x: fallStartRotation.x + shortestAngleDelta(fallStartRotation.x, this.rollStartRotation.x),
+                y: fallStartRotation.y + shortestAngleDelta(fallStartRotation.y, this.rollStartRotation.y),
+                z: fallStartRotation.z + shortestAngleDelta(fallStartRotation.z, this.rollStartRotation.z)
+            };
 
             const step = (now) => {
                 const t = Math.min((now - start) / duration, 1);

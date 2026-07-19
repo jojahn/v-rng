@@ -9,6 +9,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { pickRandom, randomNumber } from "@/services/random";
 import { preloadModel } from "@/services/preload";
+import { shortestAngleDelta } from "@/services/angles";
 
 export default {
     props: {
@@ -187,12 +188,14 @@ export default {
             cancelAnimationFrame(this.flipFrameId);
             clearTimeout(this.flipTimeoutId);
 
-            const duration = 200;
+            const duration = 100;
             const start = performance.now();
             const startY = this.coinGroup.position.y;
             const startProgress = this.progress;
             const fallStartRotation = this.coinGroup.rotation.x;
-            const targetRotation = this.flipStartRotation;
+            // Settle to the nearest equivalent of the original rotation instead of unwinding every
+            // leftover full spin, so the cancel snap doesn't keep flipping while it falls.
+            const targetRotation = fallStartRotation + shortestAngleDelta(fallStartRotation, this.flipStartRotation);
 
             const step = (now) => {
                 const t = Math.min((now - start) / duration, 1);
