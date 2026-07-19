@@ -7,6 +7,10 @@
   "Cards": "Cards",
   "Matches": "Matches",
   "Slots": "Slots",
+  "Heads": "Heads",
+  "Tails": "Tails",
+  "LostMessage": "Lost!",
+  "Close": "Close",
   "quotes": [
     {
       "text": "Chaos, when left alone, tends to multiply.",

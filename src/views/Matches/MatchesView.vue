@@ -1,6 +1,6 @@
 <template>
     <div>
-        <AlertBox header="You lost!" ref="alertBox" />
+        <AlertBox :header="t('LostMessage')" ref="alertBox" />
         <div class="matches-view-content">
             <Matches ref="matches" :numberOfMatches="numberOfMatches" :numberOfShorts="numberOfShorts" :onLost="onLost" />
             <ActionButton class="spin-button" :iconClass="'bi ' +
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { useI18n } from "vue-i18n";
 import ConfigurationPane from "@/components/ConfigurationPane.vue";
 import ActionButton from "@/components/ActionButton.vue";
 import AlertBox from "@/components/AlertBox.vue";
@@ -37,6 +38,10 @@ export default {
             numberOfMatches: 3,
             numberOfShorts: 1,
         };
+    },
+    setup() {
+        const { t } = useI18n();
+        return { t };
     },
     mounted() {
         this.$refs.matches.reset();

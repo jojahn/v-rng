@@ -1,6 +1,6 @@
 <template>
     <div class="coin-view">
-        <AlertBox :header="outcome" ref="alertBox" />
+        <AlertBox :header="outcome ? t(outcome) : ''" ref="alertBox" />
         <Coin ref="coin" class="coin" :onFlipped="onFlipped" />
         <ActionButton class="spin-button" :iconClass="'bi ' +
             (!!$refs.coin && $refs.coin.isFlipping
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { useI18n } from "vue-i18n";
 import ActionButton from "@/components/ActionButton.vue";
 import AlertBox from "@/components/AlertBox.vue";
 import Coin from "./Coin.vue";
@@ -25,6 +26,10 @@ export default {
         return {
             outcome: ""
         };
+    },
+    setup() {
+        const { t } = useI18n();
+        return { t };
     },
     mounted() {
         // $refs.coin is unset during the initial render, so the template's guarded reads of
