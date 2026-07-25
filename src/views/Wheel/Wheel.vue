@@ -182,6 +182,7 @@ export default {
             ctx.save();
             ctx.font = `${fontSize} ${fontFamily}`;
             ctx.fillStyle = color;
+            ctx.textBaseline = "middle";
             ctx.rotate(rotation);
             ctx.fillText(text, x, y);
             ctx.restore();
