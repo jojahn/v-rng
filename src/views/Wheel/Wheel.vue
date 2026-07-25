@@ -22,7 +22,6 @@ export default {
         fadeOutTime: Number,
         config: Object,
         values: Array,
-        isSpinning: Boolean,
         onWon: Function
     },
     data() {
@@ -30,6 +29,7 @@ export default {
             displayedPicks: [],
             animations: [],
             progress: 0,
+            isSpinning: false,
             valid: true,
             errorMessage: "",
             angle: 0,
@@ -345,13 +345,13 @@ export default {
                 fadeOutTime,
                 stepTime,
                 () => {
-                    this.$data.isSpinning = false
-                    this.$data.progress = 0
+                    this.isSpinning = false
+                    this.progress = 0
                     this.$props.onWon?.(this.$data.candidate)
                 }
             )
             this.animations.push(fadeOutAnimation)
-            this.$data.isSpinning = true
+            this.isSpinning = true
 
             /*var interval = setInterval(() => {
               this.drawWheel(angle += deg2Rad(stepAngle));
@@ -366,12 +366,11 @@ export default {
                 stopAnimation(anim)
             }
             this.animations = []
-            this.$data.isSpinning = false
-            this.$data.progress = 0
+            this.isSpinning = false
+            this.progress = 0
         }
     },
     mounted() {
-        this.$data.isSpinning = false
         this.generateDisplayValues()
         this.drawWheel()
         const canvas = document.getElementById("WheelCanvas")
