@@ -7,7 +7,7 @@
             (!!$refs.wheel && $refs.wheel.isSpinning
                 ? 'bi-x'
                 : 'bi-shuffle')
-            " v-bind:callback="spin" />
+            " :progress="($refs.wheel && $refs.wheel.progress) || 0" v-bind:callback="spin" />
         <ConfigurationPane name="wheel">
             <form v-on:change="onFormChange">
                 <textarea :placeholder="'Mango\nVanilla\nStrawberry'" v-on:input="onFormChange" name="values"
@@ -109,6 +109,11 @@ export default {
     mounted() {
         this.defaultValuesString = this.values.map((v) => v.name).join("\n");
         this.valuesString = this.defaultValuesString;
+        // $refs.wheel is unset during the initial render, so the template's guarded reads of
+        // $refs.wheel.isSpinning/progress never touch those properties and never subscribe to
+        // them. Force one more render once the ref is populated so those reads happen and the
+        // button reacts from the very first spin instead of only after some other state change.
+        this.$nextTick(() => this.$forceUpdate());
     }
 };
 </script>

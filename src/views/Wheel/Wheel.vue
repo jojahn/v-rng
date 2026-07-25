@@ -9,7 +9,12 @@
 
 <script>
 import { rotate2d, deg2Rad, radian2deg } from "@/services/angles";
-import { fadeOut, animate, stopAnimation } from "@/services/animations";
+import {
+    fadeOut,
+    animate,
+    stopAnimation,
+    usingQuadraticFadeOut
+} from "@/services/animations";
 import { track } from "@/services/mouseTracking";
 export default {
     props: {
@@ -24,6 +29,7 @@ export default {
         return {
             displayedPicks: [],
             animations: [],
+            progress: 0,
             valid: true,
             errorMessage: "",
             angle: 0,
@@ -266,14 +272,36 @@ export default {
         ) {
             this.stop();
             let angle = starterAngle;
+            this.progress = 0;
+
+            // Progress advances by the same per-tick rotation used to draw the wheel, so its
+            // fill speed tracks the wheel's actual motion: constant during the spin phase, then
+            // slowing with the fade-out's deceleration instead of a plain time-based ramp.
+            const stepAngleRad = deg2Rad(stepAngle);
+            const spinTicks = Math.round(spinTime / stepTime);
+            const fadeOutTicks = Math.round(fadeOutTime / stepTime);
+            let fadeOutSpeedSum = 0;
+            for (let i = 0; i < fadeOutTicks; i++) {
+                fadeOutSpeedSum += usingQuadraticFadeOut(i / fadeOutTicks);
+            }
+            const totalRotation = stepAngleRad * (spinTicks + fadeOutSpeedSum);
+            let rotationTravelled = 0;
+
             var spin = () => {
-                this.drawWheel((angle += deg2Rad(stepAngle)));
+                angle += stepAngleRad;
+                rotationTravelled += stepAngleRad;
+                this.progress = Math.min(rotationTravelled / totalRotation, 1);
+                this.drawWheel(angle);
             };
             var spinRotateAnimation = animate(spin, spinTime, stepTime);
             this.animations.push(spinRotateAnimation);
 
             var fadeOutSpin = (x) => {
-                this.drawWheel((angle += deg2Rad(stepAngle) * x));
+                const delta = stepAngleRad * x;
+                angle += delta;
+                rotationTravelled += delta;
+                this.progress = Math.min(rotationTravelled / totalRotation, 1);
+                this.drawWheel(angle);
             };
             var fadeOutAnimation = fadeOut(
                 fadeOutSpin,
@@ -281,6 +309,7 @@ export default {
                 stepTime,
                 () => {
                     this.$data.isSpinning = false
+                    this.$data.progress = 0
                     this.$props.onWon && this.$props.onWon(this.$data.candidate);
                 }
             );
@@ -301,6 +330,7 @@ export default {
             }
             this.animations = [];
             this.$data.isSpinning = false;
+            this.$data.progress = 0;
         }
     },
     mounted() {
