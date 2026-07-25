@@ -1,12 +1,12 @@
 {
   "name": "v-rng",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "check": "oxlint src; oxfmt src"
+    "check": "oxlint --fix src; oxfmt src"
   },
   "dependencies": {
     "bootstrap-icons": "^1.13.1",

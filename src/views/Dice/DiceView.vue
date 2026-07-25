@@ -2,18 +2,22 @@
     <div class="dice-view">
         <AlertBox :header="outcome" ref="alertBox" />
         <Dice ref="dice" class="dice" :onRolled="onRolled" />
-        <ActionButton class="spin-button" :iconClass="'bi ' +
-            (!!$refs.dice && $refs.dice.isRolling
-                ? 'bi-x'
-                : 'bi-shuffle')
-            " :progress="($refs.dice && $refs.dice.progress) || 0" v-bind:callback="roll" />
+        <ActionButton
+            class="spin-button"
+            :iconClass="
+                'bi ' +
+                (!!$refs.dice && $refs.dice.isRolling ? 'bi-x' : 'bi-shuffle')
+            "
+            :progress="($refs.dice && $refs.dice.progress) || 0"
+            v-bind:callback="roll"
+        />
     </div>
 </template>
 
 <script>
-import ActionButton from "@/components/ActionButton.vue";
-import AlertBox from "@/components/AlertBox.vue";
-import Dice from "./Dice.vue";
+import ActionButton from "@/components/ActionButton.vue"
+import AlertBox from "@/components/AlertBox.vue"
+import Dice from "./Dice.vue"
 
 export default {
     components: {
@@ -24,26 +28,26 @@ export default {
     data() {
         return {
             outcome: ""
-        };
+        }
     },
     mounted() {
         // $refs.dice is unset during the initial render, so the template's guarded reads of
         // $refs.dice.isRolling/progress never touch those properties and never subscribe to
         // them. Force one more render once the ref is populated so those reads happen and the
         // button reacts from the very first roll instead of only after some other state change.
-        this.$nextTick(() => this.$forceUpdate());
+        this.$nextTick(() => this.$forceUpdate())
     },
     methods: {
         roll() {
             if (this.$refs.dice.isRolling) {
-                this.$refs.dice.cancelRoll();
+                this.$refs.dice.cancelRoll()
             } else {
-                this.$refs.dice.roll();
+                this.$refs.dice.roll()
             }
         },
         onRolled(value) {
-            this.outcome = String(value);
-            this.$refs.alertBox.open();
+            this.outcome = String(value)
+            this.$refs.alertBox.open()
         }
     }
 }

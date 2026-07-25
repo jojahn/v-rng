@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/Home/HomeView.vue'
-import WheelView from '@/views/Wheel/WheelView.vue'
-import MatchesView from '@/views/Matches/MatchesView.vue'
-import CoinView from '@/views/Coin/CoinView.vue'
-import DiceView from '@/views/Dice/DiceView.vue'
+import { createRouter, createWebHistory } from "vue-router"
+import HomeView from "../views/Home/HomeView.vue"
+import WheelView from "@/views/Wheel/WheelView.vue"
+import MatchesView from "@/views/Matches/MatchesView.vue"
+import CoinView from "@/views/Coin/CoinView.vue"
+import DiceView from "@/views/Dice/DiceView.vue"
 
 /*
 TODO: add more routes
@@ -15,34 +15,34 @@ TODO: add more routes
 */
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'Home',
-      component: HomeView,
-    },
-    {
-      path: '/wheel',
-      name: 'Wheel',
-      component: WheelView,
-    },
-    {
-      path: '/matches',
-      name: 'Matches',
-      component: MatchesView,
-    },
-    {
-      path: '/coin',
-      name: 'Coin',
-      component: CoinView,
-    },
-    {
-      path: '/dice',
-      name: 'Dice',
-      component: DiceView,
-    }
-  ],
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: [
+        {
+            path: "/",
+            name: "Home",
+            component: HomeView
+        },
+        {
+            path: "/wheel",
+            name: "Wheel",
+            component: WheelView
+        },
+        {
+            path: "/matches",
+            name: "Matches",
+            component: MatchesView
+        },
+        {
+            path: "/coin",
+            name: "Coin",
+            component: CoinView
+        },
+        {
+            path: "/dice",
+            name: "Dice",
+            component: DiceView
+        }
+    ]
 })
 
 export default router

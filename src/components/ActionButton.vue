@@ -1,30 +1,34 @@
 <template>
-    <button class="action-button" v-on:click="onClick" v-bind:style="{ '--fill-percent': (progress * 100) + '%' }">
-      <span class="action-button-fill"></span>
-      <i v-bind:class="['bi', iconClass].join(' ')"></i>
+    <button
+        class="action-button"
+        v-on:click="onClick"
+        v-bind:style="{ '--fill-percent': progress * 100 + '%' }"
+    >
+        <span class="action-button-fill"></span>
+        <i v-bind:class="['bi', iconClass].join(' ')"></i>
     </button>
-  </template>
+</template>
 
-  <script>
-  export default {
+<script>
+export default {
     props: {
-      iconClass: String,
-      callback: Function,
-      progress: {
-        type: Number,
-        default: 0
-      }
+        iconClass: String,
+        callback: Function,
+        progress: {
+            type: Number,
+            default: 0
+        }
     },
     methods: {
-      onClick() {
-        this.$props.callback();
-      }
+        onClick() {
+            this.$props.callback()
+        }
     }
-  };
-  </script>
-  
-  <style scoped>
-  .action-button {
+}
+</script>
+
+<style scoped>
+.action-button {
     --border-color: #ddd;
 
     min-width: 75px;
@@ -49,9 +53,9 @@
     flex-direction: column;
 
     min-height: 75px;
-  }
+}
 
-  .action-button-fill {
+.action-button-fill {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -60,43 +64,42 @@
     background-color: var(--border-color);
     transition: width 0.05s linear;
     pointer-events: none;
-  }
-  
-  /*
+}
+
+/*
       "FDDE3B",
       "48B2ED",
       "F5306B",
       "AAE85D"
    */
-  
-  .action-button i {
+
+.action-button i {
     position: relative;
     font-size: 3rem;
     font-weight: bold;
     text-align: center;
     width: 100%;
     color: black;
-  }
-  
-  .action-button hr {
+}
+
+.action-button hr {
     width: 80%;
     height: 1px;
     border: 0;
     border-top: 1px solid #ddd;
-  }
-  
-  .action-button > p {
+}
+
+.action-button > p {
     font-size: 1.75rem;
     font-family: "Arial";
     font-weight: 500;
-  }
-  
-  .dark .action-button {
+}
+
+.dark .action-button {
     --border-color: #555;
-  }
-  
-  .dark .action-button > i {
+}
+
+.dark .action-button > i {
     color: white;
-  }
-  </style>
-  
+}
+</style>
