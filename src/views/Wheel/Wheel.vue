@@ -66,32 +66,40 @@ export default {
             }
             this.displayedPicks = values;
         },
-        fitText(text, alpha, { x: centerX, y: centerY }, radius) {
-            let startingPoint = radius / 3;
-            let fontSize = 30;
-            const charSize = 15;
-            let textWidth = text.length * charSize;
-            if (textWidth > radius) {
-                var preferredTextWidth = (radius - 10) / charSize;
-                fontSize = preferredTextWidth / text.length;
-                startingPoint = (radius - preferredTextWidth) / 2;
-            } else {
-                startingPoint = (radius - textWidth + charSize) / 2;
-            }
-            let modifiedAlpha = alpha // TODO: + (alpha > Math.PI / 2 ? 0.02 : -0.02);
+        fitText(ctx, text, alpha, { x: centerX, y: centerY }, radius, sliceAngle) {
+            const fontFamily = "Ubuntu Mono";
+            const maxFontSize = 30;
+            const minFontSize = 8;
+            const padding = 10;
 
-            // font-family: 'Major Mono Display', monospace;
-            // font-family: 'Share Tech Mono', monospace;
-            // font-family: 'Ubuntu Mono', monospace;
-            // font-family: 'VT323', monospace;
-            const { x, y } = rotate2d(-modifiedAlpha, {
-                x: centerX + startingPoint * Math.cos(modifiedAlpha),
-                y: centerY + startingPoint * Math.sin(modifiedAlpha)
+            let fontSize = maxFontSize;
+            let textWidth = 0;
+            let startingPoint = 0;
+
+            // Shrink until the text's radial length fits the slice's length and its font
+            // size fits the slice's width at the text's inner edge (the slice's narrowest
+            // point along the text, since it's a pie slice that tapers toward the center).
+            // Without this, long text or many thin slices let text bleed into neighbouring
+            // slices, where it gets painted over and effectively disappears.
+            while (fontSize > minFontSize) {
+                ctx.font = `${fontSize}px ${fontFamily}`;
+                textWidth = ctx.measureText(text).width;
+                startingPoint = Math.max((radius - padding - textWidth) / 2, 0);
+                const availableHeight = 2 * startingPoint * Math.sin(sliceAngle / 2);
+                if (textWidth <= radius - padding && fontSize <= availableHeight) {
+                    break;
+                }
+                fontSize -= 1;
+            }
+
+            const { x, y } = rotate2d(-alpha, {
+                x: centerX + startingPoint * Math.cos(alpha),
+                y: centerY + startingPoint * Math.sin(alpha)
             });
             return {
                 color: "black",
                 fontSize: fontSize + "px",
-                fontFamily: "Ubuntu Mono",
+                fontFamily,
                 x,
                 y
             };
@@ -256,7 +264,7 @@ export default {
                 }
 
                 // Draw text
-                const textOptions = this.fitText(p.name, alpha, center, radius);
+                const textOptions = this.fitText(ctx2, p.name, alpha, center, radius, angle);
                 this.drawText(ctx2, textOptions, p.name, alpha, textOptions);
 
                 start += angle;
