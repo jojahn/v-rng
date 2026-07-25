@@ -2,7 +2,7 @@
     <div class="backdrop" v-if="opened" ref="backdrop" v-on:click="close">
         <div class="alert-box" v-on:click="onAlertBoxClick">
             <span>{{ header }}</span>
-            <button class="close-button" v-on:click="close">{{ t("Close") }}</button>
+            <button class="close-button" autofocus v-on:click="close">{{ t("Close") }}</button>
         </div>
     </div>
 </template>

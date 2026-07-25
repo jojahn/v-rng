@@ -29,6 +29,15 @@
       >
         <p>Deutsch</p>
       </button>
+      <button
+        v-on:click="select('es')"
+        id="es"
+        :class="
+          'locale-option ' + (locale === 'es' ? 'active' : '')
+        "
+      >
+        <p>Español</p>
+      </button>
     </div>
   </div>
 </template>
@@ -37,7 +46,7 @@
 import { useI18n } from "vue-i18n";
 export default {
   data() {
-    return { langs: ["en", "de"], open: false, currentFlag: "us" };
+    return { langs: ["en", "de", "es"], open: false, currentFlag: "us" };
   },
   setup() {
     const { locale } = useI18n({ useScope: "global" });
