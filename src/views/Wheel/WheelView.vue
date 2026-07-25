@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { DEFAULT_COLORS } from "@/services/COLORS";
+import { DEFAULT_COLORS, getColorInOrder } from "@/services/COLORS";
 import ActionButton from "@/components/ActionButton.vue";
 import ConfigurationPane from "@/components/ConfigurationPane.vue";
 import Wheel from "./Wheel.vue";
@@ -97,10 +97,11 @@ export default {
         },
         onFormChange(ev) {
             if (ev.target.name === "values") {
-                this.$refs.wheel.stop();
-                this.values = ev.target.value.split("\n").map((v, i) => ({
+              this.$refs.wheel.stop();
+                const strings = ev.target.value.split("\n").filter(Boolean)
+                this.values = strings.map((v, i) => ({
                     name: v,
-                    color: DEFAULT_COLORS[i % DEFAULT_COLORS.length]
+                    color: getColorInOrder(i, strings.length)
                 }));
             }
         }
