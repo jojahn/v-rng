@@ -47,6 +47,7 @@ export default {
             if (this.$refs.coin.isFlipping) {
                 this.$refs.coin.cancelFlip()
             } else {
+                this.$refs.alertBox.close()
                 this.$refs.coin.flip()
             }
         },

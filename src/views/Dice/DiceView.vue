@@ -42,6 +42,7 @@ export default {
             if (this.$refs.dice.isRolling) {
                 this.$refs.dice.cancelRoll()
             } else {
+                this.$refs.alertBox.close()
                 this.$refs.dice.roll()
             }
         },

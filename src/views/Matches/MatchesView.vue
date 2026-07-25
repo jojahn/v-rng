@@ -82,6 +82,7 @@ export default {
         },
         pickNext() {
             if (this.$refs.matches.hasNext()) {
+                this.$refs.alertBox.close()
                 this.$refs.matches.pickNext()
             }
         },

@@ -73,6 +73,7 @@ export default {
             if (this.$refs.wheel.isSpinning) {
                 this.$refs.wheel.stop()
             } else {
+                this.$refs.alertBox.close()
                 this.$refs.wheel.spin()
             }
         },
