@@ -12,6 +12,7 @@
     "LostMessage": "¡Perdiste!",
     "Close": "Cerrar",
     "ShortMatches": "Cerillas Cortas",
+    "RemoveWinner": "Eliminar ganador de la lista",
     "quotes": [
         {
             "text": "El caos, cuando se deja solo, tiende a multiplicarse.",

@@ -29,12 +29,22 @@
                     name="values"
                     v-model="valuesString"
                 ></textarea>
+                <div class="form-group">
+                    <input
+                        type="checkbox"
+                        id="removeWinner"
+                        name="removeWinner"
+                        v-model="removeWinner"
+                    />
+                    <label for="removeWinner">{{ t("RemoveWinner") }}</label>
+                </div>
             </form>
         </ConfigurationPane>
     </div>
 </template>
 
 <script>
+import { useI18n } from "vue-i18n"
 import { DEFAULT_COLORS, getColorInOrder } from "@/services/COLORS"
 import ActionButton from "@/components/ActionButton.vue"
 import ConfigurationPane from "@/components/ConfigurationPane.vue"
@@ -55,6 +65,7 @@ export default {
             fadeOutTime: 10000,
             currentWinner: "",
             valuesString: "",
+            removeWinner: false,
             values: [
                 { name: "Mango", color: DEFAULT_COLORS[0], instances: 1 },
                 { name: "Vanilla", color: DEFAULT_COLORS[1], instances: 1 },
@@ -64,10 +75,30 @@ export default {
             defaultValuesString: ""
         }
     },
+    setup() {
+        const { t } = useI18n()
+        return { t }
+    },
     methods: {
         onWheelWon(value) {
             this.currentWinner = value
             this.$refs.alertBox.open()
+            if (this.removeWinner) {
+                this.removeValue(value)
+            }
+        },
+        removeValue(name) {
+            const index = this.values.findIndex((v) => v.name === name)
+            if (index === -1) {
+                return
+            }
+            const strings = this.values.map((v) => v.name)
+            strings.splice(index, 1)
+            this.values = strings.map((v, i) => ({
+                name: v,
+                color: getColorInOrder(i, strings.length)
+            }))
+            this.valuesString = strings.join("\n")
         },
         spin() {
             if (this.$refs.wheel.isSpinning) {
@@ -162,12 +193,12 @@ form {
 
 form {
     height: 100%;
+    margin-top: 50px;
 }
 
 form textarea {
-    margin: auto;
-    margin-top: 18px;
-    height: 100%;
+    margin: 0 auto;
+    flex: 1;
     width: 90%;
     resize: none;
     border: none;
@@ -180,11 +211,31 @@ form textarea {
 
 .form-group {
     display: flex;
-    justify-content: space-evenly;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 90%;
+    margin: 0 auto 18px;
+    font-size: 1.25rem;
+    font-family: "Ubuntu Mono", monospace;
+}
+
+.form-group input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.form-group label {
+    cursor: pointer;
 }
 
 .dark form textarea {
     color: #ddd;
     background-color: #222;
+}
+
+.dark .form-group {
+    color: #ddd;
 }
 </style>

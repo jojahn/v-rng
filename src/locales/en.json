@@ -12,6 +12,7 @@
     "LostMessage": "Lost!",
     "Close": "Close",
     "ShortMatches": "Short Matches",
+    "RemoveWinner": "Remove winner from list",
     "quotes": [
         {
             "text": "Chaos, when left alone, tends to multiply.",
