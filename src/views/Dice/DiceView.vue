@@ -1,19 +1,40 @@
 <template>
     <div class="dice-view">
-        <AlertBox :header="outcome" ref="alertBox" />
+        <AlertBox
+            :header="outcome"
+            :background-color="outcomeBackgroundColor"
+            :color="outcomeColor"
+            ref="alertBox"
+        />
         <Dice ref="dice" class="dice" :onRolled="onRolled" />
-        <ActionButton class="spin-button" :iconClass="'bi ' +
-            (!!$refs.dice && $refs.dice.isRolling
-                ? 'bi-x'
-                : 'bi-shuffle')
-            " :progress="($refs.dice && $refs.dice.progress) || 0" v-bind:callback="roll" />
+        <ActionButton
+            class="spin-button"
+            :iconClass="
+                'bi ' +
+                (!!$refs.dice && $refs.dice.isRolling ? 'bi-x' : 'bi-shuffle')
+            "
+            :progress="($refs.dice && $refs.dice.progress) || 0"
+            v-bind:callback="roll"
+        />
     </div>
 </template>
 
 <script>
-import ActionButton from "@/components/ActionButton.vue";
-import AlertBox from "@/components/AlertBox.vue";
-import Dice from "./Dice.vue";
+import { DEFAULT_COLORS } from "@/services/COLORS"
+import ActionButton from "@/components/ActionButton.vue"
+import AlertBox from "@/components/AlertBox.vue"
+import Dice from "./Dice.vue"
+
+// Maps each rolled value (1-6, so index value-1) to a [backgroundIndex, colorIndex]
+// pair into DEFAULT_COLORS. Every face uses the same pair for now.
+const DICE_ALERT_COLOR_INDICES = [
+    [3, 2],
+    [1, 0],
+    [0, 1],
+    [0, 1],
+    [0, 1],
+    [0, 1]
+]
 
 export default {
     components: {
@@ -23,27 +44,33 @@ export default {
     },
     data() {
         return {
-            outcome: ""
-        };
+            outcome: "",
+            outcomeBackgroundColor: DEFAULT_COLORS[0],
+            outcomeColor: DEFAULT_COLORS[1]
+        }
     },
     mounted() {
         // $refs.dice is unset during the initial render, so the template's guarded reads of
         // $refs.dice.isRolling/progress never touch those properties and never subscribe to
         // them. Force one more render once the ref is populated so those reads happen and the
         // button reacts from the very first roll instead of only after some other state change.
-        this.$nextTick(() => this.$forceUpdate());
+        this.$nextTick(() => this.$forceUpdate())
     },
     methods: {
         roll() {
             if (this.$refs.dice.isRolling) {
-                this.$refs.dice.cancelRoll();
+                this.$refs.dice.cancelRoll()
             } else {
-                this.$refs.dice.roll();
+                this.$refs.alertBox.close()
+                this.$refs.dice.roll()
             }
         },
         onRolled(value) {
-            this.outcome = String(value);
-            this.$refs.alertBox.open();
+            this.outcome = String(value)
+            const [bgIndex, colorIndex] = DICE_ALERT_COLOR_INDICES[value - 1]
+            this.outcomeBackgroundColor = DEFAULT_COLORS[bgIndex]
+            this.outcomeColor = DEFAULT_COLORS[colorIndex]
+            this.$refs.alertBox.open()
         }
     }
 }

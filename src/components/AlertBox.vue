@@ -1,37 +1,33 @@
 <template>
-    <div class="backdrop" v-if="opened" ref="backdrop" v-on:click="close">
-        <div class="alert-box" v-on:click="onAlertBoxClick">
-            <span>{{ header }}</span>
-            <button class="close-button" v-on:click="close">{{ t("Close") }}</button>
-        </div>
+    <div
+        class="alert-box"
+        v-if="opened"
+        ref="alertBox"
+        :style="{
+            backgroundColor: `#${backgroundColor}`,
+            color: `#${color}`
+        }"
+    >
+        <span>{{ header }}</span>
     </div>
 </template>
 
 <script>
-import { useI18n } from "vue-i18n";
 export default {
     props: {
         header: String,
+        backgroundColor: { type: String, default: "eee" },
+        color: { type: String, default: "333" }
     },
     data: () => ({
         opened: false
     }),
-    setup() {
-        const { t } = useI18n();
-        return { t };
-    },
     methods: {
-        onBackdropClick() {
-            this.close();
-        },
-        onAlertBoxClick(event) {
-            event.stopPropagation();
-        },
         open() {
-            this.opened = true;
+            this.opened = true
         },
         close() {
-            this.opened = false;
+            this.opened = false
         }
     }
 }
@@ -39,46 +35,30 @@ export default {
 
 <style>
 .alert-box {
-    background-color: #eee;
-  padding: 10px;
-  border-radius: 0.3rem;
-  display: flex;
-  flex-direction: column;
-  user-select: none;
+    position: fixed;
+    z-index: 99999999999;
+    top: 10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    border-radius: 0.3rem;
+    border: 1px solid #aaa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    user-select: none;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+    height: calc(1rem + 20px);
+    min-width: calc(1rem + 20px);
 }
 
 .alert-box > span:first-child {
-  font-size: 1.75em;
-  font-weight: bold;
-  margin-bottom: 10px;
+    font-size: 1.75em;
+    font-weight: bold;
 }
 
-.dark .alert-box  {
-    background-color: #333;
-}
-
-.backdrop {
-  position: fixed;
-  z-index: 99999999999;
-  top: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 10vh;
-  height: 100vh;
-  width: 100vw;
-  background-color: rgba(0, 0, 0, 0.4);
-  box-sizing: border-box;
-}
-
-.close-button {
-  background-color: transparent;
-  color: var(--color);
-  border: 1px solid;
-  border-radius: 0.3rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 0.9em;
+.dark .alert-box {
+    border: 1px solid #111;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
 }
 </style>

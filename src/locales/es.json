@@ -1,0 +1,50 @@
+{
+    "Home": "Inicio",
+    "Wheel": "Ruleta",
+    "Dice": "Dados",
+    "Coin": "Moneda",
+    "Spinner": "Rueda",
+    "Cards": "Cartas",
+    "Matches": "Cerillas",
+    "Slots": "Tragaperras",
+    "Heads": "Cara",
+    "Tails": "Cruz",
+    "LostMessage": "¡Perdiste!",
+    "Close": "Cerrar",
+    "ShortMatches": "Cerillas Cortas",
+    "RemoveWinner": "Eliminar ganador de la lista",
+    "quotes": [
+        {
+            "text": "El caos, cuando se deja solo, tiende a multiplicarse.",
+            "author": "Stephen Hawking"
+        },
+        {
+            "text": "En medio del caos, también hay oportunidad.",
+            "author": "Sun Tzu"
+        },
+        {
+            "text": "Todos los grandes cambios están precedidos por el caos.",
+            "author": "Deepak Chopra"
+        },
+        {
+            "text": "En todo caos hay un cosmos, en todo desorden un orden secreto.",
+            "author": "Carl Jung"
+        },
+        {
+            "text": "La aleatoriedad proviene del ruido atmosférico",
+            "author": "random.org"
+        },
+        {
+            "text": "El azar favorece a la mente preparada.",
+            "author": "Louis Pasteur"
+        },
+        {
+            "text": "Si lanzas una moneda tres veces y cae en cara las tres, probablemente sea azar.",
+            "author": "T. Colin Campbell"
+        },
+        {
+            "text": "El azar juega un papel enorme en la vida de todos.",
+            "author": "Gary Gygax"
+        }
+    ]
+}

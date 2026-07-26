@@ -1,199 +1,206 @@
 <template>
-  <div class="locale-changer" v-click-outside="hideSelect">
-    <button
-      v-on:click="showSelect"
-      id="OpenLocaleDropdownButton"
-      class="locale-option-button"
-    >
-      <i class="bi bi-translate"></i>
-      <i
-        :class="'bi ' + (open ? 'bi-caret-down-fill' : 'bi-caret-left-fill')"
-      ></i>
-    </button>
-    <div class="locale-select" v-if="open === true">
-      <button
-        v-on:click="select('en')"
-        id="en"
-        :class="
-          'locale-option ' + (locale === 'en' ? 'active' : '')
-        "
-      >
-        <p>English</p>
-      </button>
-      <button
-        v-on:click="select('de')"
-        id="de"
-        :class="
-          'locale-option ' + (locale === 'de' ? 'active' : '')
-        "
-      >
-        <p>Deutsch</p>
-      </button>
+    <div class="locale-changer" v-click-outside="hideSelect">
+        <button
+            v-on:click="showSelect"
+            id="OpenLocaleDropdownButton"
+            class="locale-option-button"
+        >
+            <i class="bi bi-translate"></i>
+            <i
+                :class="
+                    'bi ' + (open ? 'bi-caret-down-fill' : 'bi-caret-left-fill')
+                "
+            ></i>
+        </button>
+        <div class="locale-select" v-if="open === true">
+            <button
+                v-on:click="select('en')"
+                id="en"
+                :class="'locale-option ' + (locale === 'en' ? 'active' : '')"
+            >
+                <p>English</p>
+            </button>
+            <button
+                v-on:click="select('de')"
+                id="de"
+                :class="'locale-option ' + (locale === 'de' ? 'active' : '')"
+            >
+                <p>Deutsch</p>
+            </button>
+            <button
+                v-on:click="select('es')"
+                id="es"
+                :class="'locale-option ' + (locale === 'es' ? 'active' : '')"
+            >
+                <p>Español</p>
+            </button>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
-import { useI18n } from "vue-i18n";
+import { useI18n } from "vue-i18n"
 export default {
-  data() {
-    return { langs: ["en", "de"], open: false, currentFlag: "us" };
-  },
-  setup() {
-    const { locale } = useI18n({ useScope: "global" });
-    return { locale };
-  },
-  methods: {
-    hideSelect() {
-      if (this.open) {
-        var openButton = document.getElementById("OpenLocaleDropdownButton");
-        openButton.classList.toggle("open");
-        this.open = false;
-      }
+    data() {
+        return { langs: ["en", "de", "es"], open: false, currentFlag: "us" }
     },
-    showSelect() {
-      var openButton = document.getElementById("OpenLocaleDropdownButton");
-      openButton.classList.toggle("open");
-      this.open = !this.open;
+    setup() {
+        const { locale } = useI18n({ useScope: "global" })
+        return { locale }
     },
-    select(lang) {
-      this.locale = lang;
-      this.showSelect();
-      localStorage.setItem("locale", lang);
+    methods: {
+        hideSelect() {
+            if (this.open) {
+                var openButton = document.getElementById(
+                    "OpenLocaleDropdownButton"
+                )
+                openButton.classList.toggle("open")
+                this.open = false
+            }
+        },
+        showSelect() {
+            var openButton = document.getElementById("OpenLocaleDropdownButton")
+            openButton.classList.toggle("open")
+            this.open = !this.open
+        },
+        select(lang) {
+            this.locale = lang
+            this.showSelect()
+            localStorage.setItem("locale", lang)
+        },
+        onChange() {
+            localStorage.setItem("locale", this.locale)
+        }
     },
-    onChange() {
-      localStorage.setItem("locale", this.locale);
+    mounted() {
+        var cached = localStorage.getItem("locale")
+        if (cached) {
+            this.locale = cached
+        } else {
+            try {
+                const browserLocale = navigator.language.split("-")[0]
+                this.locale = this.langs.includes(browserLocale)
+                    ? browserLocale
+                    : "en"
+            } catch (e) {
+                console.log("Failed to get locale from browser: ", e)
+            }
+            localStorage.setItem("locale", this.locale)
+        }
     }
-  },
-  mounted() {
-    var cached = localStorage.getItem("locale");
-    if (cached) {
-      this.locale = cached;
-    } else {
-      try {
-        const browserLocale = navigator.language.split("-")[0];
-        this.locale = this.langs.includes(browserLocale)
-          ? browserLocale
-          : "en";
-      } catch (e) {
-        console.log("Failed to get locale from browser: ", e);
-      }
-      localStorage.setItem("locale", this.locale);
-    }
-  }
-};
+}
 </script>
 
 <style scoped>
 .locale-changer {
-  border-radius: 0.3rem;
-  cursor: pointer;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  top: 10px;
-  right: 120px;
-  z-index: 99;
-  width: 80px;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 10px;
+    right: 120px;
+    z-index: 99;
+    width: 80px;
 
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .locale-changer select {
-  height: 50px;
+    height: 50px;
 }
 
 optgroup {
-  height: 50px;
+    height: 50px;
 }
 
 .locale-changer option {
-  background: red;
-  height: 50px;
+    background: red;
+    height: 50px;
 }
 
 .locale-select {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .locale-option img {
-  height: 20px;
-  width: 30px;
-  margin: 2px;
+    height: 20px;
+    width: 30px;
+    margin: 2px;
 }
 
 .locale-option {
-  display: flex;
-  margin: 0;
-  padding: 0;
-  border: none;
-  cursor: pointer;
-  background-color: #ddd;
-  border: 1px solid #aaa;
-  border-top: none;
-  transition: 0.25s;
-  font-family: "Roboto";
+    display: flex;
+    margin: 0;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    background-color: #ddd;
+    border: 1px solid #aaa;
+    border-top: none;
+    transition: 0.25s;
+    font-family: "Roboto";
 }
 
 .locale-option.active {
-  background-color: #eee;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 999;
+    background-color: #eee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 999;
 }
 
 .locale-option:last-child {
-  border-radius: 0 0 0.2rem 0.2rem;
+    border-radius: 0 0 0.2rem 0.2rem;
 }
 
 .locale-option p {
-  padding: 10px;
-  margin: 0;
-  font-size: 1rem;
+    padding: 10px;
+    margin: 0;
+    font-size: 1rem;
 }
 
 .locale-option-button {
-  background-color: #fff;
-  cursor: pointer;
-  border: 1px solid #aaa;
-  border-radius: 0.2rem;
+    background-color: #fff;
+    cursor: pointer;
+    border: 1px solid #aaa;
+    border-radius: 0.2rem;
 }
 
 .locale-option-button.open {
-  border-radius: 0.2rem 0.2rem 0 0;
+    border-radius: 0.2rem 0.2rem 0 0;
 }
 
 .locale-option-button > i:first-child {
-  font-size: 1.5rem;
+    font-size: 1.5rem;
 }
 
 .locale-option-button > i:nth-child(2) {
-  font-size: 1.25rem;
-  line-height: 2rem;
-  margin-left: 5px;
+    font-size: 1.25rem;
+    line-height: 2rem;
+    margin-left: 5px;
 }
 
 .dark .locale-option-button {
-  border-color: #000;
-  background-color: #222;
-  color: #ddd;
+    border-color: #000;
+    background-color: #222;
+    color: #ddd;
 }
 
 .dark .locale-option {
-  color: #ddd;
-  background-color: #222;
-  border-color: #000;
+    color: #ddd;
+    background-color: #222;
+    border-color: #000;
 }
 
 .dark .locale-option.active {
-  background-color: #333;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    background-color: #333;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
 }
 
 @media screen and (max-width: 768px) {
-  .locale-changer {
-    right: 100px;
-  }
+    .locale-changer {
+        right: 100px;
+    }
 }
 </style>
