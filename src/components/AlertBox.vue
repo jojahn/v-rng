@@ -1,5 +1,13 @@
 <template>
-    <div class="alert-box" v-if="opened" ref="alertBox">
+    <div
+        class="alert-box"
+        v-if="opened"
+        ref="alertBox"
+        :style="{
+            backgroundColor: `#${backgroundColor}`,
+            color: `#${color}`
+        }"
+    >
         <span>{{ header }}</span>
     </div>
 </template>
@@ -7,7 +15,9 @@
 <script>
 export default {
     props: {
-        header: String
+        header: String,
+        backgroundColor: { type: String, default: "eee" },
+        color: { type: String, default: "333" }
     },
     data: () => ({
         opened: false
@@ -30,7 +40,6 @@ export default {
     top: 10vh;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #eee;
     padding: 10px;
     border-radius: 0.3rem;
     border: 1px solid #aaa;
@@ -39,6 +48,8 @@ export default {
     align-items: center;
     user-select: none;
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+    height: calc(1rem + 20px);
+    min-width: calc(1rem + 20px);
 }
 
 .alert-box > span:first-child {
@@ -47,7 +58,7 @@ export default {
 }
 
 .dark .alert-box {
-    background-color: #333;
     border: 1px solid #111;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
 }
 </style>

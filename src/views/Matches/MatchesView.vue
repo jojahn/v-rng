@@ -1,6 +1,11 @@
 <template>
     <div>
-        <AlertBox :header="t('LostMessage')" ref="alertBox" />
+        <AlertBox
+            :header="t('LostMessage')"
+            background-color="F5306B"
+            color="000000"
+            ref="alertBox"
+        />
         <div class="matches-view-content">
             <Matches
                 ref="matches"

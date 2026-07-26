@@ -1,6 +1,11 @@
 <template>
     <div class="coin-view">
-        <AlertBox :header="outcome ? t(outcome) : ''" ref="alertBox" />
+        <AlertBox
+            :header="outcome ? t(outcome) : ''"
+            background-color="FDDE3B"
+            color="000000"
+            ref="alertBox"
+        />
         <Coin ref="coin" class="coin" :onFlipped="onFlipped" />
         <ActionButton
             class="spin-button"

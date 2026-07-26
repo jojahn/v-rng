@@ -1,6 +1,11 @@
 <template>
     <div class="wheel-view">
-        <AlertBox :header="currentWinner" ref="alertBox" />
+        <AlertBox
+            :header="currentWinner"
+            :background-color="currentWinnerColor"
+            color="000"
+            ref="alertBox"
+        />
         <Wheel
             ref="wheel"
             class="wheel"
@@ -64,6 +69,7 @@ export default {
             spinTime: 2000,
             fadeOutTime: 10000,
             currentWinner: "",
+            currentWinnerColor: DEFAULT_COLORS[0],
             valuesString: "",
             removeWinner: false,
             values: [
@@ -82,6 +88,10 @@ export default {
     methods: {
         onWheelWon(value) {
             this.currentWinner = value
+            const winningEntry = this.values.find((v) => v.name === value)
+            this.currentWinnerColor = winningEntry
+                ? winningEntry.color
+                : DEFAULT_COLORS[0]
             this.$refs.alertBox.open()
             if (this.removeWinner) {
                 this.removeValue(value)

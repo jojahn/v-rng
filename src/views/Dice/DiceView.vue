@@ -1,6 +1,11 @@
 <template>
     <div class="dice-view">
-        <AlertBox :header="outcome" ref="alertBox" />
+        <AlertBox
+            :header="outcome"
+            :background-color="outcomeBackgroundColor"
+            :color="outcomeColor"
+            ref="alertBox"
+        />
         <Dice ref="dice" class="dice" :onRolled="onRolled" />
         <ActionButton
             class="spin-button"
@@ -15,9 +20,21 @@
 </template>
 
 <script>
+import { DEFAULT_COLORS } from "@/services/COLORS"
 import ActionButton from "@/components/ActionButton.vue"
 import AlertBox from "@/components/AlertBox.vue"
 import Dice from "./Dice.vue"
+
+// Maps each rolled value (1-6, so index value-1) to a [backgroundIndex, colorIndex]
+// pair into DEFAULT_COLORS. Every face uses the same pair for now.
+const DICE_ALERT_COLOR_INDICES = [
+    [3, 2],
+    [1, 0],
+    [0, 1],
+    [0, 1],
+    [0, 1],
+    [0, 1]
+]
 
 export default {
     components: {
@@ -27,7 +44,9 @@ export default {
     },
     data() {
         return {
-            outcome: ""
+            outcome: "",
+            outcomeBackgroundColor: DEFAULT_COLORS[0],
+            outcomeColor: DEFAULT_COLORS[1]
         }
     },
     mounted() {
@@ -48,6 +67,9 @@ export default {
         },
         onRolled(value) {
             this.outcome = String(value)
+            const [bgIndex, colorIndex] = DICE_ALERT_COLOR_INDICES[value - 1]
+            this.outcomeBackgroundColor = DEFAULT_COLORS[bgIndex]
+            this.outcomeColor = DEFAULT_COLORS[colorIndex]
             this.$refs.alertBox.open()
         }
     }
