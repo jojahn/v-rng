@@ -38,7 +38,7 @@ export default {
     flex-direction: column;
     align-items: center;
     user-select: none;
-    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1)
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
 }
 
 .alert-box > span:first-child {

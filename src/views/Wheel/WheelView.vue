@@ -58,8 +58,8 @@ export default {
             values: [
                 { name: "Mango", color: DEFAULT_COLORS[0], instances: 1 },
                 { name: "Vanilla", color: DEFAULT_COLORS[1], instances: 1 },
-                { name: "Lime", color: DEFAULT_COLORS[3], instances: 1 },
-                { name: "Strawberry", color: DEFAULT_COLORS[2], instances: 1 }
+                { name: "Strawberry", color: DEFAULT_COLORS[2], instances: 1 },
+                { name: "Lime", color: DEFAULT_COLORS[3], instances: 1 }
             ],
             defaultValuesString: ""
         }
