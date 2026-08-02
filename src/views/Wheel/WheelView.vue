@@ -53,7 +53,7 @@ import { useI18n } from "vue-i18n"
 import { DEFAULT_COLORS, getColorInOrder } from "@/services/COLORS"
 import ActionButton from "@/components/ActionButton.vue"
 import ConfigurationPane from "@/components/ConfigurationPane.vue"
-import Wheel from "./Wheel.vue"
+import Wheel, { FALLBACK_PICKS } from "./Wheel.vue"
 import AlertBox from "@/components/AlertBox.vue"
 
 export default {
@@ -88,7 +88,10 @@ export default {
     methods: {
         onWheelWon(value) {
             this.currentWinner = value
-            const winningEntry = this.values.find((v) => v.name === value)
+            const usingFallback = this.values.length === 0
+            const winningEntry = usingFallback
+                ? FALLBACK_PICKS.find((v) => v.name === value)
+                : this.values.find((v) => v.name === value)
             this.currentWinnerColor = winningEntry
                 ? winningEntry.color
                 : DEFAULT_COLORS[0]

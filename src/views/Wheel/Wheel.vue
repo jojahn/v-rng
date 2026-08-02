@@ -14,7 +14,10 @@ import {
 } from "@/services/animations"
 import { track } from "@/services/mouseTracking"
 import { DEFAULT_COLORS } from "@/services/COLORS"
-const FALLBACK_PICK = { name: "Tangerine", color: DEFAULT_COLORS[0] }
+export const FALLBACK_PICKS = [
+    { name: "Yes", color: DEFAULT_COLORS[3] },
+    { name: "No", color: DEFAULT_COLORS[2] }
+]
 export default {
     props: {
         spinTime: Number,
@@ -50,7 +53,7 @@ export default {
             let values = (this.$props.values || []).filter(
                 (v) => !!v.name && !!v.color
             )
-            this.displayedPicks = values.length ? values : [FALLBACK_PICK]
+            this.displayedPicks = values.length ? values : FALLBACK_PICKS
         },
         fitText(
             ctx,
