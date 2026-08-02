@@ -6,7 +6,7 @@
             :color="outcomeColor"
             ref="alertBox"
         />
-        <Dice ref="dice" class="dice" :onRolled="onRolled" />
+        <Dice ref="dice" class="dice" :onRolled="onRolled" :onRollStart="onRollStart" />
         <ActionButton
             class="spin-button"
             :iconClass="
@@ -61,9 +61,12 @@ export default {
             if (this.$refs.dice.isRolling) {
                 this.$refs.dice.cancelRoll()
             } else {
-                this.$refs.alertBox.close()
+                this.onRollStart()
                 this.$refs.dice.roll()
             }
+        },
+        onRollStart() {
+            this.$refs.alertBox.close()
         },
         onRolled(value) {
             this.outcome = String(value)

@@ -17,7 +17,8 @@ import { shortestAngleDelta } from "@/services/angles"
 
 export default {
     props: {
-        onFlipped: Function
+        onFlipped: Function,
+        onFlipStart: Function
     },
     data() {
         return {
@@ -141,6 +142,7 @@ export default {
             if (this.isFlipping || !this.modelLoaded) {
                 return
             }
+            this.$props.onFlipStart?.()
             this.isFlipping = true
             this.progress = 0
 

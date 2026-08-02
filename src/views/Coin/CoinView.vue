@@ -6,7 +6,7 @@
             color="000000"
             ref="alertBox"
         />
-        <Coin ref="coin" class="coin" :onFlipped="onFlipped" />
+        <Coin ref="coin" class="coin" :onFlipped="onFlipped" :onFlipStart="onFlipStart" />
         <ActionButton
             class="spin-button"
             :iconClass="
@@ -52,9 +52,12 @@ export default {
             if (this.$refs.coin.isFlipping) {
                 this.$refs.coin.cancelFlip()
             } else {
-                this.$refs.alertBox.close()
+                this.onFlipStart()
                 this.$refs.coin.flip()
             }
+        },
+        onFlipStart() {
+            this.$refs.alertBox.close()
         },
         onFlipped(outcome) {
             this.outcome = outcome

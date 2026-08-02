@@ -28,7 +28,8 @@ const FACE_ROTATIONS = {
 
 export default {
     props: {
-        onRolled: Function
+        onRolled: Function,
+        onRollStart: Function
     },
     data() {
         return {
@@ -154,6 +155,7 @@ export default {
             if (this.isRolling || !this.modelLoaded) {
                 return
             }
+            this.$props.onRollStart?.()
             this.isRolling = true
             this.progress = 0
 

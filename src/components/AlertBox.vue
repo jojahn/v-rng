@@ -47,6 +47,7 @@ export default {
     flex-direction: column;
     align-items: center;
     user-select: none;
+    pointer-events: none;
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
     height: calc(1rem + 20px);
     min-width: calc(1rem + 20px);
