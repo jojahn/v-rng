@@ -10,20 +10,34 @@
 
 <script>
 import * as THREE from "three"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { randomNumber } from "@/services/random"
 import { preloadModel } from "@/services/preload"
-import { shortestAngleDelta } from "@/services/angles"
 
-// Local-space face normal that should point toward the camera (+Z) to show each pip value,
-// derived from the model's baked-in texture UVs (see public/models/dice/Dice_Texture.png).
-const FACE_ROTATIONS = {
-    1: new THREE.Euler(0, -Math.PI / 2, 0),
-    2: new THREE.Euler(0, 0, 0),
-    3: new THREE.Euler(Math.PI / 2, 0, 0),
-    4: new THREE.Euler(0, Math.PI, 0),
-    5: new THREE.Euler(-Math.PI / 2, 0, 0),
-    6: new THREE.Euler(0, Math.PI / 2, 0)
+// Local-space face normal for each pip value, derived from the model's baked-in texture
+// UVs (see public/models/dice/Dice_Texture.png). The camera looks down at the scene, so
+// showing a value means rotating that normal to point toward world up (+Y).
+const FACE_NORMALS = {
+    1: new THREE.Vector3(1, 0, 0),
+    2: new THREE.Vector3(0, 0, 1),
+    3: new THREE.Vector3(0, 1, 0),
+    4: new THREE.Vector3(0, 0, -1),
+    5: new THREE.Vector3(0, -1, 0),
+    6: new THREE.Vector3(-1, 0, 0)
+}
+const UP = new THREE.Vector3(0, 1, 0)
+
+// Quaternion that rotates the chosen face's normal to world up, with a random spin
+// around that up axis so the landing orientation isn't always identical.
+function targetQuaternionFor(value) {
+    const align = new THREE.Quaternion().setFromUnitVectors(
+        FACE_NORMALS[value],
+        UP
+    )
+    const yaw = new THREE.Quaternion().setFromAxisAngle(
+        UP,
+        Math.random() * Math.PI * 2
+    )
+    return yaw.multiply(align)
 }
 
 export default {
@@ -40,7 +54,7 @@ export default {
             frameId: null,
             rollFrameId: null,
             rollTimeoutId: null,
-            rollStartRotation: { x: 0, y: 0, z: 0 }
+            rollStartQuaternion: new THREE.Quaternion()
         }
     },
     mounted() {
@@ -160,27 +174,40 @@ export default {
             this.progress = 0
 
             const value = randomNumber(1, 6)
-            const target = FACE_ROTATIONS[value]
+            const targetQuaternion = targetQuaternionFor(value)
             const duration = 2500
             const liftHeight = 1.5
             const start = performance.now()
 
-            const startRotation = {
-                x: this.diceGroup.rotation.x,
-                y: this.diceGroup.rotation.y,
-                z: this.diceGroup.rotation.z
-            }
-            this.rollStartRotation = startRotation
-            const spinsFor = (target) => {
-                const spins = randomNumber(3, 5)
-                const sign = Math.random() < 0.5 ? -1 : 1
-                return spins * Math.PI * 2 * sign + target
-            }
-            const totalRotation = {
-                x: spinsFor(target.x),
-                y: spinsFor(target.y),
-                z: spinsFor(target.z)
-            }
+            const startQuaternion = this.diceGroup.quaternion.clone()
+            this.rollStartQuaternion = startQuaternion
+            // A chaotic multi-axis tumble for visual flair during the toss/fall, expressed as
+            // Euler angles composed on top of the start orientation via quaternion
+            // multiplication (Euler components can't be added directly and stay correct).
+            const spinAxis = new THREE.Euler(
+                randomNumber(3, 5) *
+                    Math.PI *
+                    2 *
+                    (Math.random() < 0.5 ? -1 : 1),
+                randomNumber(3, 5) *
+                    Math.PI *
+                    2 *
+                    (Math.random() < 0.5 ? -1 : 1),
+                randomNumber(3, 5) *
+                    Math.PI *
+                    2 *
+                    (Math.random() < 0.5 ? -1 : 1)
+            )
+            const tumbleQuaternionAt = (progress) =>
+                new THREE.Quaternion()
+                    .setFromEuler(
+                        new THREE.Euler(
+                            spinAxis.x * progress,
+                            spinAxis.y * progress,
+                            spinAxis.z * progress
+                        )
+                    )
+                    .multiply(startQuaternion)
 
             // Toss is brief and decelerates going up (gravity); the fall takes the rest of the
             // flight and accelerates into landing, instead of a symmetric up/down arc.
@@ -205,27 +232,30 @@ export default {
                 return 0.9 + (1 - Math.pow(1 - p, 3)) * 0.1
             }
 
+            // Tumble for most of the flight, then blend from wherever the tumble ended up
+            // into the exact target orientation during the settle stretch as it lands.
+            const preSettleQuaternion = tumbleQuaternionAt(0.9)
+
             const step = (now) => {
                 const t = Math.min((now - start) / duration, 1)
                 const rotationProgress = rotationProgressAt(t)
-                this.diceGroup.rotation.x =
-                    startRotation.x + totalRotation.x * rotationProgress
-                this.diceGroup.rotation.y =
-                    startRotation.y + totalRotation.y * rotationProgress
-                this.diceGroup.rotation.z =
-                    startRotation.z + totalRotation.z * rotationProgress
+                if (t < settleStart) {
+                    this.diceGroup.quaternion.copy(
+                        tumbleQuaternionAt(rotationProgress)
+                    )
+                } else {
+                    const p = (rotationProgress - 0.9) / 0.1
+                    this.diceGroup.quaternion
+                        .copy(preSettleQuaternion)
+                        .slerp(targetQuaternion, p)
+                }
                 this.diceGroup.position.y = heightAt(t)
                 this.progress = t
 
                 if (t < 1) {
                     this.rollFrameId = requestAnimationFrame(step)
                 } else {
-                    this.diceGroup.rotation.x =
-                        startRotation.x + totalRotation.x
-                    this.diceGroup.rotation.y =
-                        startRotation.y + totalRotation.y
-                    this.diceGroup.rotation.z =
-                        startRotation.z + totalRotation.z
+                    this.diceGroup.quaternion.copy(targetQuaternion)
                     this.diceGroup.position.y = 0
                     this.rollTimeoutId = setTimeout(() => {
                         this.isRolling = false
@@ -247,55 +277,24 @@ export default {
             const start = performance.now()
             const startY = this.diceGroup.position.y
             const startProgress = this.progress
-            const fallStartRotation = {
-                x: this.diceGroup.rotation.x,
-                y: this.diceGroup.rotation.y,
-                z: this.diceGroup.rotation.z
-            }
-            // Settle to the nearest equivalent of the original rotation instead of unwinding every
-            // leftover full spin, so the cancel snap doesn't keep tumbling while it falls.
-            const targetRotation = {
-                x:
-                    fallStartRotation.x +
-                    shortestAngleDelta(
-                        fallStartRotation.x,
-                        this.rollStartRotation.x
-                    ),
-                y:
-                    fallStartRotation.y +
-                    shortestAngleDelta(
-                        fallStartRotation.y,
-                        this.rollStartRotation.y
-                    ),
-                z:
-                    fallStartRotation.z +
-                    shortestAngleDelta(
-                        fallStartRotation.z,
-                        this.rollStartRotation.z
-                    )
-            }
+            // Settle back to the orientation the roll started from, so the cancel snap
+            // doesn't keep tumbling while it falls.
+            const fallStartQuaternion = this.diceGroup.quaternion.clone()
+            const targetQuaternion = this.rollStartQuaternion
 
             const step = (now) => {
                 const t = Math.min((now - start) / duration, 1)
                 this.diceGroup.position.y = startY * (1 - t)
-                this.diceGroup.rotation.x =
-                    fallStartRotation.x +
-                    (targetRotation.x - fallStartRotation.x) * t
-                this.diceGroup.rotation.y =
-                    fallStartRotation.y +
-                    (targetRotation.y - fallStartRotation.y) * t
-                this.diceGroup.rotation.z =
-                    fallStartRotation.z +
-                    (targetRotation.z - fallStartRotation.z) * t
+                this.diceGroup.quaternion
+                    .copy(fallStartQuaternion)
+                    .slerp(targetQuaternion, t)
                 this.progress = startProgress * (1 - t)
 
                 if (t < 1) {
                     this.rollFrameId = requestAnimationFrame(step)
                 } else {
                     this.diceGroup.position.y = 0
-                    this.diceGroup.rotation.x = targetRotation.x
-                    this.diceGroup.rotation.y = targetRotation.y
-                    this.diceGroup.rotation.z = targetRotation.z
+                    this.diceGroup.quaternion.copy(targetQuaternion)
                     this.isRolling = false
                     this.progress = 0
                 }

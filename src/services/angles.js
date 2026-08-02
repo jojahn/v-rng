@@ -7,6 +7,14 @@ export function shortestAngleDelta(from, to) {
     return delta
 }
 
+// Delta in [0, TWO_PI) that advances `from` forward to an angle equivalent to `to`,
+// so an animation always spins forward into its target instead of ever reversing.
+export function forwardAngleDelta(from, to) {
+    let delta = (to - from) % TWO_PI
+    if (delta < 0) delta += TWO_PI
+    return delta
+}
+
 export function deg2Rad(deg) {
     var pi = Math.PI
     return deg * (pi / 180)

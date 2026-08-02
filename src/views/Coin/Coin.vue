@@ -10,10 +10,16 @@
 
 <script>
 import * as THREE from "three"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { pickRandom, randomNumber } from "@/services/random"
 import { preloadModel } from "@/services/preload"
-import { shortestAngleDelta } from "@/services/angles"
+import { forwardAngleDelta, shortestAngleDelta } from "@/services/angles"
+
+// Local model rotation.x (mod 2*PI) at which each face points toward the camera.
+// Resting pose (0) shows Tails; a half turn shows Heads.
+const OUTCOME_ANGLES = {
+    Tails: 0,
+    Heads: Math.PI
+}
 
 export default {
     props: {
@@ -146,14 +152,17 @@ export default {
             this.isFlipping = true
             this.progress = 0
 
-            // Resting pose (no extra half-turn) shows Tails, so only Heads needs the added half-turn.
             const outcome = pickRandom(["Heads", "Tails"])
             const spins = randomNumber(4, 6)
             const duration = 2500
-            const totalRotation =
-                spins * Math.PI * 2 + (outcome === "Heads" ? Math.PI : 0)
             const startRotation = this.coinGroup.rotation.x
             this.flipStartRotation = startRotation
+            const targetAngle = OUTCOME_ANGLES[outcome]
+            // Always spin forward into the target angle (never backward), so the landing
+            // orientation is correct regardless of where the previous flip left the coin.
+            const totalRotation =
+                spins * Math.PI * 2 +
+                forwardAngleDelta(startRotation, targetAngle)
             const liftHeight = 1.5
             const start = performance.now()
 
@@ -190,7 +199,9 @@ export default {
                 if (t < 1) {
                     this.flipFrameId = requestAnimationFrame(step)
                 } else {
-                    this.coinGroup.rotation.x = startRotation + totalRotation
+                    // Snap to the exact target angle (rather than the accumulated
+                    // startRotation + totalRotation) to avoid drift across repeated flips.
+                    this.coinGroup.rotation.x = targetAngle
                     this.coinGroup.position.y = 0
                     this.flipTimeoutId = setTimeout(() => {
                         this.isFlipping = false
