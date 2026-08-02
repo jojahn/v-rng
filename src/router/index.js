@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router"
+import { createRouter, createWebHashHistory } from "vue-router"
 import HomeView from "../views/Home/HomeView.vue"
 import WheelView from "@/views/Wheel/WheelView.vue"
 import MatchesView from "@/views/Matches/MatchesView.vue"
@@ -15,7 +15,7 @@ TODO: add more routes
 */
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHashHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: "/",
