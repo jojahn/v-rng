@@ -1,23 +1,23 @@
 export function track(element, callback, onLeave, step) {
-  var currentStep = 0;
-  var listener = function (p) {
-    if (currentStep % step == 0) {
-      callback(p.pageX, p.pageY);
+    var currentStep = 0
+    var listener = function (p) {
+        if (currentStep % step == 0) {
+            callback(p.pageX, p.pageY)
+        }
+        currentStep++
     }
-    currentStep++;
-  };
-  element.addEventListener("mousedown", () => {
-    window.addEventListener("mousemove", listener);
-  });
-  element.addEventListener("mouseup", () => {
-    window.removeEventListener("mousemove", listener);
-    onLeave();
-  });
-  element.addEventListener("mouseleave", () => {
-    window.removeEventListener("mousemove", listener);
-    onLeave();
-  });
-  if ("ontouchmove" in window) {
-    element.addEventListener("ontouchmove", listener);
-  }
+    element.addEventListener("mousedown", () => {
+        window.addEventListener("mousemove", listener)
+    })
+    element.addEventListener("mouseup", () => {
+        window.removeEventListener("mousemove", listener)
+        onLeave()
+    })
+    element.addEventListener("mouseleave", () => {
+        window.removeEventListener("mousemove", listener)
+        onLeave()
+    })
+    if ("ontouchmove" in window) {
+        element.addEventListener("ontouchmove", listener)
+    }
 }

@@ -1,9 +1,50 @@
 {
-  "Home": "Home",
-  "Wheel": "Wheel",
-  "Dices": "Dices",
-  "Coin": "Coin",
-  "Spinner": "Spinner",
-  "Cards": "Cards",
-  "Matches": "Matches"
+    "Home": "Home",
+    "Wheel": "Wheel",
+    "Dice": "Dice",
+    "Coin": "Coin",
+    "Spinner": "Spinner",
+    "Cards": "Cards",
+    "Matches": "Matches",
+    "Slots": "Slots",
+    "Heads": "Heads",
+    "Tails": "Tails",
+    "LostMessage": "Lost!",
+    "Close": "Close",
+    "ShortMatches": "Short Matches",
+    "RemoveWinner": "Remove winner from list",
+    "quotes": [
+        {
+            "text": "Chaos, when left alone, tends to multiply.",
+            "author": "Stephen Hawking"
+        },
+        {
+            "text": "In the midst of chaos, there is also opportunity.",
+            "author": "Sun Tzu"
+        },
+        {
+            "text": "All great changes are preceded by chaos.",
+            "author": "Deepak Chopra"
+        },
+        {
+            "text": "In all chaos there is a cosmos, in all disorder a secret order.",
+            "author": "Carl Jung"
+        },
+        {
+            "text": "randomness comes from atmospheric noise",
+            "author": "random.org"
+        },
+        {
+            "text": "Chance favors the prepared mind.",
+            "author": "Louis Pasteur"
+        },
+        {
+            "text": "If you flip a coin three times and it lands on heads each time, it's probably chance.",
+            "author": "T. Colin Campbell"
+        },
+        {
+            "text": "Random chance plays a huge part in everybody's life.",
+            "author": "Gary Gygax"
+        }
+    ]
 }

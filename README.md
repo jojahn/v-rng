@@ -1,24 +1,45 @@
-# rng
+# v-rng
 
-## Project setup
-```
+A Vue 3 + Vite web application featuring multiple random number generation tools. Choose from coin flips, spin a wheel, or play matches games to help make decisions or settle disputes.
+
+## Features
+
+- **Coin Flip** - Classic coin toss for quick decisions
+- **Wheel Spinner** - Customizable spinning wheel for selection
+- **Matches Game** - Interactive matches game for decision-making
+
+## Project Setup
+
+```sh
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
+## Development & Build Commands
+
+### Development Server
+
+Start the development server with hot module reloading:
+
+```sh
+npm run dev
 ```
 
-### Compiles and minifies for production
-```
+The app will be available at `http://localhost:5173` (or the next available port).
+
+### Production Build
+
+Build the application for production with minification:
+
+```sh
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+Output files will be generated in the `dist/` directory.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Preview Production Build
+
+Preview the production build locally:
+
+```sh
+npm run preview
+```
