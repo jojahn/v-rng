@@ -3,13 +3,24 @@
   "plugins": [
     "typescript",
     "unicorn",
-    "oxc"
+    "oxc",
+    "vue"
   ],
   "categories": {
     "correctness": "error"
   },
-  "rules": {},
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "warn",
+    "no-console": [
+      "warn",
+      {
+        "allow": ["info", "warn", "error"]
+      }
+    ]
+  },
   "env": {
-    "builtin": true
+    "builtin": true,
+    "browser": true
   }
 }

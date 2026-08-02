@@ -117,7 +117,6 @@ export default {
             }
         },
         setupWheelTracking(step = 10) {
-            console.log("tracking...")
             if (this.trackingStarted) {
                 return
             }
@@ -135,10 +134,6 @@ export default {
                 var adjustedX = (x - center.x) / radius
                 var adjustedY = (y - center.y) / radius
               angle = Math.atan2(adjustedY, adjustedX)
-              console.warn("center:", [center.x, center.y]);
-              console.warn("mouse", [x, y])
-                console.log(adjustedX, adjustedY, radian2deg(angle))
-
                 // Save current velocity
                 if (velocity.length > 10) {
                     velocity.shift()
@@ -417,10 +412,8 @@ export default {
         this.drawWheel()
         const canvas = document.getElementById("WheelCanvas")
         canvas.style.display = "none"
-        console.log(canvas)
 
         this.resizeObserver = new ResizeObserver(() => {
-            console.log("resized", canvas)
             this.drawWheel()
         })
         this.resizeObserver.observe(document.getElementsByTagName("body")[0])

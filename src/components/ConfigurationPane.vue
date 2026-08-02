@@ -70,14 +70,11 @@ export default {
             }
             this.open = !this.open
         },
-        store() {
+        store(testObject) {
             localStorage.setItem(this.$props.name, JSON.stringify(testObject))
         },
         load() {
-            var retrieved = localStorage.getItem(this.$props.name)
-            if (!retrieved) {
-                retrieved = defaultConfiguration[this.$props.name]
-            }
+            return localStorage.getItem(this.$props.name)
         },
         onFormChange(ev) {
             this.$props.onConfigChanged()

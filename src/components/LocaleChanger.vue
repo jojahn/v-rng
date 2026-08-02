@@ -83,7 +83,7 @@ export default {
                     ? browserLocale
                     : "en"
             } catch (e) {
-                console.log("Failed to get locale from browser: ", e)
+                console.warn("Failed to get locale from browser: ", e)
             }
             localStorage.setItem("locale", this.locale)
         }

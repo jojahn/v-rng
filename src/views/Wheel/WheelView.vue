@@ -120,6 +120,7 @@ export default {
             } else {
                 const picks = this.$refs.wheel.displayedPicks
                 const nextIndex = randomNumber(0, picks.length - 1)
+                console.info(picks[nextIndex].name)
                 const nextSpinTime = this.$refs.wheel.getSpinTimeForIndex(
                     nextIndex,
                     this.spinTime
