@@ -69,6 +69,12 @@ export default {
             let textWidth = 0
             let startingPoint = 0
 
+            // A single slice spans the whole circle (sliceAngle === 2*PI), so its two
+            // "edges" coincide at the center instead of forming a taper: the sin(sliceAngle/2)
+            // wedge-width formula below degenerates to 0 in that case. Fall back to the
+            // circle's own chord width, which is what actually bounds the text there.
+            const isFullCircle = sliceAngle >= 2 * Math.PI - 1e-6
+
             // Shrink until the text's radial length fits the slice's length and its font
             // size fits the slice's width at the text's inner edge (the slice's narrowest
             // point along the text, since it's a pie slice that tapers toward the center).
@@ -78,8 +84,12 @@ export default {
                 ctx.font = `${fontSize}px ${fontFamily}`
                 textWidth = ctx.measureText(text).width
                 startingPoint = Math.max((radius - padding - textWidth) / 2, 0)
-                const availableHeight =
-                    2 * startingPoint * Math.sin(sliceAngle / 2)
+                const availableHeight = isFullCircle
+                    ? 2 *
+                      Math.sqrt(
+                          Math.max(radius ** 2 - startingPoint ** 2, 0)
+                      )
+                    : 2 * startingPoint * Math.sin(sliceAngle / 2)
                 if (
                     textWidth <= radius - padding &&
                     fontSize <= availableHeight
