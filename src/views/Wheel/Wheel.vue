@@ -1,8 +1,5 @@
 <template>
     <div ref="wrapper" class="wheel">
-        <div v-if="!valid" class="plaque">
-            <p>{{ errorMessage }}</p>
-        </div>
         <canvas id="WheelCanvas" height="640" width="480"></canvas>
     </div>
 </template>
@@ -16,6 +13,8 @@ import {
     usingQuadraticFadeOut
 } from "@/services/animations"
 import { track } from "@/services/mouseTracking"
+import { DEFAULT_COLORS } from "@/services/COLORS"
+const FALLBACK_PICK = { name: "Tangerine", color: DEFAULT_COLORS[0] }
 export default {
     props: {
         spinTime: Number,
@@ -30,8 +29,6 @@ export default {
             animations: [],
             progress: 0,
             isSpinning: false,
-            valid: true,
-            errorMessage: "",
             angle: 0,
             trackingStarted: false,
             candidate: "",
@@ -42,9 +39,7 @@ export default {
     watch: {
         values: function (newValue, oldValue) {
             this.generateDisplayValues()
-            if (this.valid === true) {
-                this.drawWheel()
-            }
+            this.drawWheel()
         }
     },
     methods: {
@@ -52,19 +47,10 @@ export default {
             return this.isSpinning
         },
         generateDisplayValues() {
-            this.displayedPicks = []
-            if (!this.$props.values) {
-                return
-            }
-            let values = this.$props.values.filter((v) => !!v.name && !!v.color)
-            if (!values) {
-                return
-            }
-            if (values.length < 2) {
-                this.valid = false
-                this.errorMessage = "Please provide more options"
-            }
-            this.displayedPicks = values
+            let values = (this.$props.values || []).filter(
+                (v) => !!v.name && !!v.color
+            )
+            this.displayedPicks = values.length ? values : [FALLBACK_PICK]
         },
         fitText(
             ctx,
@@ -428,22 +414,4 @@ export default {
     cursor: grabbing;
 }
 
-.plaque {
-    height: 640px;
-    position: absolute;
-    margin: auto;
-    display: flex;
-    width: 100%;
-    backdrop-filter: blur(10px);
-}
-
-.plaque p {
-    background: #500;
-    color: white;
-    width: auto;
-    display: block;
-    margin: auto;
-    padding: 10px;
-    font-size: 1.5rem;
-}
 </style>
