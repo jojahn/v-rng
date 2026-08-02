@@ -55,6 +55,7 @@ import ActionButton from "@/components/ActionButton.vue"
 import ConfigurationPane from "@/components/ConfigurationPane.vue"
 import Wheel, { FALLBACK_PICKS } from "./Wheel.vue"
 import AlertBox from "@/components/AlertBox.vue"
+import { pickRandom, randomNumber } from "@/services/random"
 
 export default {
     components: {
@@ -117,8 +118,14 @@ export default {
             if (this.$refs.wheel.isSpinning) {
                 this.$refs.wheel.stop()
             } else {
+                const picks = this.$refs.wheel.displayedPicks
+                const nextIndex = randomNumber(0, picks.length - 1)
+                const nextSpinTime = this.$refs.wheel.getSpinTimeForIndex(
+                    nextIndex,
+                    this.spinTime
+                )
                 this.$refs.alertBox.close()
-                this.$refs.wheel.spin()
+                this.$refs.wheel.spin(0, nextSpinTime)
             }
         },
         duplicateValues() {

@@ -18,6 +18,8 @@ export const FALLBACK_PICKS = [
     { name: "Yes", color: DEFAULT_COLORS[3] },
     { name: "No", color: DEFAULT_COLORS[2] }
 ]
+// Angle of the fixed pin, measured the same way as each slice's alpha in drawWheel().
+const WIN_ANGLE = 1.5 * Math.PI
 export default {
     props: {
         spinTime: Number,
@@ -253,7 +255,6 @@ export default {
             const angle = (2 * Math.PI) / this.displayedPicks.length
 
             // Draw slices
-            const WIN_ANGLE = 1.5 * Math.PI
             var minDiffToWinAngle = Number.MAX_SAFE_INTEGER
             var minDiffVal = null
 
@@ -299,6 +300,48 @@ export default {
             })
             this.candidate = minDiffVal
             this.drawPin(ctx2, center, radius)
+        },
+        // Every spin() call starts fresh from starterAngle 0, and spin()'s own math always
+        // advances the wheel by the same deterministic totalRotation for given timings (see
+        // the comment in spin()). So which slice ends up at WIN_ANGLE is fully controlled by
+        // how many step ticks spinTime buys, once fadeOutTime/stepTime/stepAngle are fixed.
+        // This mirrors that math backwards to find a spinTime landing on a chosen index,
+        // which is how random selection (picked via random.js) is made to control the wheel.
+        getSpinTimeForIndex(
+            index,
+            minSpinTime = this.$props.spinTime || 5000,
+            fadeOutTime = this.$props.fadeOutTime || 3000,
+            { stepTime, stepAngle } = { stepTime: 50, stepAngle: 8 }
+        ) {
+            const TWO_PI = 2 * Math.PI
+            const sliceAngle = TWO_PI / this.displayedPicks.length
+            const stepAngleRad = deg2Rad(stepAngle)
+            const ticksPerRevolution = Math.round(TWO_PI / stepAngleRad)
+
+            const fadeOutTicks = Math.round(fadeOutTime / stepTime)
+            let fadeOutSpeedSum = 0
+            for (let i = 0; i < fadeOutTicks; i++) {
+                fadeOutSpeedSum += usingQuadraticFadeOut(i / fadeOutTicks)
+            }
+
+            const targetAngle =
+                (((WIN_ANGLE - index * sliceAngle) % TWO_PI) + TWO_PI) %
+                TWO_PI
+            const targetTicks = Math.round(
+                targetAngle / stepAngleRad - fadeOutSpeedSum
+            )
+            const remainder =
+                ((targetTicks % ticksPerRevolution) + ticksPerRevolution) %
+                ticksPerRevolution
+
+            const minSpinTicks = Math.round(minSpinTime / stepTime)
+            const minFullRevolutions = Math.ceil(
+                minSpinTicks / ticksPerRevolution
+            )
+            const spinTicks =
+                minFullRevolutions * ticksPerRevolution + remainder
+
+            return spinTicks * stepTime
         },
         spin(
             starterAngle = 0,
