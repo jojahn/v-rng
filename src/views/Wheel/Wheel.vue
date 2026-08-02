@@ -124,12 +124,18 @@ export default {
             var starterAngle, angle
             var velocity = []
 
-            const onTrack = (center, radius) => (x, y) => {
-                console.log("onTrack")
+          const onTrack = (element) => (x, y) => {
+            const radius = element.width / 2;
+            const center = {
+              x: element.offsetLeft + element.width / 2,
+              y: element.offsetTop + element.height / 2
+            }
                 this.stop()
                 var adjustedX = (x - center.x) / radius
                 var adjustedY = (y - center.y) / radius
-                angle = Math.atan2(adjustedY, adjustedX)
+              angle = Math.atan2(adjustedY, adjustedX)
+              console.warn("center:", [center.x, center.y]);
+              console.warn("mouse", [x, y])
                 console.log(adjustedX, adjustedY, radian2deg(angle))
 
                 // Save current velocity
@@ -168,13 +174,7 @@ export default {
             }
             track(
                 element,
-                onTrack(
-                    {
-                        x: element.offsetLeft + element.width / 2,
-                        y: element.offsetTop + element.height / 2
-                    },
-                    element.width / 2
-                ),
+                onTrack(element),
                 onLeave,
                 step
             )
