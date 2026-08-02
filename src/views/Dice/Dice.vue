@@ -97,7 +97,7 @@ export default {
                     const size = new THREE.Vector3()
                     box.getSize(size)
                     const maxDim = Math.max(size.x, size.y, size.z) || 1
-                    const scale = 1.4 / maxDim
+                    const scale = 0.56 / maxDim
                     this.diceModel.scale.setScalar(scale)
 
                     const center = new THREE.Vector3()

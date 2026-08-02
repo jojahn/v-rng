@@ -50,10 +50,7 @@ export default {
 
             this.scene = new THREE.Scene()
             this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100)
-            // Slight z offset keeps the camera's default up vector from lining up with the
-            // view direction (which would make lookAt's orientation undefined) while still
-            // reading as an overhead view.
-            this.camera.position.set(0, 6, 1.5)
+            this.camera.position.set(0, 2, 4)
             this.camera.lookAt(0, 0, 0)
 
             this.renderer = new THREE.WebGLRenderer({
@@ -86,7 +83,7 @@ export default {
                     const size = new THREE.Vector3()
                     box.getSize(size)
                     const maxDim = Math.max(size.x, size.y, size.z) || 1
-                    const scale = 1.2 / maxDim
+                    const scale = 0.6 / maxDim
                     this.coinModel.scale.setScalar(scale)
 
                     const center = new THREE.Vector3()
