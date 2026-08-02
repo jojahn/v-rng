@@ -165,6 +165,7 @@ optgroup {
     cursor: pointer;
     border: 1px solid #aaa;
     border-radius: 0.2rem;
+    height: 40px;
 }
 
 .locale-option-button.open {
